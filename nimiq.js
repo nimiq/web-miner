@@ -441,15 +441,17 @@ class PeerConnector extends Observable {
                 return;
             }
 
-            this._rtcConnection.setRemoteDescription(new RTCSessionDescription(signal)).then(() => {
-                if (signal.type == 'offer') {
-                    this._rtcConnection.createAnswer(this._onDescription.bind(this), this._errorLog);
-                }
-            });
+            this._rtcConnection.setRemoteDescription(new RTCSessionDescription(signal))
+                .then(() => {
+                    if (signal.type == 'offer') {
+                        this._rtcConnection.createAnswer(this._onDescription.bind(this), this._errorLog);
+                    }
+                })
+                .catch(e => e);
         } else if (signal.candidate) {
             this._lastIceCandidate = new RTCIceCandidate(signal);
             this._rtcConnection.addIceCandidate(this._lastIceCandidate)
-                .catch( e => e );
+                .catch(e => e);
         }
     }
 
@@ -457,6 +459,7 @@ class PeerConnector extends Observable {
         this._signalChannel.signal(
             NetworkConfig.myPeerAddress().signalId,
             this._signalId,
+            Network.SIGNAL_TTL_INITIAL,
             BufferUtils.fromAscii(JSON.stringify(signal))
         );
     }
@@ -519,11 +522,6 @@ class InboundPeerConnector extends PeerConnector {
     _onP2PChannel(event) {
         const channel = event.channel || event.target;
 
-        // Speculatively generate a peerAddress for incoming peers to prevent
-        // duplicate connections. It will be updated once the peer sends its
-        // version message.
-        const peerAddress = new RtcPeerAddress(Services.WEBRTC, Date.now(), this._signalId, 0);
-
         // FIXME it is not really robust to assume that the last iceCandidate seen is
         // actually the address that we connected to.
         let netAddress;
@@ -535,7 +533,7 @@ class InboundPeerConnector extends PeerConnector {
             netAddress = new NetAddress(this._signalId, 1);
         }
 
-        const conn = new PeerConnection(channel, Protocol.RTC, netAddress, peerAddress);
+        const conn = new PeerConnection(channel, Protocol.RTC, netAddress, /*peerAddress*/ null);
         this.fire('connection', conn);
     }
 }
@@ -561,21 +559,44 @@ class WebRtcUtils {
 class WebSocketConnector extends Observable {
     constructor() {
         super();
+        this._timers = new Timers();
     }
 
     connect(peerAddress) {
         if (peerAddress.protocol !== Protocol.WS) throw 'Malformed peerAddress';
 
+        const timeoutKey = 'connect_' + peerAddress;
+        if (this._timers.timeoutExists(timeoutKey)) {
+            console.warn('WsConnector: Already connecting to ' + peerAddress);
+            return false;
+        }
+
         const ws = new WebSocket('wss://' + peerAddress.host + ':' + peerAddress.port);
         ws.onopen = () => {
+            this._timers.clearTimeout(timeoutKey);
+
             const netAddress = NetAddress.fromHostname(peerAddress.host, peerAddress.port);
             const conn = new PeerConnection(ws, Protocol.WS, netAddress, peerAddress);
             this.fire('connection', conn);
         };
-        ws.onerror = e => this.fire('error', peerAddress, e);
+        ws.onerror = e => {
+            this._timers.clearTimeout(timeoutKey);
+            this.fire('error', peerAddress, e);
+        };
+
+        this._timers.setTimeout(timeoutKey, () => {
+            this._timers.clearTimeout(timeoutKey);
+            this.fire('error', peerAddress);
+
+            // We don't want to fire the error event again if the websocket
+            // connect fails at a later time.
+            ws.onerror = null;
+        }, WebSocketConnector.CONNECT_TIMEOUT);
+
         return true;
     }
 }
+WebSocketConnector.CONNECT_TIMEOUT = 1000 * 5; // 5 seconds
 
 class WindowDetector {
     static get KEY_PING() {
@@ -768,6 +789,10 @@ class Timers {
         this._timeouts[key] = setTimeout(fn, waitTime);
     }
 
+    timeoutExists(key) {
+        return this._timeouts[key] !== undefined;
+    }
+
     setInterval(key, fn, intervalTime) {
         if (this._intervals[key]) throw 'Duplicate interval for key ' + key;
         this._intervals[key] = setInterval(fn, intervalTime);
@@ -781,6 +806,10 @@ class Timers {
     resetInterval(key, fn, intervalTime) {
         clearInterval(this._intervals[key]);
         this._intervals[key] = setInterval(fn, intervalTime);
+    }
+
+    intervalExists(key) {
+        return this._intervals[key] !== undefined;
     }
 
     clearAll() {
@@ -3370,29 +3399,6 @@ class Transaction {
 Class.register(Transaction);
 
 class ConsensusAgent extends Observable {
-    // Number of InvVectors in invToRequest pool to automatically trigger a getdata request.
-    static get REQUEST_THRESHOLD() {
-        return 50;
-    }
-
-    // Time to wait after the last received inv message before sending getdata.
-    static get REQUEST_THROTTLE() {
-        return 500; // ms
-    }
-
-    // Maximum time to wait after sending out getdata or receiving the last object for this request.
-    static get REQUEST_TIMEOUT() {
-        return 5000; // ms
-    }
-
-    // Maximum number of blockchain sync retries before closing the connection.
-    // XXX If the peer is on a long fork, it will count as a failed sync attempt
-    // if our blockchain doesn't switch to the fork within 500 (max InvVectors returned by getblocks)
-    // blocks.
-    static get MAX_SYNC_ATTEMPTS() {
-        return 5;
-    }
-
     constructor(blockchain, mempool, peer) {
         super();
         this._blockchain = blockchain;
@@ -3425,13 +3431,13 @@ class ConsensusAgent extends Observable {
         this._timers = new Timers();
 
         // Listen to consensus messages from the peer.
-        peer.channel.on('inv', msg => this._onInv(msg));
-        peer.channel.on('getdata', msg => this._onGetData(msg));
-        peer.channel.on('notfound', msg => this._onNotFound(msg));
-        peer.channel.on('block', msg => this._onBlock(msg));
-        peer.channel.on('tx', msg => this._onTx(msg));
-        peer.channel.on('getblocks', msg => this._onGetBlocks(msg));
-        peer.channel.on('mempool', msg => this._onMempool(msg));
+        peer.channel.on('inv',          msg => this._onInv(msg));
+        peer.channel.on('getdata',      msg => this._onGetData(msg));
+        peer.channel.on('notfound',     msg => this._onNotFound(msg));
+        peer.channel.on('block',        msg => this._onBlock(msg));
+        peer.channel.on('tx',           msg => this._onTx(msg));
+        peer.channel.on('getblocks',    msg => this._onGetBlocks(msg));
+        peer.channel.on('mempool',      msg => this._onMempool(msg));
 
         // Clean up when the peer disconnects.
         peer.channel.on('close', () => this._onClose());
@@ -3535,7 +3541,10 @@ class ConsensusAgent extends Observable {
 
         // Drop the peer if it doesn't start sending InvVectors for its chain within the timeout.
         // TODO should we ban here instead?
-        this._timers.setTimeout('getblocks', () => this._peer.channel.close('getblocks timeout'), ConsensusAgent.REQUEST_TIMEOUT);
+        this._timers.setTimeout('getblocks', () => {
+            this._peer.channel.close('getblocks timeout');
+            this._timers.clearTimeout('getblocks');
+        }, ConsensusAgent.REQUEST_TIMEOUT);
     }
 
     async _onInv(msg) {
@@ -3549,7 +3558,6 @@ class ConsensusAgent extends Observable {
             switch (vector.type) {
                 case InvVector.Type.BLOCK: {
                     const block = await this._blockchain.getBlock(vector.hash);
-                    //console.log('[INV] Check if block ' + vector.hash.toBase64() + ' is known: ' + !!block);
                     if (!block) {
                         unknownObjects.push(vector);
                     }
@@ -3557,7 +3565,6 @@ class ConsensusAgent extends Observable {
                 }
                 case InvVector.Type.TRANSACTION: {
                     const tx = await this._mempool.getTransaction(vector.hash);
-                    //console.log('[INV] Check if transaction ' + vector.hash.toBase64() + ' is known: ' + !!tx);
                     if (!tx) {
                         unknownObjects.push(vector);
                     }
@@ -3636,12 +3643,11 @@ class ConsensusAgent extends Observable {
 
     async _onBlock(msg) {
         const hash = await msg.block.hash();
-        //console.log('[BLOCK] Received block ' + hash.toBase64());
 
         // Check if we have requested this block.
         const vector = new InvVector(InvVector.Type.BLOCK, hash);
         if (this._objectsInFlight.indexOf(vector) < 0) {
-            console.warn('Unsolicited block ' + hash + ' received from peer ' + this._peer + ', discarding');
+            console.warn('Unsolicited block ' + hash + ' received from peer ' + this._peer.peerAddress + ', discarding');
             return;
         }
 
@@ -3662,7 +3668,7 @@ class ConsensusAgent extends Observable {
         // Check if we have requested this transaction.
         const vector = new InvVector(InvVector.Type.TRANSACTION, hash);
         if (this._objectsInFlight.indexOf(vector) < 0) {
-            console.warn('Unsolicited transaction ' + hash + ' received from peer ' + this._peer + ', discarding');
+            console.warn('Unsolicited transaction ' + hash + ' received from peer ' + this._peer.peerAddress + ', discarding');
             return;
         }
 
@@ -3677,16 +3683,16 @@ class ConsensusAgent extends Observable {
     }
 
     _onNotFound(msg) {
-        console.log('[NOTFOUND] ' + msg.vectors.length + ' unknown objects', msg.vectors);
+        console.log('[NOTFOUND] ' + msg.vectors.length + ' unknown objects');
 
         // Remove unknown objects from in-flight list.
         for (let vector of msg.vectors) {
             if (this._objectsInFlight.indexOf(vector) < 0) {
-                console.warn('Unsolicited notfound vector ' + vector + ' from peer ' + this._peer, vector);
+                console.warn('Unsolicited notfound vector ' + vector + ' from peer ' + this._peer.peerAddress);
                 continue;
             }
 
-            console.log('Peer ' + this._peer + ' did not find ' + obj, obj);
+            console.log('Peer ' + this._peer.peerAddress + ' did not find ' + obj);
 
             this._onObjectReceived(vector);
         }
@@ -3718,7 +3724,6 @@ class ConsensusAgent extends Observable {
             switch (vector.type) {
                 case InvVector.Type.BLOCK: {
                     const block = await this._blockchain.getBlock(vector.hash);
-                    console.log('[GETDATA] Check if block ' + vector.hash.toBase64() + ' is known: ' + !!block);
                     if (block) {
                         // We have found a requested block, send it back to the sender.
                         this._peer.channel.block(block);
@@ -3730,7 +3735,6 @@ class ConsensusAgent extends Observable {
                 }
                 case InvVector.Type.TRANSACTION: {
                     const tx = await this._mempool.getTransaction(vector.hash);
-                    console.log('[GETDATA] Check if transaction ' + vector.hash.toBase64() + ' is known: ' + !!tx);
                     if (tx) {
                         // We have found a requested transaction, send it back to the sender.
                         this._peer.channel.tx(tx);
@@ -3836,6 +3840,17 @@ class ConsensusAgent extends Observable {
         return this._synced;
     }
 }
+// Number of InvVectors in invToRequest pool to automatically trigger a getdata request.
+ConsensusAgent.REQUEST_THRESHOLD = 50;
+// Time to wait after the last received inv message before sending getdata.
+ConsensusAgent.REQUEST_THROTTLE = 500; // ms
+// Maximum time to wait after sending out getdata or receiving the last object for this request.
+ConsensusAgent.REQUEST_TIMEOUT = 5000; // ms
+// Maximum number of blockchain sync retries before closing the connection.
+// XXX If the peer is on a long fork, it will count as a failed sync attempt
+// if our blockchain doesn't switch to the fork within 500 (max InvVectors returned by getblocks)
+// blocks.
+ConsensusAgent.MAX_SYNC_ATTEMPTS = 5;
 Class.register(ConsensusAgent);
 
 class Consensus extends Observable {
@@ -4406,6 +4421,11 @@ class PeerAddresses extends Observable {
                 return false;
             }
 
+            // Never update the timestamp of seed peers.
+            if (knownAddress.timestamp === 0) {
+                peerAddress.timestamp = 0;
+            }
+
             // Ignore address if we already know a better route to this address.
             // TODO save anyways to have a backup route?
             if (peerAddress.protocol === Protocol.RTC && knownAddress.distance < peerAddress.distance) {
@@ -4464,52 +4484,56 @@ class PeerAddresses extends Observable {
 
             this._store.add(peerAddressState);
         }
-        if (peerAddressState.state === PeerAddressState.BANNED) {
+        if (peerAddressState.state === PeerAddressState.BANNED
+            // Allow recovering seed peer's incoming connection to succeed.
+            && peerAddressState.peerAddress.timestamp !== 0) {
+
             throw 'Connected to banned address';
+        }
+
+        if (peerAddressState.state !== PeerAddressState.CONNECTED) {
+            switch (peerAddress.protocol) {
+                case Protocol.WS:
+                    this._peerCountWs++;
+                    break;
+                case Protocol.RTC:
+                    this._peerCountRtc++;
+                    break;
+                default:
+                    console.warn('Unknown protocol ' + peerAddress.protocol);
+            }
         }
 
         peerAddressState.state = PeerAddressState.CONNECTED;
         peerAddressState.lastConnected = Date.now();
-        //peerAddressState.failedAttempts = 0;
-
-        switch (peerAddress.protocol) {
-            case Protocol.WS:
-                this._peerCountWs++;
-                break;
-            case Protocol.RTC:
-                this._peerCountRtc++;
-                break;
-            default:
-                console.warn('Unknown protocol ' + peerAddress.protocol);
-        }
+        peerAddressState.failedAttempts = 0;
     }
 
     // Called when a connection to this peerAddress is closed.
-    disconnected(peerAddress) {
+    disconnected(peerAddress, closedByRemote) {
         const peerAddressState = this._store.get(peerAddress);
         if (!peerAddressState) {
             return;
         }
 
-        const channel = peerAddressState.peerAddress.signalChannel;
-        if (peerAddress.protocol === Protocol.RTC && channel) {
-            this._deleteBySignalChannel(channel);
-        }
+        this._deleteBySignalingPeer(peerAddress);
 
-        switch (peerAddress.protocol) {
-            case Protocol.WS:
-                this._peerCountWs--;
-                break;
-            case Protocol.RTC:
-                this._peerCountRtc--;
-                break;
-            default:
-                console.warn('Unknown protocol ' + peerAddress.protocol);
+        if (peerAddressState.state === PeerAddressState.CONNECTED) {
+            switch (peerAddress.protocol) {
+                case Protocol.WS:
+                    this._peerCountWs--;
+                    break;
+                case Protocol.RTC:
+                    this._peerCountRtc--;
+                    break;
+                default:
+                    console.warn('Unknown protocol ' + peerAddress.protocol);
+            }
         }
 
         if (peerAddressState.state !== PeerAddressState.BANNED) {
-            // XXX Immediately delete WebRTC addresses when they disconnect.
-            if (peerAddress.protocol === Protocol.RTC) {
+            // XXX Immediately delete address if the remote host closed the connection.
+            if (closedByRemote) {
                 this._delete(peerAddress);
             } else {
                 peerAddressState.state = PeerAddressState.TRIED;
@@ -4523,7 +4547,6 @@ class PeerAddresses extends Observable {
         if (!peerAddressState) {
             return;
         }
-
         if (peerAddressState.state === PeerAddressState.BANNED) {
             return;
         }
@@ -4536,9 +4559,10 @@ class PeerAddresses extends Observable {
     }
 
     ban(peerAddress, duration = 10 /*minutes*/) {
-        const peerAddressState = this._store.get(peerAddress);
+        let peerAddressState = this._store.get(peerAddress);
         if (!peerAddressState) {
-            throw 'Unknown peerAddress';
+            peerAddressState = new PeerAddressState(peerAddress);
+            this._store.add(peerAddressState);
         }
 
         peerAddressState.state = PeerAddressState.BANNED;
@@ -4557,7 +4581,13 @@ class PeerAddresses extends Observable {
 
     isBanned(peerAddress) {
         const peerAddressState = this._store.get(peerAddress);
-        return peerAddressState && peerAddressState.state === PeerAddressState.BANNED;
+        return peerAddressState
+            && peerAddressState.state === PeerAddressState.BANNED
+            // XXX Never consider seed peers to be banned. This allows us to use
+            // the banning mechanism to prevent seed peers from being picked when
+            // they are down, but still allows recovering seed peers' incoming
+            // connections to succeed.
+            && peerAddressState.peerAddress.timestamp !== 0;
     }
 
     _delete(peerAddress) {
@@ -4586,12 +4616,15 @@ class PeerAddresses extends Observable {
         this._store.delete(peerAddress);
     }
 
-    // Delete all RTC-only peer addresses that are signalable over the given channel.
-    _deleteBySignalChannel(channel) {
+    // Delete all RTC-only peer addresses that are signalable over the given peer.
+    _deleteBySignalingPeer(peerAddress) {
         // XXX inefficient linear scan
         for (let peerAddressState of this._store.values()) {
             const addr = peerAddressState.peerAddress;
-            if (addr.protocol === Protocol.RTC && channel.equals(addr.signalChannel)) {
+            if (addr.protocol === Protocol.RTC
+                && addr.signalChannel
+                && peerAddress.equals(addr.signalChannel.peerAddress)) {
+
                 console.log('Deleting peer address ' + addr + ' - signaling channel closing');
                 this._delete(addr);
             }
@@ -4600,6 +4633,8 @@ class PeerAddresses extends Observable {
 
     _housekeeping() {
         const now = Date.now();
+        const unbannedAddresses = [];
+
         for (let peerAddressState of this._store.values()) {
             const addr = peerAddressState.peerAddress;
 
@@ -4622,6 +4657,7 @@ class PeerAddresses extends Observable {
                             peerAddressState.state = PeerAddressState.NEW;
                             peerAddressState.failedAttempts = 0;
                             peerAddressState.bannedUntil = -1;
+                            unbannedAddresses.push(addr);
                         } else {
                             // Delete expires bans.
                             this._store.delete(addr);
@@ -4632,6 +4668,10 @@ class PeerAddresses extends Observable {
                 default:
                     // Do nothing for CONNECTING/CONNECTED peers.
             }
+        }
+
+        if (unbannedAddresses.length) {
+            this.fire('added', unbannedAddresses, this);
         }
     }
 
@@ -4655,7 +4695,7 @@ class PeerAddresses extends Observable {
         return this._peerCountRtc;
     }
 }
-PeerAddresses.MAX_AGE_WEBSOCKET = 1000 * 60 * 60 * 24; // 24 hours
+PeerAddresses.MAX_AGE_WEBSOCKET = 1000 * 60 * 60 * 12; // 12 hours
 PeerAddresses.MAX_AGE_WEBRTC = 1000 * 60 * 30; // 30 minutes
 PeerAddresses.MAX_DISTANCE = 3;
 PeerAddresses.MAX_FAILED_ATTEMPTS = 3;
@@ -5230,13 +5270,15 @@ RejectMessage.Code.DUPLICATE = 0x12;
 Class.register(RejectMessage);
 
 class SignalMessage extends Message {
-    constructor(senderId, recipientId, payload) {
+    constructor(senderId, recipientId, ttl, payload) {
         super(Message.Type.SIGNAL);
-        if (!senderId || !RtcPeerAddress.isSignalId(senderId)) throw 'Malformed senderId ' + senderId;
-        if (!recipientId || !RtcPeerAddress.isSignalId(recipientId)) throw 'Malformed recipientId ' + recipientId;
+        if (!senderId || !RtcPeerAddress.isSignalId(senderId)) throw 'Malformed senderId';
+        if (!recipientId || !RtcPeerAddress.isSignalId(recipientId)) throw 'Malformed recipientId';
+        if (!NumberUtils.isUint8(ttl)) throw 'Malformed ttl';
         if (!payload || !(payload instanceof Uint8Array) || !NumberUtils.isUint16(payload.byteLength)) throw 'Malformed payload';
         this._senderId = senderId;
         this._recipientId = recipientId;
+        this._ttl = ttl;
         this._payload = payload;
     }
 
@@ -5244,9 +5286,10 @@ class SignalMessage extends Message {
         Message.unserialize(buf);
         const senderId = buf.readString(32);
         const recipientId = buf.readString(32);
+        const ttl = buf.readUint8();
         const length = buf.readUint16();
         const payload = buf.read(length);
-        return new SignalMessage(senderId, recipientId, payload);
+        return new SignalMessage(senderId, recipientId, ttl, payload);
     }
 
     serialize(buf) {
@@ -5254,6 +5297,7 @@ class SignalMessage extends Message {
         super.serialize(buf);
         buf.writeString(this._senderId, 32);
         buf.writeString(this._recipientId, 32);
+        buf.writeUint8(this._ttl);
         buf.writeUint16(this._payload.byteLength);
         buf.write(this._payload);
         return buf;
@@ -5263,6 +5307,7 @@ class SignalMessage extends Message {
         return super.serializedSize
             + /*senderId*/ 32
             + /*recipientId*/ 32
+            + /*ttl*/ 1
             + /*payloadLength*/ 2
             + this._payload.byteLength;
     }
@@ -5273,6 +5318,10 @@ class SignalMessage extends Message {
 
     get recipientId() {
         return this._recipientId;
+    }
+
+    get ttl() {
+        return this._ttl;
     }
 
     get payload() {
@@ -5409,15 +5458,15 @@ class NetworkAgent extends Observable {
         this._versionAttempts = 0;
 
         // Listen to network/control messages from the peer.
-        channel.on('version',    msg => this._onVersion(msg));
-        channel.on('verack',     msg => this._onVerAck(msg));
-        channel.on('addr',       msg => this._onAddr(msg));
-        channel.on('getaddr',    msg => this._onGetAddr(msg));
-        channel.on('ping',       msg => this._onPing(msg));
-        channel.on('pong',       msg => this._onPong(msg));
+        channel.on('version',   msg => this._onVersion(msg));
+        channel.on('verack',    msg => this._onVerAck(msg));
+        channel.on('addr',      msg => this._onAddr(msg));
+        channel.on('getaddr',   msg => this._onGetAddr(msg));
+        channel.on('ping',      msg => this._onPing(msg));
+        channel.on('pong',      msg => this._onPong(msg));
 
         // Clean up when the peer disconnects.
-        channel.on('close',      () => this._onClose());
+        channel.on('close', closedByRemote => this._onClose(closedByRemote));
 
         // Initiate the protocol with the new peer.
         this._handshake();
@@ -5431,10 +5480,10 @@ class NetworkAgent extends Observable {
 
         // Only relay addresses that the peer doesn't know yet. If the address
         // the peer knows is older than RELAY_THROTTLE, relay the address again.
-        // We also relay addresses that the peer might not be able to connect to (e.g. NodeJS -> Browser).
         const filteredAddresses = addresses.filter(addr => {
             const knownAddress = this._knownAddresses.get(addr);
-            return !knownAddress || knownAddress.timestamp < Date.now() - NetworkAgent.RELAY_THROTTLE;
+            return addr.timestamp !== 0 // Never relay seed addresses.
+                && (!knownAddress || knownAddress.timestamp < Date.now() - NetworkAgent.RELAY_THROTTLE);
         });
 
         if (filteredAddresses.length) {
@@ -5575,7 +5624,7 @@ class NetworkAgent extends Observable {
             return;
         }
 
-        console.log('[ADDR] ' + msg.addresses.length + ' addresses: ' + msg.addresses);
+        console.log('[ADDR] ' + msg.addresses.length + ' addresses');
 
         // Clear the getaddr timeout.
         this._timers.clearTimeout('getaddr');
@@ -5605,6 +5654,7 @@ class NetworkAgent extends Observable {
 
         const filteredAddresses = addresses.filter(addr => {
             // Exclude RTC addresses that are already at MAX_DISTANCE.
+            // FIXME check if this works as intended.
             if (addr.protocol === Protocol.RTC && addr.distance >= PeerAddresses.MAX_DISTANCE) {
                 return false;
             }
@@ -5638,25 +5688,21 @@ class NetworkAgent extends Observable {
             return;
         }
 
-        console.log('[PING] nonce=' + msg.nonce);
-
         // Respond with a pong message
         this._channel.pong(msg.nonce);
     }
 
     _onPong(msg) {
-        console.log('[PONG] nonce=' + msg.nonce);
-
         // Clear the ping timeout for this nonce.
         this._timers.clearTimeout('ping_' + msg.nonce);
     }
 
-    _onClose() {
+    _onClose(closedByRemote) {
         // Clear all timers and intervals when the peer disconnects.
         this._timers.clearAll();
 
         // Tell listeners that the peer has disconnected.
-        this.fire('close', this._peer, this._channel, this);
+        this.fire('close', this._peer, this._channel, closedByRemote, this);
     }
 
     _canAcceptMessage(msg) {
@@ -5711,6 +5757,9 @@ class Network extends Observable {
 
         this._peerCount = 0;
 
+        this._connectingCount = 0;
+
+        // Map of agents indexed by connection ids.
         this._agents = new HashMap();
 
         // Map from netAddress.host -> number of connections to this host.
@@ -5729,7 +5778,10 @@ class Network extends Observable {
         this._addresses = new PeerAddresses();
 
         // Relay new addresses to peers.
-        this._addresses.on('added', addresses => this._relayAddresses(addresses));
+        this._addresses.on('added', addresses => {
+            this._relayAddresses(addresses);
+            this._checkPeerCount();
+        });
 
         return this;
     }
@@ -5745,7 +5797,7 @@ class Network extends Observable {
         this._autoConnect = false;
 
         // Close all active connections.
-        for (let agent of this._agents.values()) {
+        for (const agent of this._agents.values()) {
             agent.channel.close('manual network disconnect');
         }
     }
@@ -5755,7 +5807,7 @@ class Network extends Observable {
         this._autoConnect = false;
 
         // Close all websocket connections.
-        for (let agent of this._agents.values()) {
+        for (const agent of this._agents.values()) {
             if (agent.peer.peerAddress.protocol === Protocol.WS) {
                 agent.channel.close('manual websocket disconnect');
             }
@@ -5784,7 +5836,10 @@ class Network extends Observable {
     }
 
     _checkPeerCount() {
-        if (this._autoConnect && this._peerCount < Network.PEER_COUNT_DESIRED) {
+        if (this._autoConnect
+            && this._peerCount < Network.PEER_COUNT_DESIRED
+            && this._connectingCount < Network.CONNECTING_COUNT_MAX) {
+
             // Pick a peer address that we are not connected to yet.
             const peerAddress = this._addresses.pickAddress();
 
@@ -5805,6 +5860,7 @@ class Network extends Observable {
                 console.log(`Connecting to ${peerAddress} ...`);
                 if (this._wsConnector.connect(peerAddress)) {
                     this._addresses.connecting(peerAddress);
+                    this._connectingCount++;
                 }
                 break;
 
@@ -5812,6 +5868,7 @@ class Network extends Observable {
                 console.log(`Connecting to ${peerAddress} via ${peerAddress.signalChannel.peerAddress}...`);
                 if (this._rtcConnector.connect(peerAddress)) {
                     this._addresses.connecting(peerAddress);
+                    this._connectingCount++;
                 }
                 break;
 
@@ -5822,6 +5879,11 @@ class Network extends Observable {
     }
 
     _onConnection(conn) {
+        // Decrement connectingCount if we have initiated this connection.
+        if (!conn.incoming && this._addresses.isConnecting(conn.peerAddress)) {
+            this._connectingCount--;
+        }
+
         // Reject peer if we have reached max peer count.
         if (this._peerCount >= Network.PEER_COUNT_MAX) {
             conn.close('max peer count reached (' + this._maxPeerCount + ')');
@@ -5839,45 +5901,67 @@ class Network extends Observable {
         }
         this._connectionCounts.put(conn.netAddress, numConnections);
 
+        // Connection accepted.
+        console.log(`Connection established #${conn.id} ${conn.netAddress} (${numConnections})`);
+
         // Create peer channel.
         const channel = new PeerChannel(conn);
-
-        // Check if we already have a connection to the same peerAddress.
-        // The peerAddress is null for incoming connections.
-        if (conn.peerAddress) {
-            if (this._addresses.isConnected(conn.peerAddress)) {
-                conn.close('duplicate connection (peerAddress)');
-                return;
-            }
-
-            this._addresses.connected(channel, conn.peerAddress);
-        }
-
-        // Connection accepted.
-        console.log(`Connection established ${conn.peerAddress} ${conn.netAddress} (${numConnections})`);
-
-        // Setup peer channel.
         channel.on('signal', msg => this._onSignal(channel, msg));
         channel.on('ban', reason => this._onBan(channel, reason));
 
         // Create network agent.
         const agent = new NetworkAgent(this._blockchain, this._addresses, channel);
         agent.on('handshake', peer => this._onHandshake(peer, agent));
-        agent.on('close', peer => this._onClose(peer, channel));
-        agent.on('addr', () => this._onAddr());
+        agent.on('close', (peer, channel, closedByRemote) => this._onClose(peer, channel, closedByRemote));
 
-        // XXX If we don't know the peer's peerAddress yet, store the agent
-        // indexed by the netAddress of the peer.
-        if (conn.peerAddress) {
-            this._agents.put(conn.peerAddress, agent);
-        } else {
-            this._agents.put(conn.netAddress, agent);
+        // Store the agent.
+        this._agents.put(conn.id, agent);
+
+        // Call _checkPeerCount() here in case the peer doesn't send us any (new)
+        // addresses to keep on connecting.
+        this._checkPeerCount();
+    }
+
+
+    // Handshake with this peer was successful.
+    _onHandshake(peer, agent) {
+        // Close connection if we are already connected to this peer.
+        if (this._addresses.isConnected(peer.peerAddress)) {
+            agent.channel.close('duplicate connection (peerAddress)');
+            return;
         }
+
+        // Close connection if this peer is banned.
+        if (this._addresses.isBanned(peer.peerAddress)) {
+            agent.channel.close('peer is banned');
+            return;
+        }
+
+        // Mark the peer's address as connected.
+        this._addresses.connected(agent.channel, peer.peerAddress);
+
+        // Tell others about the address that we just connected to.
+        this._relayAddresses([peer.peerAddress]);
+
+        // Increment the peerCount.
+        this._peerCount++;
+
+        // Let listeners know about this peer.
+        this.fire('peer-joined', peer);
+
+        // Let listeners know that the peers changed.
+        this.fire('peers-changed');
+
+        console.log('[PEER-JOINED] ' + peer);
     }
 
     // Connection to this peer address failed.
     _onError(peerAddress) {
         console.warn('Connection to ' + peerAddress + ' failed');
+
+        if (this._addresses.isConnecting(peerAddress)) {
+            this._connectingCount--;
+        }
 
         this._addresses.unreachable(peerAddress);
 
@@ -5885,13 +5969,14 @@ class Network extends Observable {
     }
 
     // This peer channel was closed.
-    _onClose(peer, channel) {
-        // Delete agent.
+    _onClose(peer, channel, closedByRemote) {
+        // The peerAddress is null pre-handshake for incoming connections.
         if (channel.peerAddress) {
-            this._addresses.disconnected(channel.peerAddress);
-            this._agents.delete(channel.peerAddress);
+            this._addresses.disconnected(channel.peerAddress, closedByRemote);
         }
-        this._agents.delete(channel.netAddress);
+
+        // Delete agent.
+        this._agents.delete(channel.id);
 
         // Decrement connection count per IP.
         let numConnections = this._connectionCounts.get(channel.netAddress) || 1;
@@ -5914,7 +5999,7 @@ class Network extends Observable {
             // The connection was closed before the handshake completed.
             // Treat this as failed connection attempt.
             // TODO incoming WS connections.
-            console.log(`Connection to ${channel} closed pre-handshake`);
+            console.log(`Connection to ${channel.peerAddress} closed pre-handshake`);
             if (channel.peerAddress) {
                 this._addresses.unreachable(channel.peerAddress);
             }
@@ -5927,7 +6012,7 @@ class Network extends Observable {
     _onBan(channel, reason) {
         // TODO If this is an incoming connection, the peerAddres might not be set yet.
         // Ban the netAddress in this case.
-        // XXX Should we always ban the netAddress as well?
+        // XXX We should probably always ban the netAddress as well.
         if (channel.peerAddress) {
             this._addresses.ban(channel.peerAddress);
         } else {
@@ -5935,50 +6020,20 @@ class Network extends Observable {
         }
     }
 
-    // Handshake with this peer was successful.
-    _onHandshake(peer, agent) {
-        // XXX If we didn't know the peerAddress earlier (and therefore use the netAddress
-        // to index the agent), update the mapping in _agents to use the peerAddress.
-        // Also mark the peerAddress as connected.
-        if (!this._agents.contains(peer.peerAddress)) {
-            this._agents.delete(peer.netAddress);
-            this._agents.put(peer.peerAddress, agent);
-            this._addresses.connected(agent.channel, peer.peerAddress);
-        }
-        // Don't allow the same peerAddress two connect more than once from different netAddresses.
-        else if (this._agents.contains(peer.netAddress)) {
-            agent.channel.close('duplicate connection (incoming, after handshake)');
-            return;
-        }
-
-        // Tell others about the address that we just connected to.
-        this._relayAddresses([peer.peerAddress]);
-
-        // Increment the peerCount.
-        this._peerCount++;
-
-        // Let listeners know about this peer.
-        this.fire('peer-joined', peer);
-
-        // Let listeners know that the peers changed.
-        this.fire('peers-changed');
-
-        console.log('[PEER-JOINED] ' + peer);
-    }
-
-    // A peer has sent us new addresses.
-    _onAddr() {
-        this._checkPeerCount();
-    }
-
 
     /* Signaling */
 
     _onSignal(channel, msg) {
+        // Discard signals with invalid TTL.
+        if (msg.ttl > Network.SIGNAL_TTL_INITIAL) {
+            channel.ban('invalid signal ttl');
+            return;
+        }
+
         // Can be null for non-rtc nodes.
         const mySignalId = NetworkConfig.myPeerAddress().signalId;
 
-        // XXX Discard signals from myself.
+        // Discard signals from myself.
         if (msg.senderId === mySignalId) {
             console.warn('Received signal from myself to ' + msg.recipientId + ' on channel ' + channel + ' (myId: ' + mySignalId + ')');
             return;
@@ -5987,21 +6042,27 @@ class Network extends Observable {
         // If the signal is intented for us, pass it on to our WebRTC connector.
         if (msg.recipientId === mySignalId) {
             this._rtcConnector.onSignal(channel, msg);
+            return;
+        }
+
+        // Discard signals that have reached their TTL.
+        if (msg.ttl <= 0) {
+            return;
         }
 
         // Otherwise, try to forward the signal to the intented recipient.
-        else {
-            const peerAddress = this._addresses.findBySignalId(msg.recipientId);
-            if (!peerAddress) {
-                // TODO send reject/unreachable message/signal if we cannot forward the signal
-                console.warn('Failed to forward signal from ' + msg.senderId + ' to ' + msg.recipientId + ' - no route found');
-                return;
-            }
-
-            // XXX PeerChannel API doesn't fit here, no need to re-create the message.
-            peerAddress.signalChannel.signal(msg.senderId, msg.recipientId, msg.payload);
-            console.log(`Forwarding signal from ${msg.senderId} (received from ${channel.peerAddress}) to ${msg.recipientId} (via ${peerAddress.signalChannel.peerAddress})`);
+        const peerAddress = this._addresses.findBySignalId(msg.recipientId);
+        if (!peerAddress) {
+            // TODO send reject/unreachable message/signal if we cannot forward the signal
+            console.warn('Failed to forward signal from ' + msg.senderId + ' to ' + msg.recipientId + ' - no route found');
+            return;
         }
+
+        // Decrement ttl and forward signal.
+        peerAddress.signalChannel.signal(msg.senderId, msg.recipientId, msg.ttl - 1, msg.payload);
+
+        // XXX This is very spammy!!!
+        console.log(`Forwarding signal (ttl=${msg.ttl}) from ${msg.senderId} (received from ${channel.peerAddress}) to ${msg.recipientId} (via ${peerAddress.signalChannel.peerAddress})`);
     }
 
     get peerCount() {
@@ -6026,6 +6087,8 @@ class Network extends Observable {
 }
 Network.PEER_COUNT_DESIRED = 12;
 Network.PEER_COUNT_RELAY = 6;
+Network.CONNECTING_COUNT_MAX = 3;
+Network.SIGNAL_TTL_INITIAL = 3;
 Class.register(Network);
 
 class PeerChannel extends Observable {
@@ -6132,8 +6195,8 @@ class PeerChannel extends Observable {
         return this._send(new PongMessage(nonce));
     }
 
-    signal(senderId, recipientId, payload) {
-        return this._send(new SignalMessage(senderId, recipientId, payload));
+    signal(senderId, recipientId, ttl, payload) {
+        return this._send(new SignalMessage(senderId, recipientId, ttl, payload));
     }
 
     equals(o) {
@@ -6142,7 +6205,7 @@ class PeerChannel extends Observable {
     }
 
     hashCode() {
-        return this.toString();
+        return this._conn.hashCode();
     }
 
     toString() {
@@ -6151,6 +6214,10 @@ class PeerChannel extends Observable {
 
     get connection() {
         return this._conn;
+    }
+
+    get id() {
+        return this._conn.id;
     }
 
     get protocol() {
@@ -6169,6 +6236,10 @@ class PeerChannel extends Observable {
     get netAddress() {
         return this._conn.netAddress;
     }
+
+    get closed() {
+        return this._conn.closed;
+    }
 }
 Class.register(PeerChannel);
 
@@ -6184,13 +6255,20 @@ class PeerConnection extends Observable {
         this._bytesReceived = 0;
         this._bytesSent = 0;
 
+        this._incoming = peerAddress === null;
+        this._closedByUs = false;
+        this._closed = false;
+
+        // Unique id for this connection.
+        this._id = PeerConnection._instanceCount++;
+
         if (this._channel.on) {
             this._channel.on('message', msg => this._onMessage(msg.data || msg));
-            this._channel.on('close', () => this.fire('close', this));
+            this._channel.on('close', () => this._onClose());
             this._channel.on('error', e => this.fire('error', e, this));
         } else {
             this._channel.onmessage = msg => this._onMessage(msg.data || msg);
-            this._channel.onclose = () => this.fire('close', this);
+            this._channel.onclose = () => this._onClose();
             this._channel.onerror = e => this.fire('error', e, this);
         }
     }
@@ -6209,24 +6287,36 @@ class PeerConnection extends Observable {
         }
     }
 
+    _onClose() {
+        this._closed = true;
+        this.fire('close', !this._closedByUs, this);
+    }
+
     send(msg) {
         try {
+            if (this._channel.closed) {
+                console.error('Tried to send data over closed channel ${this}');
+                return false;
+            }
+
             this._channel.send(msg);
             this._bytesSent += msg.byteLength || msg.length;
             return true;
         } catch (e) {
-            console.error(`Failed to send data over ${this}: ${e}`);
+            console.error(`Failed to send data over ${this}: ${e.message || e}`);
             return false;
         }
     }
 
     close(reason) {
         console.log('Closing peer connection ' + this + (reason ? ' - ' + reason : ''));
+        this._closedByUs = true;
         this._channel.close();
     }
 
     ban(reason) {
         console.warn(`Banning peer ${this._peerAddress} (${this._netAddress})` + (reason ? ` - ${reason}` : ''));
+        this._closedByUs = true;
         this._channel.close();
         this.fire('ban', reason, this);
     }
@@ -6238,11 +6328,15 @@ class PeerConnection extends Observable {
     }
 
     hashCode() {
-        return this._protocol + '|' + this._peerAddress.hashCode() + '|' + this._netAddress.hashCode();
+        return this._id;
     }
 
     toString() {
-        return `PeerConnection{protocol=${this._protocol}, peerAddress=${this._peerAddress}, netAddress=${this._netAddress}}`;
+        return `PeerConnection{id=${this._id}, protocol=${this._protocol}, peerAddress=${this._peerAddress}, netAddress=${this._netAddress}}`;
+    }
+
+    get id() {
+        return this._id;
     }
 
     get protocol() {
@@ -6269,7 +6363,17 @@ class PeerConnection extends Observable {
     get bytesSent() {
         return this._bytesSent;
     }
+
+    get incoming() {
+        return this._incoming;
+    }
+
+    get closed() {
+        return this._closed;
+    }
 }
+// Used to generate unique PeerConnection ids.
+PeerConnection._instanceCount = 0;
 Class.register(PeerConnection);
 
 class Peer {
@@ -6485,26 +6589,23 @@ Class.register(Miner);
 
 // TODO V2: Store private key encrypted
 class Wallet {
-
-    static async getPersistent(accounts, mempool) {
+    static async getPersistent() {
         const db = new WalletStore();
         let keys = await db.get('keys');
         if (!keys) {
             keys = await Crypto.generateKeys();
             await db.put('keys', keys);
         }
-        return new Wallet(keys, accounts, mempool);
+        return new Wallet(keys);
     }
 
-    static async createVolatile(accounts, mempool) {
+    static async createVolatile() {
         const keys = await Crypto.generateKeys();
-        return new Wallet(keys, accounts, mempool);
+        return new Wallet(keys);
     }
 
-    constructor(keys, accounts, mempool) {
+    constructor(keys) {
         this._keys = keys;
-        this._accounts = accounts;
-        this._mempool = mempool;
         return this._init();
     }
 
@@ -6535,22 +6636,12 @@ class Wallet {
             });
     }
 
-    async transferFunds(recipientAddr, value, fee) {
-        await this.getBalance()
-            .then(balance => this.createTransaction(recipientAddr, value, fee, balance.nonce)
-                .then(transaction => this._mempool.pushTransaction(transaction)));
-    }
-
     get address() {
         return this._address;
     }
 
     get publicKey() {
         return this._publicKey;
-    }
-
-    getBalance() {
-        return this._accounts.getBalance(this.address);
     }
 }
 Class.register(Wallet);
