@@ -156,14 +156,21 @@ header div{
 	transition: opacity 1s;
 }
 
-@keyframes fade-out{
+@keyframes fade-in{
+	from {
+		opacity: 0;
+	}
 	to {
-        opacity: 0;
+        opacity: 1;
     }
 }
 
-#progress.ready {
-	animation: 1s fade-out 3s forwards;
+#progress.syncing {
+	animation: 1s fade-in 0s normal forwards;
+}
+
+#progress.synced {
+	animation: 1s fade-in 0s reverse forwards, 1s fade-in 1s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
 #rewardInfo {

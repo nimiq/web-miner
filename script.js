@@ -48,19 +48,25 @@ class FactsUI {
     }
 
     set myBalance(balance) {
-        this._myBalance.textContent = (balance/1e8).toFixed(2);
+        this._myBalance.textContent = Policy.satoshisToCoins(balance).toFixed(2);
     }
 
-    set syncReady(isSyncReady) {
-        if (isSyncReady) {
+    set synced(isSynced) {
+        if (isSynced) {
             this._blockProcessingState.textContent = "Mining on";
-            this._consensusProgress.textContent = "Consensus Established";
-            this._consensusProgress.classList.add('ready');
+            this._consensusProgress.classList.remove('syncing');
+            this._consensusProgress.offsetWidth; // force an update
+            this._consensusProgress.classList.add('synced');
+            setTimeout(function() {
+                // change the text when the _consensusProgress is faded out by the synced class
+                this._consensusProgress.textContent = "Consensus Established";
+            }.bind(this), 1000);
+            
         } else {
             this._blockProcessingState.textContent = "Downloading";
-            this._consensusProgress.textContent = "Synchronizing"
-            this._consensusProgress.classList.remove('ready');
-            this._consensusProgress.style.opacity = 1;
+            this._consensusProgress.textContent = "Synchronizing";
+            this._consensusProgress.classList.remove('synced');
+            this._consensusProgress.classList.add('syncing');
         }
     }
 }
@@ -114,7 +120,7 @@ class NimiqMiner {
             .then(balance => this._onBalanceChanged(balance))
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance))
         this.$.miner.startWork();
-        this.ui.facts.syncReady = true;
+        this.ui.facts.synced = true;
     }
 
     _peersChanged() {
@@ -124,7 +130,7 @@ class NimiqMiner {
 
     _onSyncing(targetHeight) {
         this._targetHeight = targetHeight;
-        this.ui.facts.syncReady = false;
+        this.ui.facts.synced = false;
     }
 
     _onHeadChanged() {
