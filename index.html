@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="World's first browser-based Blockchain.">
+   <link href="style.css" rel="stylesheet">
+   <title>Nimiq Miner</title>
+</head>
+<body class="center" landing>
+<header>
+	<div>
+		<img class="logo" src="images/nimiq.svg">
+		<span class="name">nimiq miner</span>
+	</div>
+	<div></div>
+	<a class="secondary-button" href="https://nimiq.com">About Nimiq</a>
+</header>
+<div id="landingSctn" class="content">
+	<h1>World's first Browser-based Blockchain </h1>
+	<div class="sub-heading">
+		Nimiq empowers you to mine, store and transact at a fraction of the effort of conventional cryptocurrency.
+	</div>
+	<div class="button" id="connBtn">
+		Connect to Testnet
+	</div>
+</div>
+
+<div id="loadingSctn" class="content">
+	<img src="images/nimiq.svg">
+	connecting
+</div>
+
+<div id="miningSctn" class="content">
+	<div id="progress">Consensus Established</div>
+	<div class="facts">
+		<div class="fact">
+			<div class="label">Connected to</div>
+			<div>
+			<span class="number" id="factPeers">0</span>
+			<span class="unit">Peers</span>
+			</div>
+		</div>
+		<div class="fact">
+			<div class="label">Mining on Block</div>
+			<div>
+			<span class="number">
+				<img src="https://nimiq.com/loading-animation/loading.svg" width="24"> 
+				<span id="factBlockHeight">0</span></span>
+			<span class="unit"></span>
+			</div>
+		</div>
+		<div class="fact">
+			<div class="label">Global Hashrate</div>
+			<div>
+			<span class="number" id="factGlobalHashrate">54.32</span>
+			<span class="unit">kH/s</span>
+			</div>
+		</div>
+		<div class="fact">
+			<div class="label">My Hashrate</div>
+			<div>
+			<span class="number" id="factMyHashrate">0.00</span>
+			<span class="unit">kH/s</span>
+			</div>
+		</div>
+		<div class="fact">
+			<div class="label">My Balance</div>
+			<div>
+			<span class="number">
+				<img src="images/nimiq_white.svg" width="24">
+				<span id="factBalance">0.00</span>
+			</span>
+			</div>
+		</div>
+	</div>
+	<div id="rewardInfo">Currently you can expect to mine a reward of <b>50</b> nimiqs every <b>18.3 hours</b>.</div>
+</div>
+
+
+<img class="map-background" src="images/map.png">
+
+<script src="nimiq.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+html, body{
+	margin: 0;
+	padding: 0;
+	background-color: #032047;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	color: rgba(255, 255, 255, 0.88);
+	font-family: sans-serif;
+	font-size: 13px;
+}
+
+.center{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;	
+}
+
+h1 {
+	font-size: 26px;
+	font-weight: bold;
+	text-align: center;
+}
+
+h2{
+
+}
+
+header{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 72px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 32px;
+	max-width: 1200px;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+header div{
+	display: flex;
+	align-items: center;
+}
+
+
+.name{
+	padding-left: 8px;
+	font-size: 15px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+}
+
+
+.map-background{
+	max-width: 800px;
+	margin: 0 auto;
+	width: 100%;
+	position: absolute;
+}
+
+
+.content {
+	width: 800px;
+	height: 100%;
+	max-height: 720px;
+	padding: 24px 16px;
+	box-sizing: border-box;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	margin: 0 auto;
+	z-index: 1;
+	display: none;
+}
+
+.sub-heading{
+	font-size: 18px;
+}
+
+
+.button, .secondary-button{
+  border-radius: 1px;
+  margin: 16px 0;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button {
+  background-image: linear-gradient(110deg, #e2a62f, #d7941a);
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button {
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+
+
+[landing] #landingSctn{
+	display: flex;
+}
+
+[loading] #loadingSctn{
+	display: flex;
+}
+
+[mining] #miningSctn{
+	display: flex;
+	justify-content: flex-end;
+}
+
+
+.facts{
+	display: flex;
+}
+
+.fact{
+	padding: 8px 16px;
+}
+
+.facts .label{
+	font-size: 11px;
+	color: rgba(255,255,255,0.7);
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+	margin-bottom: 4px;
+}
+
+.facts .number{
+	font-size: 32px;
+}
+
+.facts .unit{
+	color: rgba(255,255,255,0.7);
+	font-size: 13px;
+}
+
+#progress{
+	color: #ffc107;
+	font-size: 17px;
+	padding-bottom: 16px;
+}
+
+#rewardInfo {
+    opacity: 0.7;
+    margin-top: 8px;
+    line-height: 21px;
+}
+
+
+
+/* Tablet */
+@media (max-width: 800px){
+	.facts{
+		flex-direction: column;
+	}
+	.content{
+		width: 100%;
+	}
+}
+
+
+/* Phone */
