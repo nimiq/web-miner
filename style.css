@@ -153,7 +153,6 @@ header div{
 	font-size: 17px;
 	padding-bottom: 16px;
 	text-transform: capitalize;
-	transition: opacity 1s;
 }
 
 @keyframes fade-in{
@@ -165,20 +164,24 @@ header div{
     }
 }
 
-#progress.syncing {
+.syncing #progress {
 	animation: 1s fade-in 0s normal forwards;
 }
 
-#progress.synced {
+.synced #progress {
 	animation: 1s fade-in 0s reverse forwards, 1s fade-in 1s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
 #rewardInfo {
-    opacity: 0.7;
     margin-top: 8px;
     line-height: 21px;
+    opacity: 0;
 }
 
+.synced #rewardInfo {
+	/* wait 5 seconds until fading in because this is when we get the first hashrate value */
+	animation: 1s fade-in 5s normal forwards;
+}
 
 
 /* Tablet */

@@ -8,6 +8,7 @@ class FactsUI {
         this._myBalance = document.getElementById('factBalance');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
+        this._miningSection = document.getElementById('miningSctn');
     }
 
     set peers(peers) {
@@ -51,22 +52,22 @@ class FactsUI {
         this._myBalance.textContent = Policy.satoshisToCoins(balance).toFixed(2);
     }
 
-    set synced(isSynced) {
-        if (isSynced) {
+    set syncing(isSyncing) {
+        if (isSyncing) {
+            this._blockProcessingState.textContent = "Downloading";
+            this._consensusProgress.textContent = "Synchronizing";
+            this._miningSection.classList.remove('synced');
+            this._miningSection.offsetWidth; // force an update
+            this._miningSection.classList.add('syncing');      
+        } else {
             this._blockProcessingState.textContent = "Mining on";
-            this._consensusProgress.classList.remove('syncing');
-            this._consensusProgress.offsetWidth; // force an update
-            this._consensusProgress.classList.add('synced');
+            this._miningSection.classList.remove('syncing');
+            this._miningSection.offsetWidth; // force an update
+            this._miningSection.classList.add('synced');
             setTimeout(function() {
                 // change the text when the _consensusProgress is faded out by the synced class
                 this._consensusProgress.textContent = "Consensus Established";
             }.bind(this), 1000);
-            
-        } else {
-            this._blockProcessingState.textContent = "Downloading";
-            this._consensusProgress.textContent = "Synchronizing";
-            this._consensusProgress.classList.remove('synced');
-            this._consensusProgress.classList.add('syncing');
         }
     }
 }
@@ -90,6 +91,7 @@ class NimiqMiner {
     constructor($) {
         this.ui = new MinerUI();
         this.ui.connBtn.onclick = e => this._connect($);
+        this.syncing = true;
     }
 
     _initCore($) {
@@ -120,7 +122,9 @@ class NimiqMiner {
             .then(balance => this._onBalanceChanged(balance))
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance))
         this.$.miner.startWork();
-        this.ui.facts.synced = true;
+        this.ui.facts.syncing = false;
+        this.syncing = false;
+        this._globalHashrateChanged();
     }
 
     _peersChanged() {
@@ -130,14 +134,17 @@ class NimiqMiner {
 
     _onSyncing(targetHeight) {
         this._targetHeight = targetHeight;
-        this.ui.facts.synced = false;
+        this.ui.facts.syncing = true;
+        this.syncing = true;
     }
 
     _onHeadChanged() {
         const height = this.$.blockchain.height;
         this.ui.facts.blockHeight = height;
         //this.setSyncProgress(height / this._targetHeight);
-        this._globalHashrateChanged();
+        if (!this.syncing) {
+            this._globalHashrateChanged();
+        }
     }
 
     _globalHashrateChanged(){
