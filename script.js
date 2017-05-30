@@ -3,6 +3,7 @@ class FactsUI {
         this._peers = document.getElementById('factPeers');
         this._blockHeight = document.getElementById('factBlockHeight');
         this._globalHashrate = document.getElementById('factGlobalHashrate');
+        this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._myHashrate = document.getElementById('factMyHashrate');
         this._myBalance = document.getElementById('factBalance');
     }
@@ -21,6 +22,27 @@ class FactsUI {
 
     set globalHashrate(hashrate){
     	this._globalHashrate.innerHTML = (hashrate/1000).toFixed(2);
+    }
+
+    set expectedHashTime(expectedHashTime) {
+        if (!Number.isFinite(expectedHashTime)) {
+            return;
+        }
+        // the time is given in seconds. Convert it to an appropriate base unit:
+        let timesteps = [{unit:'minutes', factor:60}, {unit:'hours', factor:60}, {unit:'days', factor:24},
+            {unit:'months', factor:365/12}, {unit:'years', factor:12}, {unit:'decades', factor:10}];
+        let convertedTime = expectedHashTime;
+        let unit = 'seconds';
+        for (var i=0; i<timesteps.length; ++i) {
+            let timestep = timesteps[i];
+            if (convertedTime / timestep.factor < 1) {
+                break;
+            } else {
+                convertedTime /= timestep.factor;
+                unit = timestep.unit;
+            }
+        }
+        this._expectedHashTime.textContent = convertedTime.toFixed(1)+' '+unit;
     }
 
     set myBalance(balance){
@@ -56,6 +78,16 @@ class NimiqMiner {
         this._onHeadChanged();
     }
 
+    get hashrate() {
+        return this.$.miner.hashrate;
+    }
+
+    get globalHashrate() {
+        const nBits = this.$.blockchain.head.header.nBits;
+        const difficulty = BlockUtils.compactToDifficulty(nBits);
+        return difficulty * 2**16 / 30;
+    }
+
     _onConsensus() {
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance))
@@ -80,15 +112,18 @@ class NimiqMiner {
     }
 
     _globalHashrateChanged(){
-    	const nBits = this.$.blockchain.head.header.nBits;
-    	const difficulty = BlockUtils.compactToDifficulty(nBits);
-    	const hashrate = difficulty * 2**16 / 30;
-    	this.ui.facts.globalHashrate = hashrate;
+    	this.ui.facts.globalHashrate = this.globalHashrate;
+        this._expectedHashTimeChanged();
     }
 
     _myHashrateChanged(){
-    	const hashrate = this.$.miner.hashrate;
-    	this.ui.facts.myHashrate = hashrate;
+    	this.ui.facts.myHashrate = this.hashrate;
+        this._expectedHashTimeChanged();
+    }
+
+    _expectedHashTimeChanged() {
+        let myWinProbability = this.hashrate / this.globalHashrate;
+        this.ui.facts.expectedHashTime = (1/myWinProbability) * Policy.BLOCK_TIME;
     }
 
     _onBalanceChanged(balance){
