@@ -6,6 +6,7 @@ class FactsUI {
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._myHashrate = document.getElementById('factMyHashrate');
         this._myBalance = document.getElementById('factBalance');
+        this._blockProcessingState = document.getElementById('factBlockProcessingState');
     }
 
     set peers(peers) {
@@ -45,8 +46,16 @@ class FactsUI {
         this._expectedHashTime.textContent = convertedTime.toFixed(1)+' '+unit;
     }
 
-    set myBalance(balance){
+    set myBalance(balance) {
     	this._myBalance.innerHTML = (balance/1e8).toFixed(2);
+    }
+
+    set syncReady(isSyncReady) {
+        if (isSyncReady) {
+            this._blockProcessingState.textContent = "Mining on";
+        } else {
+            this._blockProcessingState.textContent = "Downloading";
+        }
     }
 }
 
@@ -93,6 +102,7 @@ class NimiqMiner {
             .then(balance => this._onBalanceChanged(balance))
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance))
         this.$.miner.startWork();
+        this.ui.facts.syncReady = true;
     }
 
     _peersChanged() {
@@ -102,6 +112,7 @@ class NimiqMiner {
 
     _onSyncing(targetHeight) {
         this._targetHeight = targetHeight;
+        this.ui.facts.syncReady = false;
     }
 
     _onHeadChanged() {
