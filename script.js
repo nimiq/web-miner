@@ -54,10 +54,13 @@ class FactsUI {
     set syncReady(isSyncReady) {
         if (isSyncReady) {
             this._blockProcessingState.textContent = "Mining on";
+            this._consensusProgress.textContent = "Consensus Established";
             this._consensusProgress.classList.add('ready');
         } else {
             this._blockProcessingState.textContent = "Downloading";
+            this._consensusProgress.textContent = "Synchronizing"
             this._consensusProgress.classList.remove('ready');
+            this._consensusProgress.style.opacity = 1;
         }
     }
 }

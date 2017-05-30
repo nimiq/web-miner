@@ -153,7 +153,6 @@ header div{
 	font-size: 17px;
 	padding-bottom: 16px;
 	text-transform: capitalize;
-	opacity: 0;
 	transition: opacity 1s;
 }
 
@@ -164,7 +163,6 @@ header div{
 }
 
 #progress.ready {
-	opacity: 1;
 	animation: 1s fade-out 3s forwards;
 }
 
