@@ -1,0 +1,2 @@
+# miner
+Nimiq Browser Miner
