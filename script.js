@@ -7,6 +7,7 @@ class FactsUI {
         this._myHashrate = document.getElementById('factMyHashrate');
         this._myBalance = document.getElementById('factBalance');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
+        this._consensusProgress = document.getElementById('progress');
     }
 
     set peers(peers) {
@@ -53,8 +54,10 @@ class FactsUI {
     set syncReady(isSyncReady) {
         if (isSyncReady) {
             this._blockProcessingState.textContent = "Mining on";
+            this._consensusProgress.classList.add('ready');
         } else {
             this._blockProcessingState.textContent = "Downloading";
+            this._consensusProgress.classList.remove('ready');
         }
     }
 }

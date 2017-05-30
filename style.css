@@ -147,11 +147,25 @@ header div{
 	font-size: 13px;
 }
 
+
 #progress{
 	color: #ffc107;
 	font-size: 17px;
 	padding-bottom: 16px;
 	text-transform: capitalize;
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+@keyframes fade-out{
+	to {
+        opacity: 0;
+    }
+}
+
+#progress.ready {
+	opacity: 1;
+	animation: 1s fade-out 3s forwards;
 }
 
 #rewardInfo {
