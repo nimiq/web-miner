@@ -11,19 +11,19 @@ class FactsUI {
     }
 
     set peers(peers) {
-        this._peers.innerHTML = peers;
+        this._peers.textContent = peers;
     }
 
     set blockHeight(height) {
-        this._blockHeight.innerHTML = height;
+        this._blockHeight.textContent = height;
     }
 
     set myHashrate(hashrate){
-    	this._myHashrate.innerHTML = (hashrate/1000).toFixed(2);
+        this._myHashrate.textContent = (hashrate/1000).toFixed(2);
     }
 
     set globalHashrate(hashrate){
-    	this._globalHashrate.innerHTML = (hashrate/1000).toFixed(2);
+        this._globalHashrate.textContent = (hashrate/1000).toFixed(2);
     }
 
     set expectedHashTime(expectedHashTime) {
@@ -48,7 +48,7 @@ class FactsUI {
     }
 
     set myBalance(balance) {
-    	this._myBalance.innerHTML = (balance/1e8).toFixed(2);
+        this._myBalance.textContent = (balance/1e8).toFixed(2);
     }
 
     set syncReady(isSyncReady) {
@@ -69,6 +69,12 @@ class MinerUI {
     constructor() {
         this.connBtn = document.getElementById('connBtn');
         this.facts = new FactsUI();
+    }
+
+    setState(state) {
+        document.body.removeAttribute('landing')
+        document.body.removeAttribute('mining')
+        document.body.setAttribute(state, "")
     }
 }
 
@@ -100,7 +106,7 @@ class NimiqMiner {
     get globalHashrate() {
         const nBits = this.$.blockchain.head.header.nBits;
         const difficulty = BlockUtils.compactToDifficulty(nBits);
-        return difficulty * 2**16 / 30;
+        return difficulty * 2**16 / Policy.BLOCK_TIME;
     }
 
     _onConsensus() {
@@ -129,12 +135,12 @@ class NimiqMiner {
     }
 
     _globalHashrateChanged(){
-    	this.ui.facts.globalHashrate = this.globalHashrate;
+        this.ui.facts.globalHashrate = this.globalHashrate;
         this._expectedHashTimeChanged();
     }
 
     _myHashrateChanged(){
-    	this.ui.facts.myHashrate = this.hashrate;
+        this.ui.facts.myHashrate = this.hashrate;
         this._expectedHashTimeChanged();
     }
 
@@ -144,21 +150,13 @@ class NimiqMiner {
     }
 
     _onBalanceChanged(balance){
-    	const myBalance = balance.value;
-    	this.ui.facts.myBalance = myBalance; 
+        const myBalance = balance.value;
+        this.ui.facts.myBalance = myBalance; 
     }
 
     _connect($) {
-        this._setState('loading');
-        this._setState('mining');
+        this.ui.setState('mining');
         this._initCore($)
-    }
-
-    _setState(state) {
-        document.body.removeAttribute('landing', 0)
-        document.body.removeAttribute('loading', 0)
-        document.body.removeAttribute('mining', 0)
-        document.body.setAttribute(state, 1)
     }
 }
 
