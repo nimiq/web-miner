@@ -138,7 +138,7 @@ header div{
 	padding: 0 16px;
 }
 
-#warning-old-browser {
+#warning-old-browser, #warning-multiple-tabs {
 	display: none;
 }
 

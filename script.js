@@ -242,7 +242,13 @@ class NimiqMiner {
 
 
 if (NimiqMiner.isBrowserSupported()) {
-    Core.init($ => new NimiqMiner($));
+    Core.init($ => {
+        // when all other tabs are closed, the succes case gets invoked
+        document.getElementById('warning-multiple-tabs').style.display = 'none';
+        new NimiqMiner($);
+    }, function() {
+        document.getElementById('warning-multiple-tabs').style.display = 'block';
+    });
 } else {
     document.getElementById('warning-old-browser').style.display = 'block';
 }
