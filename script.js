@@ -2,10 +2,12 @@ class FactsUI {
     constructor() {
         this._peers = document.getElementById('factPeers');
         this._blockHeight = document.getElementById('factBlockHeight');
-        this._globalHashrate = document.getElementById('factGlobalHashrate');
-        this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._myHashrate = document.getElementById('factMyHashrate');
+        this._myHashrateUnit = document.getElementById('factMyHashrateUnit');
+        this._globalHashrate = document.getElementById('factGlobalHashrate');
+        this._globalHashrateUnit = document.getElementById('factGlobalHashrateUnit');
         this._myBalance = document.getElementById('factBalance');
+        this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
         this._miningSection = document.getElementById('miningSctn');
@@ -20,11 +22,11 @@ class FactsUI {
     }
 
     set myHashrate(hashrate){
-        this._myHashrate.textContent = (hashrate/1000).toFixed(2);
+        this._setHashrate(hashrate, 'my');
     }
 
     set globalHashrate(hashrate){
-        this._globalHashrate.textContent = (hashrate/1000).toFixed(2);
+        this._setHashrate(hashrate, 'global');
     }
 
     set expectedHashTime(expectedHashTime) {
@@ -69,6 +71,30 @@ class FactsUI {
                 this._consensusProgress.textContent = "Consensus Established";
             }.bind(this), 1000);
         }
+    }
+
+    _setHashrate(hashrate, type) {
+        let steps = ['k', 'M', 'G', 'T', 'P', 'E']; // kilo, mega, giga, tera, peta, exa
+        let prefix = '';
+        for (let i=0, step; step=steps[i]; ++i) {
+            if (hashrate / 1000 < 1) {
+                break;
+            } else {
+                hashrate /= 1000;
+                prefix = step;
+            }
+        }
+        let unit = prefix+'H/s';
+        let hashrateEl, unitEl;
+        if (type === 'global') {
+            hashrateEl = this._globalHashrate;
+            unitEl = this._globalHashrateUnit;
+        } else {
+            hashrateEl = this._myHashrate;
+            unitEl = this._myHashrateUnit;
+        }
+        hashrateEl.textContent = hashrate.toFixed(2);
+        unitEl.textContent = unit;
     }
 }
 
