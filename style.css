@@ -56,12 +56,20 @@ header div{
 	letter-spacing: 0.18em;
 }
 
-
-.map-background{
-	max-width: 800px;
-	margin: 0 auto;
-	width: 100%;
+#map-container {
 	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+#map{
+	max-width: 800px;
+	width: 100%;
+	display: block;
+	margin: auto;
 }
 
 
