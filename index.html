@@ -17,19 +17,26 @@
 </header>
 <div id="landingSctn" class="content">
 	<h1>Browser-based Blockchain </h1>
-	<div class="sub-heading">
+	<div id="landing-description" class="sub-heading">
 		Nimiq empowers you to mine, store and transact at a fraction of the effort of conventional cryptocurrency.
 	</div>
 	<noscript class="landing-warning sub-heading">
-		<div>You have Javascript disabled. Please enable it to see the full power of the nimiq ecosystem in action.</div>
-		<a class="button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
+		<style type="text/css">
+			#landing-description {
+				display: none;
+			}
+		</style>
+		<div id="enable-javascript" class="warning-advice">Enable Javascript.</div>
+		<div id="no-js-btn-container">
+			<a id="no-js-btn" class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
+		</div>
 	</noscript>
-	<div id="warning-old-browser" class="landing-warning sub-heading">
+	<div id="warning-old-browser" class="landing-warning sub-heading bottom-warning">
 		<div>Your browser is not up to date. Please update to see the full power of the nimiq ecosystem in action.</div>
 		<a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
 	</div>
-	<div id="warning-multiple-tabs" class="landing-warning sub-heading">
-		You have the miner running in multiple tabs. Please close all other tabs.
+	<div id="warning-multiple-tabs" class="landing-warning sub-heading warning-advice">
+		Please run the miner only in one tab.
 	</div>
 	<div class="button" id="connBtn">
 		Connect to Testnet
