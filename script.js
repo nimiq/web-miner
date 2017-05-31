@@ -167,6 +167,8 @@ class NimiqMiner {
     }
 
     _onConsensus() {
+        // TODO the core can switch between syncing and consensus multiple times, so this method
+        // can be called multiple times
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance))
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance))

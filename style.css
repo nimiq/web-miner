@@ -175,11 +175,18 @@ header div{
 	text-transform: capitalize;
 }
 
-#progressBar {
-	background-color: #ffc107;
+#progressBarContainer {
+	background-color: #021b3c;
 	height: 3px;
 	width: 100%;
 	margin-top: 8px;
+	transition: opacity 1s;
+}
+
+#progressBar {
+	background-color: #ffc107;
+	height: 100%;
+	width: 100%;
 	/* set the value of the progress bar via transform instead of width. that way, we get subpixel
 	precision and thus a smoother animation */
 	transform: scaleX(0);
@@ -187,7 +194,6 @@ header div{
 	-moz-transform: scaleX(0);
 	-ms-transform: scaleX(0);
 	transform-origin: left;
-	transition: opacity 1s;
 }
 
 @keyframes fade-in{
@@ -209,7 +215,7 @@ header div{
 	animation: 1s fade-in 0s reverse forwards, 1s fade-in 1s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
-.synced #progressBar {
+.synced #progressBarContainer {
 	opacity: 0;
 }
 
