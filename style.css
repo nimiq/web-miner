@@ -40,6 +40,7 @@ header{
 	max-width: 1200px;
 	margin: 0 auto;
 	box-sizing: border-box;
+	z-index: 1;
 }
 
 header div{
@@ -118,17 +119,27 @@ header div{
 
 
 #connBtn {
+	transition: opacity 1s;
+	opacity: 0;
+	pointer-events: none;
+}
+
+
+.continue-anyways-button {
+	display: inline-block;
+	color: white;
+}
+
+.landing-warning {
+	animation: 1s fade-in forwards;
+	position: absolute;
+	bottom: 16px;
+	text-align: center;
+	padding: 0 16px;
+}
+
+#warning-old-browser {
 	display: none;
-}
-
-
-.read-more {
-	color: #e2a62f;
-	text-decoration: none;
-}
-
-.read-more:hover {
-	text-decoration: underline;
 }
 
 

@@ -1,3 +1,5 @@
+'use strict';
+
 class FactsUI {
     constructor() {
         this._peers = document.getElementById('factPeers');
@@ -134,7 +136,8 @@ class MinerUI {
     }
 
     enableConnectButton() {
-        this.connBtn.style.display = 'block';
+        this.connBtn.style.opacity = 1;
+        this.connBtn.style.pointerEvents = 'all';
     }
 }
 
@@ -161,6 +164,13 @@ class NimiqMiner {
         this._onHeadChanged();
     }
 
+    static isBrowserSupported() {
+        return typeof(WebAssembly)!=='undefined' // nimiq uses WebAssembly for the crypto lib
+            && typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
+            && typeof(Core)!=='undefined'; // check whether the nimiq code was parsed correctly. This
+            // can detec for example if it couldn't be parsed because of lacking es6 support
+    }
+
     get hashrate() {
         return this.$.miner.hashrate;
     }
@@ -168,7 +178,7 @@ class NimiqMiner {
     get globalHashrate() {
         const nBits = this.$.blockchain.head.header.nBits;
         const difficulty = BlockUtils.compactToDifficulty(nBits);
-        return difficulty * 2**16 / Policy.BLOCK_TIME;
+        return difficulty * Math.pow(2, 16) / Policy.BLOCK_TIME;
     }
 
     _onConsensus() {
@@ -230,4 +240,9 @@ class NimiqMiner {
     }
 }
 
-Core.init($ => new NimiqMiner($));
+
+if (NimiqMiner.isBrowserSupported()) {
+    Core.init($ => new NimiqMiner($));
+} else {
+    document.getElementById('warning-old-browser').style.display = 'block';
+}
