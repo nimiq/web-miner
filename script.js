@@ -1,5 +1,17 @@
 'use strict';
 
+function isBrowserSupported() {
+    return typeof(WebAssembly)!=='undefined' // nimiq uses WebAssembly for the crypto lib
+        && typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
+        && typeof(Core)!=='undefined'; // check whether the nimiq code was parsed correctly. This
+            // can detec for example if it couldn't be parsed because of lacking es6 support
+}
+
+// already check the browser here on top, in case that it can't read the es6 code below
+if (!isBrowserSupported()) {
+    document.getElementById('warning-old-browser').style.display = 'block';
+}
+
 class FactsUI {
     constructor() {
         this._peers = document.getElementById('factPeers');
@@ -164,13 +176,6 @@ class NimiqMiner {
         this._onHeadChanged();
     }
 
-    static isBrowserSupported() {
-        return typeof(WebAssembly)!=='undefined' // nimiq uses WebAssembly for the crypto lib
-            && typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
-            && typeof(Core)!=='undefined'; // check whether the nimiq code was parsed correctly. This
-            // can detec for example if it couldn't be parsed because of lacking es6 support
-    }
-
     get hashrate() {
         return this.$.miner.hashrate;
     }
@@ -241,7 +246,7 @@ class NimiqMiner {
 }
 
 
-if (NimiqMiner.isBrowserSupported()) {
+if (isBrowserSupported()) {
     Core.init($ => {
         // when all other tabs are closed, the succes case gets invoked
         document.getElementById('warning-multiple-tabs').style.display = 'none';
@@ -249,6 +254,4 @@ if (NimiqMiner.isBrowserSupported()) {
     }, function() {
         document.getElementById('warning-multiple-tabs').style.display = 'block';
     });
-} else {
-    document.getElementById('warning-old-browser').style.display = 'block';
 }
