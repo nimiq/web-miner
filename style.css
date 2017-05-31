@@ -36,7 +36,7 @@ header{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 32px;
+	padding: 0 16px;
 	max-width: 1200px;
 	margin: 0 auto;
 	box-sizing: border-box;
@@ -114,6 +114,21 @@ header div{
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid #ffffff;
   color: #ffffff;
+}
+
+
+#connBtn {
+	display: none;
+}
+
+
+.read-more {
+	color: #e2a62f;
+	text-decoration: none;
+}
+
+.read-more:hover {
+	text-decoration: underline;
 }
 
 

@@ -132,6 +132,10 @@ class MinerUI {
     set syncProgress(progress) {
         this._progressBar.style.transform = 'scaleX('+Math.min(1, progress)+') translateZ(0)';
     }
+
+    enableConnectButton() {
+        this.connBtn.style.display = 'block';
+    }
 }
 
 
@@ -140,6 +144,7 @@ class NimiqMiner {
     constructor($) {
         this.ui = new MinerUI();
         this.ui.connBtn.onclick = e => this._connect($);
+        this.ui.enableConnectButton();
         this.syncing = true;
     }
 
