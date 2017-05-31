@@ -54,7 +54,7 @@ class FactsUI {
 
     set syncing(isSyncing) {
         if (isSyncing) {
-            this._blockProcessingState.textContent = "Downloading";
+            this._blockProcessingState.textContent = "Fetching";
             this._consensusProgress.textContent = "Synchronizing";
             this._miningSection.classList.remove('synced');
             this._miningSection.offsetWidth; // force an update

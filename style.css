@@ -123,11 +123,13 @@ header div{
 
 
 .facts{
+	width: 100%;
 	display: flex;
+	justify-content: space-between;
 }
 
 .fact{
-	padding: 8px 16px;
+	padding: 8px 0;
 }
 
 .facts .label{
@@ -147,6 +149,14 @@ header div{
 	font-size: 13px;
 }
 
+#factBlockContainer {
+	min-width: 125px; /* so that the layout doesn't change when chaning from text "fetching"
+		to "mining on" */
+}
+
+#factBalanceContainer {
+	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
+}
 
 #progress{
 	color: #ffc107;
