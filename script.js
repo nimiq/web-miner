@@ -36,7 +36,7 @@ class FactsUI {
             {unit:'months', factor:365/12}, {unit:'years', factor:12}, {unit:'decades', factor:10}];
         let convertedTime = expectedHashTime;
         let unit = 'seconds';
-        for (var i=0; i<timesteps.length; ++i) {
+        for (let i=0; i<timesteps.length; ++i) {
             let timestep = timesteps[i];
             if (convertedTime / timestep.factor < 1) {
                 break;
@@ -75,6 +75,7 @@ class FactsUI {
 class MinerUI {
     constructor() {
         this.connBtn = document.getElementById('connBtn');
+        this._progressBar = document.getElementById('progressBar');
         this.facts = new FactsUI();
     }
 
@@ -82,6 +83,10 @@ class MinerUI {
         document.body.removeAttribute('landing')
         document.body.removeAttribute('mining')
         document.body.setAttribute(state, "")
+    }
+
+    set syncProgress(progress) {
+        this._progressBar.style.transform = 'scaleX('+Math.min(1, progress)+') translateZ(0)';
     }
 }
 
@@ -141,8 +146,9 @@ class NimiqMiner {
     _onHeadChanged() {
         const height = this.$.blockchain.height;
         this.ui.facts.blockHeight = height;
-        //this.setSyncProgress(height / this._targetHeight);
-        if (!this.syncing) {
+        if (this.syncing) {
+            this.ui.syncProgress = height / this._targetHeight;
+        } else {
             this._globalHashrateChanged();
         }
     }

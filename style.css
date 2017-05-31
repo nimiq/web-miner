@@ -158,11 +158,30 @@ header div{
 	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
 }
 
+#progressContainer {
+	padding-bottom: 16px;
+	pointer-events: none;
+}
+
 #progress{
 	color: #ffc107;
 	font-size: 17px;
-	padding-bottom: 16px;
 	text-transform: capitalize;
+}
+
+#progressBar {
+	background-color: #ffc107;
+	height: 3px;
+	width: 100%;
+	margin-top: 8px;
+	/* set the value of the progress bar via transform instead of width. that way, we get subpixel
+	precision and thus a smoother animation */
+	transform: scaleX(0);
+	-webkit-transform: scaleX(0);
+	-moz-transform: scaleX(0);
+	-ms-transform: scaleX(0);
+	transform-origin: left;
+	transition: opacity 1s;
 }
 
 @keyframes fade-in{
@@ -175,11 +194,16 @@ header div{
 }
 
 .syncing #progress {
-	animation: 1s fade-in 0s normal forwards;
+	animation: 1s fade-in 0s normal forwards; /* using animation instead of opacity such that it works well
+		with .synched #progress */
 }
 
 .synced #progress {
 	animation: 1s fade-in 0s reverse forwards, 1s fade-in 1s normal forwards, 1s fade-in 4s reverse forwards;
+}
+
+.synced #progressBar {
+	opacity: 0;
 }
 
 #rewardInfo {
