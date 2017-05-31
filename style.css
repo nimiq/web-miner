@@ -128,17 +128,24 @@ header div{
 .continue-anyways-button {
 	display: inline-block;
 	color: white;
-	margin: auto;
 }
 
 .landing-warning {
 	animation: 1s fade-in forwards;
+	margin-bottom: 0;
 }
 
-.bottom-warning {
+.bottom-center {
 	position: absolute;
 	bottom: 16px;
 	padding: 0 16px;
+	left: 0;
+	right: 0;
+}
+
+.bottom-center>* {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .warning-advice {
@@ -148,13 +155,6 @@ header div{
 
 #enable-javascript {
 	font-size: 40px;
-}
-
-#no-js-btn-container {
-	position: absolute;
-	bottom: 32px;
-	left: 0;
-	right: 0;
 }
 
 #warning-old-browser, #warning-multiple-tabs {
