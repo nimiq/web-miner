@@ -83,7 +83,7 @@ class FactsUI {
             setTimeout(function() {
                 // change the text when the _consensusProgress is faded out by the synced class
                 this._consensusProgress.textContent = "Consensus Established";
-            }.bind(this), 1000);
+            }.bind(this), 1500);
         }
     }
 

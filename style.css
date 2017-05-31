@@ -225,7 +225,6 @@ header div{
 	height: 3px;
 	width: 100%;
 	margin-top: 8px;
-	transition: opacity 1s;
 }
 
 #progressBar {
@@ -257,11 +256,16 @@ header div{
 }
 
 .synced #progress {
-	animation: 1s fade-in 0s reverse forwards, 1s fade-in 1s normal forwards, 1s fade-in 4s reverse forwards;
+	animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
+}
+
+.syncing #progressBarContainer {
+	animation: 1s fade-in 0s normal forwards; /* using animation instead of opacity such that it works well
+		with .synched #progressBarContainer */
 }
 
 .synced #progressBarContainer {
-	opacity: 0;
+	animation: 1s fade-in 0.5s reverse forwards;
 }
 
 #rewardInfo {
