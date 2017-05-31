@@ -86,6 +86,8 @@ header div{
 	margin: 0 auto;
 	z-index: 1;
 	display: none;
+	transition: opacity 1s;
+	opacity: 0;
 }
 
 .sub-heading{
@@ -115,13 +117,13 @@ header div{
 }
 
 
-[landing] #landingSctn{
+#landingSctn{
 	display: flex;
+	opacity: 1;
 	padding: 80px;
 }
 
-[mining] #miningSctn{
-	display: flex;
+#miningSctn{
 	justify-content: flex-end;
 }
 
@@ -196,6 +198,7 @@ header div{
         opacity: 1;
     }
 }
+
 
 .syncing #progress {
 	animation: 1s fade-in 0s normal forwards; /* using animation instead of opacity such that it works well

@@ -57,12 +57,12 @@ class FactsUI {
             this._blockProcessingState.textContent = "Fetching";
             this._consensusProgress.textContent = "Synchronizing";
             this._miningSection.classList.remove('synced');
-            this._miningSection.offsetWidth; // force an update
+            this._miningSection.offsetWidth; // enforce an update
             this._miningSection.classList.add('syncing');      
         } else {
             this._blockProcessingState.textContent = "Mining on";
             this._miningSection.classList.remove('syncing');
-            this._miningSection.offsetWidth; // force an update
+            this._miningSection.offsetWidth; // enforce an update
             this._miningSection.classList.add('synced');
             setTimeout(function() {
                 // change the text when the _consensusProgress is faded out by the synced class
@@ -77,12 +77,30 @@ class MinerUI {
         this.connBtn = document.getElementById('connBtn');
         this._progressBar = document.getElementById('progressBar');
         this.facts = new FactsUI();
+        this._sections = {
+            'landing': document.getElementById("landingSctn"),
+            'mining': document.getElementById("miningSctn")
+        };
     }
 
-    setState(state) {
-        document.body.removeAttribute('landing')
-        document.body.removeAttribute('mining')
-        document.body.setAttribute(state, "")
+    setState(newState) {
+        let states = ['landing', 'mining'];
+        states.forEach(function(state) {
+            let style = this._sections[state].style;
+            if (state === newState) {
+                setTimeout(function() {
+                    // show as soon as the other page is hidden
+                    style.display = 'flex';
+                    this._sections[state].offsetWidth; // enforce style update
+                    style.opacity = 1; // fades for 1s
+                }.bind(this), 1000);
+            } else {
+                style.opacity = 0; // fades for 1s
+                setTimeout(function() {
+                    style.display = 'none';
+                }, 1000);
+            }
+        }, this);
     }
 
     set syncProgress(progress) {
