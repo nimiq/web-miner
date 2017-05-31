@@ -120,10 +120,6 @@ header div{
 	padding: 80px;
 }
 
-[loading] #loadingSctn{
-	display: flex;
-}
-
 [mining] #miningSctn{
 	display: flex;
 	justify-content: flex-end;
