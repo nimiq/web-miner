@@ -113,8 +113,8 @@ header div{
 
 .secondary-button {
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid #ffffff;
-  color: #ffffff;
+  border: 1px solid #ffc107;
+  color: #ffc107;
 }
 
 
@@ -128,6 +128,7 @@ header div{
 .continue-anyways-button {
 	display: inline-block;
 	color: white;
+	border-color: white;
 }
 
 .landing-warning {
