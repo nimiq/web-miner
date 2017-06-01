@@ -195,6 +195,7 @@ class NimiqMiner {
         this.$.miner.startWork();
         this.ui.facts.syncing = false;
         this.syncing = false;
+        this.ui.syncProgress = 1;
         this._globalHashrateChanged();
     }
 

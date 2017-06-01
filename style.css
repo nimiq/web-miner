@@ -104,6 +104,7 @@ header div{
   font-size: 16px;
   cursor: pointer;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .button {
@@ -234,11 +235,12 @@ header div{
 	width: 100%;
 	/* set the value of the progress bar via transform instead of width. that way, we get subpixel
 	precision and thus a smoother animation */
-	transform: scaleX(0);
-	-webkit-transform: scaleX(0);
-	-moz-transform: scaleX(0);
-	-ms-transform: scaleX(0);
+	transform: scaleX(0) translateZ(0);
+	-webkit-transform: scaleX(0) translateZ(0);
+	-moz-transform: scaleX(0) translateZ(0);
+	-ms-transform: scaleX(0) translateZ(0);
 	transform-origin: left;
+	transition: transform 0.5s;
 }
 
 @keyframes fade-in{
