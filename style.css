@@ -2,10 +2,6 @@ html, body{
 	margin: 0;
 	padding: 0;
 	background-color: black;
-	 background-image: url(images/globe.jpg);
-    background-size: cover;
-    background-position-x: 50%;
-    background-position-y: 5px;
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
@@ -310,10 +306,22 @@ header div{
 /* Phone */
 
 
-canvas {
+
+
+#video {
 	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
 	bottom: 0;
+	/* make the iframe fill up the whole screen */
+	height: 100vh;
+	width: calc(100vh * 1.778); /* aspect ratio */
+	left: calc((100vh * 1.778 - 100%) / -2); /* center */
+	pointer-events: none;
+}
+
+@media screen and (min-aspect-ratio: 1920/1080) {
+	#video {
+		width: 100vw;
+		height: calc(100vw / 1.778);
+		left: 0;
+	}
 }
