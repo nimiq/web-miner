@@ -225,8 +225,10 @@ header div{
 #progressBarContainer {
 	background-color: #021b3c;
 	height: 3px;
-	width: 100%;
+	width: 107px; /* width of the text "Synchronizing" */
 	margin-top: 8px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #progressBar {
@@ -268,7 +270,7 @@ header div{
 }
 
 .synced #progressBarContainer {
-	animation: 1s fade-in 0.5s reverse forwards;
+	animation: 1s fade-in 4s reverse forwards;
 }
 
 #rewardInfo {
