@@ -2,6 +2,10 @@ html, body{
 	margin: 0;
 	padding: 0;
 	background-color: black;
+	 background-image: url(images/globe.jpg);
+    background-size: cover;
+    background-position-x: 50%;
+    background-position-y: 5px;
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
@@ -117,6 +121,12 @@ header div{
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid white;
   color: white;
+  transition: color 0.3s, border 0.3s;
+}
+
+.secondary-button:hover {
+	border: 1px solid #ffc107;
+	color: #ffc107;
 }
 
 
