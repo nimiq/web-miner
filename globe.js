@@ -3,8 +3,8 @@
 (function() {
   'use strict';
 
-  // preload the assets
-  var assets = {
+  // preload the textures
+  var textures = {
     earthMap: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/141228/earthmap1k.jpg',
     earthBumpMap: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/141228/earthbump1k.jpg',
     earthSpecularMap: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/141228/earthspec1k.jpg',
@@ -15,12 +15,12 @@
   var assetPromises = {};
   var textureLoader = new THREE.TextureLoader();
   textureLoader.crossOrigin = true;
-  Object.values(assets).forEach(function(assetUrl) {
+  Object.values(textures).forEach(function(assetUrl) {
     assetPromises[assetUrl] = new Promise(function(resolve, reject) {
       textureLoader.load(assetUrl, resolve, null, reject);
     });
   });
-  var assetsReady = Promise.all(Object.values(assetPromises));
+  var texturesReady = Promise.all(Object.values(assetPromises));
 
 
 
@@ -113,9 +113,9 @@
         shininess: 10
       },
       textures: {
-        map: assets.earthMap,
-        bumpMap: assets.earthBumpMap,
-        specularMap: assets.earthSpecularMap
+        map: textures.earthMap,
+        bumpMap: textures.earthBumpMap,
+        specularMap: textures.earthSpecularMap
       }
     },
     atmosphere: {
@@ -124,8 +124,8 @@
         opacity: 0.8
       },
       textures: {
-        map: assets.atmosphereMap,
-        alphaMap: assets.atmosphereAlphaMap
+        map: textures.atmosphereMap,
+        alphaMap: textures.atmosphereAlphaMap
       }
     }
   });
@@ -139,7 +139,7 @@
 
   // Load Galaxy Textures
   textureLoader.crossOrigin = true;
-  assetPromises[assets.galaxy].then(function(texture) {
+  assetPromises[textures.galaxy].then(function(texture) {
     galaxyMaterial.map = texture;
     scene.add(galaxy);
   });
@@ -166,7 +166,7 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  window.addEventListener('click', cameraRotationController);
+  document.getElementById('connBtn').addEventListener('click', cameraRotationController);
 
   // Main render function
   var render = function render() {
@@ -183,7 +183,7 @@
     renderer.render(scene, camera);
   };
 
-  assetsReady.then(function() {
+  texturesReady.then(function() {
     document.body.appendChild(renderer.domElement);
     render();
   });
