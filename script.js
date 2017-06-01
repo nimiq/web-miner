@@ -1,8 +1,7 @@
 'use strict';
 
 function isBrowserSupported() {
-    return typeof(WebAssembly)!=='undefined' // nimiq uses WebAssembly for the crypto lib
-        && typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
+     return typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
         && typeof(Core)!=='undefined'; // check whether the nimiq code was parsed correctly. This
             // can detec for example if it couldn't be parsed because of lacking es6 support
 }

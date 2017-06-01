@@ -1,4 +1,4 @@
-// Found on https://codepen.io/ibirist/pen/LpqZGN
+// Adapted from https://codepen.io/ibirist/pen/LpqZGN
 
 (function() {
   'use strict';
@@ -32,8 +32,10 @@
   var cameraRotationSpeed = 0;
   var cameraAutoRotation = true;
   var cameraRotationController = function cameraRotationController() {
-    var orbitControls = new THREE.OrbitControls(camera);
-    cameraAutoRotation = false;
+    texturesReady.then(function() {
+      var orbitControls = new THREE.OrbitControls(camera);
+      cameraAutoRotation = false;
+    });
     window.removeEventListener('click', cameraRotationController);
   };
 
@@ -167,6 +169,10 @@
   });
 
   document.getElementById('connBtn').addEventListener('click', cameraRotationController);
+
+  // initial earth rotation
+  //earth.rotation.x = -0.1;
+  //earth.rotation.y = -0.1;
 
   // Main render function
   var render = function render() {
