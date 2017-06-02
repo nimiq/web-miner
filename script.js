@@ -1,13 +1,18 @@
 'use strict';
 
-function isBrowserSupported() {
-     return typeof(ArrayBuffer)!=='undefined' // ArrayBuffers are heavily used in nimiq
-        && typeof(Core)!=='undefined'; // check whether the nimiq code was parsed correctly. This
-            // can detec for example if it couldn't be parsed because of lacking es6 support
+function isEs6Supported() {
+    if (typeof Symbol === "undefined") return false;
+    try {
+        eval("class Foo {}");
+        eval("var bar = (x) => x+1");
+    } catch (e) {
+        return false;
+    }
+    return true;
 }
 
-// already check the browser here on top, in case that it can't read the es6 code below
-if (!isBrowserSupported()) {
+// check whether this UI code can be executed by the browser
+if (!isEs6Supported()) {
     document.getElementById('warning-old-browser').style.display = 'block';
 }
 
@@ -269,12 +274,16 @@ class NimiqMiner {
 }
 
 
-if (isBrowserSupported()) {
-    Core.init($ => {
-        // when all other tabs are closed, the succes case gets invoked
-        document.getElementById('warning-multiple-tabs').style.display = 'none';
-        new NimiqMiner($);
-    }, function() {
+Nimiq.init($ => {
+    // when all other tabs are closed, the succes case gets invoked
+    document.getElementById('warning-multiple-tabs').style.display = 'none';
+    new NimiqMiner($);
+}, function(error) {
+    if (error === Nimiq.ERR_WAIT) {
         document.getElementById('warning-multiple-tabs').style.display = 'block';
-    });
-}
+    } else if (error === Nimiq.ERR_UNSUPPORTED) {
+        document.getElementById('warning-old-browser').style.display = 'block';
+    } else {
+        // TODO general error message
+    }
+});
