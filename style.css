@@ -136,6 +136,8 @@ header {
     bottom: 32px;
     left: 12.5%;
     display: none;
+    transition: opacity 1s;
+    opacity: 0;
 }
 
 
