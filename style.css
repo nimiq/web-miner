@@ -119,7 +119,7 @@ header .logo svg {
 }
 
 .facts .label{
-	font-size: 14px;
+	font-size: 16px;
 	color: rgba(255,255,255,0.7);
 	text-transform: uppercase;
 	letter-spacing: 0.16em;
@@ -127,17 +127,23 @@ header .logo svg {
 }
 
 .facts .number{
-	font-size: 40px;
+	font-size: 45px;
 }
 
 .facts .unit{
 	color: rgba(255,255,255,0.7);
-	font-size: 17px;
+	font-size: 16px;
+}
+
+#miningAnimation, #nimiqCoinIcon {
+	height: 32px;
 }
 
 #rewardInfo {
-	font-size: 20px;
+	font-size: 24px;
 	letter-spacing: 0.5px;
+    margin-top: 8px;
+    opacity: 0;
 }
 
 #factBlockContainer {
@@ -149,10 +155,6 @@ header .logo svg {
 	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
 }
 
-#miningAnimation {
-	height: 28px;
-}
-
 #progressContainer {
 	padding-bottom: 16px;
 	pointer-events: none;
@@ -160,14 +162,14 @@ header .logo svg {
 
 #progress{
 	color: #ffc107;
-	font-size: 28px;
+	font-size: 34px;
 	text-transform: capitalize;
 }
 
 #progressBarContainer {
 	background-color: rgba(255,255,255,0.7);
 	height: 3px;
-	width: 176px; /* width of the text "Synchronizing" */
+	width: 214px; /* width of the text "Synchronizing" */
 	margin-top: 8px;
 	margin-left: auto;
 	margin-right: auto;
@@ -215,36 +217,10 @@ header .logo svg {
 	animation: 1s fade-in 4s reverse forwards;
 }
 
-#rewardInfo {
-    margin-top: 8px;
-    line-height: 21px;
-    opacity: 0;
-}
-
 .synced #rewardInfo {
 	/* wait 5 seconds until fading in because this is when we get the first hashrate value */
 	animation: 1s fade-in 5s normal forwards;
 }
-
-
-/* Tablet */
-@media (max-width: 800px){
-	.facts{
-		flex-direction: column;
-	}
-	.content{
-		width: 100%;
-	}
-
-	#landingSctn{
-		padding: 16px !important;
-	}
-}
-
-
-/* Phone */
-
-
 
 
 #video {
@@ -263,5 +239,83 @@ header .logo svg {
 		width: 100vw;
 		height: calc(100vw / 1.778);
 		left: 0;
+	}
+}
+
+
+
+
+
+
+@media screen and (max-width: 1500px) {
+	.facts .label{
+		font-size: 14px;
+	}
+
+	.facts .number{
+		font-size: 34px;
+	}
+
+	.facts .unit{
+		font-size: 14px;
+	}
+
+	#rewardInfo {
+		font-size: 20px;
+		letter-spacing: 0.5px;
+	}
+
+	#miningAnimation, #nimiqCoinIcon {
+		height: 25px;
+	}
+}
+
+
+@media screen and (max-width: 1300px) {
+	.facts .label{
+		font-size: 12px;
+	}
+
+	.facts .number{
+		font-size: 24px;
+	}
+
+	.facts .unit{
+		font-size: 12px;
+	}
+
+	#rewardInfo {
+		font-size: 16px;
+		letter-spacing: 0.5px;
+	}
+
+	#progress{
+		font-size: 24px;
+	}
+
+	#progressBarContainer {
+		width: 151px;  /* width of the text "Synchronizing" */
+	}
+
+	#miningAnimation, #nimiqCoinIcon {
+		height: 18px;
+	}
+}
+
+@media screen and (max-width: 1100px) {
+	.facts .label{
+		min-height: 28px;
+	}
+}
+
+
+/* Tablet / Phone */
+@media screen and (max-width: 800px){
+	.facts{
+		flex-direction: column;
+		align-items: center;
+	}
+	#miningSctn{
+		text-shadow: 2px 1px 3px black;
 	}
 }
