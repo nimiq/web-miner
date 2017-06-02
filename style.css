@@ -94,11 +94,11 @@ header {
 
 .warning-advice {
 	color: #ffc107;
-	font-size: 36px;
+	font-size: 34px;
 }
 
 #enable-javascript {
-	font-size: 40px;
+	font-size: 45px;
 }
 
 #warning-old-browser, #warning-multiple-tabs {
