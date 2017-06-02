@@ -1,121 +1,37 @@
 html, body{
-	margin: 0;
-	padding: 0;
 	background-color: black;
-	width: 100%;
-	height: 100vh;
 	overflow: hidden;
 	color: rgba(255, 255, 255, 0.88);
-	font-family: sans-serif;
-	font-size: 13px;
+	text-align: center;
 }
 
-.center{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;	
+
+body > * {
+	z-index: 1;
 }
+
 
 h1 {
-	font-size: 26px;
 	font-weight: bold;
-	text-align: center;
-}
-
-h2{
-
-}
-
-header{
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 72px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0 16px;
-	max-width: 1200px;
-	margin: 0 auto;
-	box-sizing: border-box;
-	z-index: 1;
-}
-
-header div{
-	display: flex;
-	align-items: center;
 }
 
 
-.name{
-	padding-left: 8px;
-	font-size: 15px;
-	font-weight: bold;
-	text-transform: uppercase;
-	letter-spacing: 0.18em;
+header .logo svg {
+	margin-right: 16px;
 }
 
-#map-container {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-}
-
-#map{
-	max-width: 800px;
-	width: 100%;
-	display: block;
-	margin: auto;
-}
-
-
-.content {
-	width: 800px;
-	height: 100%;
-	max-height: 720px;
-	padding: 24px 16px;
-	box-sizing: border-box;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-end;
-	text-align: center;
-	margin: 0 auto;
-	z-index: 1;
-	display: none;
-	transition: opacity 1s;
-	opacity: 0;
-}
-
-.sub-heading{
-	font-size: 18px;
-	margin-bottom: 24px;
-}
-
-
-.button, .secondary-button{
-  border-radius: 1px;
-  margin: 16px 0;
-  padding: 12px 16px;
-  font-size: 16px;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: bold;
-  text-shadow: none;
-}
 
 .button {
   background-image: linear-gradient(110deg, #e2a62f, #d7941a);
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  font-size: 28px;
+  text-shadow: none;
 }
 
 .secondary-button {
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  border: 1px solid white;
+  border: 2px solid white;
   color: white;
   transition: color 0.3s, border 0.3s;
 }
@@ -134,7 +50,6 @@ header div{
 
 
 .continue-anyways-button {
-	display: inline-block;
 	color: white;
 }
 
@@ -171,10 +86,22 @@ header div{
 
 
 #landingSctn{
-	display: flex;
-	opacity: 1;
-	padding: 80px;
+	display: block;
 	text-shadow: 2px 1px 3px black;
+	position: absolute;
+	left: 16px;
+	right: 16px;
+	bottom: 16px;
+	top: 66%;
+}
+
+
+#miningSctn {
+    position: absolute;
+	width: 66%;
+    bottom: 32px;
+    left: 17%;
+    display: none;
 }
 
 
@@ -309,6 +236,7 @@ header div{
 
 
 #video {
+	z-index: 0;
 	position: absolute;
 	bottom: 0;
 	/* make the iframe fill up the whole screen */

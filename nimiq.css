@@ -1,0 +1,202 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    color: rgba(0, 0, 0, 0.88);
+    font-family: sans-serif;
+    font-size: 15px;
+}
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+header .logo{
+    display: flex;
+    align-items: center;
+}
+
+header .logo img{
+    width: 32px;
+    margin-right: 16px;
+}
+
+.center,
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    padding: 16px 0;
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.third{
+    width: 33%;
+    box-sizing: border-box;
+    padding: 0 16px;
+}
+
+.row .center {
+    padding: 24px;
+}
+
+section {
+    padding: 64px 0;
+    position: relative;
+    background-image: linear-gradient(180deg, #fff, #f5f5f5);
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 34px;
+    margin: 10px 0;
+}
+
+h2 {
+    opacity: 0.8;
+    font-weight: normal;
+    font-size: 24px;
+}
+
+h3 {
+    margin: 8px;
+    opacity: 0.8
+}
+
+h1.large{
+    font-size: 45px;
+}
+
+h2.large{
+    font-size: 34px;
+}
+
+p{
+    font-size: 13px;
+    line-height: 18px;
+}
+
+a {
+    text-decoration: none;
+    font-size: 17px;
+    color: #e2a62f;
+}
+
+.button,
+.secondary-button {
+    border-radius: 3px;
+    margin: 16px 0;
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.secondary-button {
+    border: 2px solid #e2a62f;
+    color: #e2a62f;
+}
+
+section img {
+    height: 160px;
+}
+
+section img.large {
+    height: 39vw;
+}
+
+footer{
+    width: 100%;
+    padding: 32px 0;
+    background: #333;
+    display: flex;
+    justify-content: center;
+}
+
+footer a{
+    opacity: 0.9;
+    padding: 16px;
+}
+
+.uppercase{
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+.icon{
+    height: 32px;
+    opacity: 0.61;
+}
+
+.icon:hover{
+    opacity: 0.8;
+}
+
+@media (max-width: 800px){
+    .row{
+        flex-direction: column;
+    }
+
+    .row .third{
+
+    }
+
+    h1 {
+        font-size: 24px;
+        margin: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        margin: 8px;
+        opacity: 0.8
+    }
+
+    h1.large{
+        font-size: 34px;
+    }
+
+    h2.large{
+        font-size: 24px;
+    }
+}
