@@ -108,11 +108,11 @@ header {
 
 @keyframes scale-in {
 	from {
-		transform: scale(1.5);
+		transform: scale(1.5) translateZ(0);
 		opacity: 0;
 	}
 	to {
-		transform: scale(1);
+		transform: scale(1) translateZ(0);
 		opacity: 1;
 	}
 }
@@ -248,7 +248,7 @@ header {
 }
 
 
-#video {
+.background-video {
 	z-index: 0;
 	position: absolute;
 	bottom: 0;
@@ -262,7 +262,7 @@ header {
 }
 
 @media screen and (min-aspect-ratio: 1920/1080) {
-	#video {
+	.background-video {
 		width: 100vw;
 		height: calc(100vw / 1.778);
 		left: 0;
@@ -298,7 +298,7 @@ header {
 }
 
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1279px) {
 	.facts .label{
 		font-size: 12px;
 	}
