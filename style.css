@@ -53,7 +53,7 @@ header {
 }
 
 .secondary-button:hover {
-	border: 1px solid #ffc107;
+	border: 2px solid #ffc107;
 	color: #ffc107;
 }
 
@@ -77,6 +77,8 @@ header {
     width: 100%;
     bottom: 32px;
     opacity: 0;
+    display: none;
+	font-size: 24px;
 }
 
 .bottom-center {
@@ -99,11 +101,6 @@ header {
 
 #enable-javascript {
 	font-size: 45px;
-}
-
-#warning-old-browser, #warning-multiple-tabs {
-	display: none;
-	font-size: 24px;
 }
 
 @keyframes scale-in {

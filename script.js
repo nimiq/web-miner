@@ -284,6 +284,6 @@ Nimiq.init($ => {
     } else if (error === Nimiq.ERR_UNSUPPORTED) {
         document.getElementById('warning-old-browser').style.display = 'block';
     } else {
-        // TODO general error message
+        document.getElementById('warning-general-error').style.display = 'block';
     }
 });

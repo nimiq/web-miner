@@ -26,10 +26,13 @@
 	</div>
 </div>
 
-<noscript class="landing-warning">
+<noscript id="warning-no-js" class="landing-warning">
 	<style type="text/css">
 		#landing-description {
 			display: none;
+		}
+		#warning-no-js {
+			display: block;
 		}
 	</style>
 	<div id="enable-javascript" class="warning-advice">Enable JavaScript.</div>
@@ -37,6 +40,13 @@
 		<a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
 	</div>
 </noscript>
+<div id="warning-general-error" class="landing-warning">
+	<div>An error occured.</div>
+	<div class="warning-advice">Please delete your cache.</div>
+	<div class="bottom-center">
+		<a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue to the webpage</a>
+	</div>
+</div>
 <div id="warning-old-browser" class="landing-warning bottom-center">
 	<div>Your browser is not up to date. Please update to see the full power of the nimiq ecosystem in action.</div>
 	<a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
