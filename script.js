@@ -149,8 +149,7 @@ class MinerUI {
     }
 
     enableConnectButton() {
-        this.connBtn.style.opacity = 1;
-        this.connBtn.style.pointerEvents = 'all';
+        this.connBtn.style.display = 'inline-block';
     }
 }
 

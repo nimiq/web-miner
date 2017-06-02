@@ -20,27 +20,28 @@
 	<!--<div id="landing-description">
 		Nimiq empowers you to mine, store and transact at a fraction of the effort of conventional cryptocurrency.
 	</div>-->
-	<noscript class="landing-warning">
-		<style type="text/css">
-			#landing-description {
-				display: none;
-			}
-		</style>
-		<div id="enable-javascript" class="warning-advice">Enable JavaScript.</div>
-		<div class="bottom-center">
-			<a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
-		</div>
-	</noscript>
-	<div id="warning-old-browser" class="landing-warning bottom-center">
-		<div>Your browser is not up to date. Please update to see the full power of the nimiq ecosystem in action.</div>
-		<a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
-	</div>
-	<div id="warning-multiple-tabs" class="landing-warning warning-advice">
-		Please run the miner only in one tab.
-	</div>
 	<div class="button" id="connBtn">
 		Connect to Testnet
 	</div>
+</div>
+
+<noscript class="landing-warning">
+	<style type="text/css">
+		#landing-description {
+			display: none;
+		}
+	</style>
+	<div id="enable-javascript" class="warning-advice">Enable JavaScript.</div>
+	<div class="bottom-center">
+		<a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
+	</div>
+</noscript>
+<div id="warning-old-browser" class="landing-warning bottom-center">
+	<div>Your browser is not up to date. Please update to see the full power of the nimiq ecosystem in action.</div>
+	<a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
+</div>
+<div id="warning-multiple-tabs" class="landing-warning warning-advice">
+	Please run the miner only in one tab.
 </div>
 
 <div id="miningSctn" class="syncing">
@@ -98,6 +99,13 @@
 <script src="script.js"></script>
 
 <iframe id="video" src="https://www.youtube.com/embed/_fL-HXjm5fA?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1&amp;loop=1&amp;playlist=_fL-HXjm5fA" frameborder="0"></iframe>
+
+<script type="text/javascript">
+	// show only when javascript enabled
+	setTimeout(function() {
+		document.getElementById('video').style.opacity = 1;
+	}, 2500);
+</script>
 
 </body>
 </html>
