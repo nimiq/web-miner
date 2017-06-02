@@ -25,7 +25,7 @@ header .logo svg {
   background-image: linear-gradient(110deg, #e2a62f, #d7941a);
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   display: inline-block;
-  font-size: 28px;
+  font-size: 24px;
   text-shadow: none;
 }
 
@@ -82,6 +82,7 @@ header .logo svg {
 
 #warning-old-browser, #warning-multiple-tabs {
 	display: none;
+	font-size: 24px;
 }
 
 
@@ -299,6 +300,14 @@ header .logo svg {
 
 	#miningAnimation, #nimiqCoinIcon {
 		height: 18px;
+	}
+
+	#warning-old-browser {
+		font-size: 20px;
+	}
+
+	.continue-anyways-button {
+		font-size: 20px;
 	}
 }
 
