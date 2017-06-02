@@ -93,14 +93,15 @@ header .logo svg {
 	right: 16px;
 	bottom: 16px;
 	top: 66%;
+	transition: opacity 1s;
 }
 
 
 #miningSctn {
     position: absolute;
-	width: 66%;
+	width: 75%;
     bottom: 32px;
-    left: 17%;
+    left: 12.5%;
     display: none;
 }
 
@@ -109,14 +110,16 @@ header .logo svg {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	margin: 16px 0;
 }
 
 .fact{
 	padding: 8px 0;
+	width: 20%;
 }
 
 .facts .label{
-	font-size: 11px;
+	font-size: 14px;
 	color: rgba(255,255,255,0.7);
 	text-transform: uppercase;
 	letter-spacing: 0.16em;
@@ -124,12 +127,17 @@ header .logo svg {
 }
 
 .facts .number{
-	font-size: 32px;
+	font-size: 40px;
 }
 
 .facts .unit{
 	color: rgba(255,255,255,0.7);
-	font-size: 13px;
+	font-size: 17px;
+}
+
+#rewardInfo {
+	font-size: 20px;
+	letter-spacing: 0.5px;
 }
 
 #factBlockContainer {
@@ -141,6 +149,10 @@ header .logo svg {
 	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
 }
 
+#miningAnimation {
+	height: 28px;
+}
+
 #progressContainer {
 	padding-bottom: 16px;
 	pointer-events: none;
@@ -148,14 +160,14 @@ header .logo svg {
 
 #progress{
 	color: #ffc107;
-	font-size: 17px;
+	font-size: 28px;
 	text-transform: capitalize;
 }
 
 #progressBarContainer {
-	background-color: #021b3c;
+	background-color: rgba(255,255,255,0.7);
 	height: 3px;
-	width: 107px; /* width of the text "Synchronizing" */
+	width: 176px; /* width of the text "Synchronizing" */
 	margin-top: 8px;
 	margin-left: auto;
 	margin-right: auto;
