@@ -9,7 +9,7 @@ body {
     font-size: 15px;
 }
 
-header{
+header {
     position: fixed;
     top: 0;
     left: 0;
@@ -24,12 +24,13 @@ header{
     z-index: 1;
 }
 
-header .logo{
+header .logo {
     display: flex;
     align-items: center;
+    font-size: 17px;
 }
 
-header .logo img{
+header .logo img {
     width: 32px;
     margin-right: 16px;
 }
@@ -81,6 +82,8 @@ h1,
 h2,
 h3 {
     margin-top: 0;
+    font-weight: normal;
+    letter-spacing: .5pt;
 }
 
 h1 {
@@ -99,11 +102,11 @@ h3 {
     opacity: 0.8
 }
 
-h1.large{
+h1.large {
     font-size: 45px;
 }
 
-h2.large{
+h2.large {
     font-size: 34px;
 }
 
@@ -122,11 +125,11 @@ a {
 .secondary-button {
     border-radius: 3px;
     margin: 16px 0;
-    padding: 12px 16px;
+    padding: 10px 16px;
     font-size: 16px;
     cursor: pointer;
     text-decoration: none;
-    font-weight: bold;
+    letter-spacing: 1pt;
 }
 
 .secondary-button {
