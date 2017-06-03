@@ -113,7 +113,7 @@ class MinerUI {
         this._toggleMinerBtn.onclick = () => miner.toggleMining();
 
         this._miningAnimation = document.querySelector('#miningAnimation');
-        this._miningAnimation.pauseAnimations();
+        this._miningAnimationStarted = false;
 
         this._progressBar = document.querySelector('#progressBar');
         this.facts = new FactsUI();
@@ -159,7 +159,12 @@ class MinerUI {
 
     minerWorking() {
         this._toggleMinerBtn.innerText = 'Pause mining';
-        this._miningAnimation.unpauseAnimations();
+        if (!this._miningAnimationStarted) {
+            document.querySelector('#circleanimate').beginElement();
+            this._miningAnimationStarted = true;
+        } else {
+            this._miningAnimation.unpauseAnimations();
+        }
     }
 }
 

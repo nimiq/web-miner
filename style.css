@@ -35,18 +35,36 @@ body > * {
 
 .own-peer {
 	fill: white;
+	-webkit-animation: own 6s ease infinite;
+	animation: own 6s ease infinite;
+}
+@-webkit-keyframes own {
+	0% {
+		fill: #fff;
+	}
+	50% {
+		fill: #9ba6b5;
+	}
+	100% {
+		fill: #fff;
+	}
+}
+@keyframes own {
+	0% {
+		fill: #fff;
+	}
+	50% {
+		fill: #9ba6b5;
+	}
+	100% {
+		fill: #fff;
+	}
 }
 
 .connected-peer {
 	-webkit-animation: connected 6s ease infinite;
 	animation: connected 6s ease infinite;
 }
-
-.known-peer {
-	-webkit-animation: known 6s ease infinite;
-	animation: known 6s ease infinite;
-}
-
 @-webkit-keyframes connected {
 	0% {
 		fill: #f6ae2d;
@@ -68,6 +86,11 @@ body > * {
 	100% {
 		fill: #f6ae2d;
 	}
+}
+
+.known-peer {
+	-webkit-animation: known 6s ease infinite;
+	animation: known 6s ease infinite;
 }
 @-webkit-keyframes known {
 	0% {
