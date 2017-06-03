@@ -39,7 +39,7 @@ header .logo svg {
 }
 
 
-.hexagon {
+.connected-peer, .known-peer {
 	transition: fill 1s;
 	-webkit-animation: node 4s ease infinite;
 	animation: node 4s ease infinite;

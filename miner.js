@@ -140,12 +140,92 @@ class MinerUI {
     }
 }
 
+class MapUI {
+    constructor($) {
+        this._map = new Map(document.querySelector('#map svg'));
+        this.$ = $;
+        this._polled = [];
+        this._connectedPeers = new Nimiq.HashMap();
+        this._knownPeers = new Nimiq.HashMap();
+
+        $.network.on('peer-joined', peer => this._onPeerJoined(peer));
+        $.network.on('peer-left', peer => this._onPeerLeft(peer));
+        setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
+    }
+
+    _onPeerJoined(peer) {
+        var netAddr = peer.netAddress;
+        if (netAddr) {
+            GeoIP.retrieve(response => this._highlightConnectedPeer(peer.peerAddress, response), netAddr.host);
+        }
+    }
+
+    _onPeerLeft(peer) {
+        var cell = this._connectedPeers.get(peer.peerAddress);
+        if (cell) {
+            map.unhighlightCell(cell);
+            this._connectedPeers.remove(peer.peerAddress);
+        }
+    }
+
+    _highlightConnectedPeer(addr, response) {
+        if (response && response.location && response.location.latitude) {
+            var loc = response.location;
+            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'connected-peer');
+            if (cell) {
+                this._knownPeers.remove(addr);
+                this._connectedPeers.put(addr, cell);
+            }
+        }
+    }
+
+    _highlightKnownPeer(addr, response) {
+        if (response && response.location && response.location.latitude) {
+            var loc = response.location;
+            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'known-peer');
+            if (cell) {
+                var numKnown = this._knownPeers.length;
+                this._knownPeers.put(addr, response);
+                // if too many are already highlighted, remove a random one
+                if (numKnown >= MapUI.KNOWN_PEERS_MAX) {
+                    var i = Math.floor(Math.random() * numKnown);
+                    var addr = this._knownPeers.keys()[i];
+                    var cell = this._knownPeers.get(addr);
+                    this._map.unhighlightCell(cell);
+                    this._knownPeers.remove(addr);
+                }
+            }
+        }
+    }
+
+    _pollPeers() {
+        console.log('Map before', this._polled);
+        if (this._polled.length === 0) {
+            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS, Nimiq.Services.DEFAULT);
+            // choose random subset
+            var index = Math.floor(Math.random() * (this._polled.length + 1));
+            this._polled = this._polled.splice(index, 10);
+        }
+        console.log('Map after', this._polled);
+        if (this._polled.length > 0) {
+            var wsAddr = this._polled.shift();
+            if (!this._connectedPeers.contains(wsAddr)) {
+                // only highlight if not connected to this peer
+                GeoIP.retrieve(response => this._highlightKnownPeer(wsAddr, response), wsAddr.host);
+            }
+        }
+    }
+}
+MapUI.KNOWN_PEERS_MAX = 20;
+MapUI.REFRESH_INTERVAL = 1000;
+
 class Miner {
     constructor($) {
         this.ui = new MinerUI();
         this.ui.connBtn.onclick = () => this._connect($);
         this.ui.enableConnectButton();
         this.syncing = true;
+        this.map = new MapUI($);
     }
 
     _initCore($) {

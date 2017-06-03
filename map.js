@@ -57,49 +57,21 @@ RobinsonProjection.radians = RobinsonProjection.pi / 180;
 RobinsonProjection.degrees = 180 / RobinsonProjection.pi;
 
 class Map {
-	constructor(mapObjectElement) {
-        if (!mapObjectElement || !mapObjectElement.nodeName || mapObjectElement.nodeName.toLowerCase() !== "object"
-            || mapObjectElement.type !== "image/svg+xml" || typeof mapObjectElement.data !== "string"
-            || mapObjectElement.data.indexOf('map.svg') === -1) {
-            throw Error('invalid map object');
-        }
-
-        function init() {
-            var svgDocument = mapObjectElement.contentDocument;
-            this._svg = svgDocument.querySelector('svg');
-            var hexagons = svgDocument.querySelectorAll('polygon');
-            this._cells = hexagons;
-        }
-
-        this._highlightedCells = [];
-        this._cells = [];
-
-        if (!mapObjectElement.contentDocument) {
-            mapObjectElement.onload = init.bind(this);
-        } else {
-            init.call(this);
-        }
+	constructor(svgElement) {
+        this._svg = svgElement;
+        var hexagons = svgElement.querySelectorAll('polygon');
+        this._cells = hexagons;
 	}
 
     getDimensions() {
-        return {
-            width: this._svg.width.baseVal.value,
-            height: this._svg.height.baseVal.value
-        };
+        return this._svg.getBoundingClientRect();
     }
 
-    _highlightCell(cell, className) {
-		// The cell is already highlighted.
-		if (this._highlightedCells.indexOf(cell) !== -1) {
-			return;
-		}
-		// We highlighted too many cells. Unhighlight the oldest cell.
-        if (this._highlightedCells.length >= Map.MAX_HIGHLIGHT_COUNT) {
-			var oldestCell = this._highlightedCells.shift();
-			oldestCell.setAttribute('class', '');
-        }
+    unhighlightCell(cell) {
+        cell.setAttribute('class', '');
+    }
 
-        this._highlightedCells.push(cell);
+    highlightCell(cell, className) {
         cell.setAttribute('class', className);
     }
 
@@ -116,8 +88,8 @@ class Map {
         point.x = fullMapWidth/2 + point.x;
         point.y = fullMapHeight/2 - point.y;
         // the map that we have is robinson projected and then cropped out and scaled
-        point.x = Math.max(0, point.x - 0.07045675413022352*fullMapWidth);
-        point.y = Math.max(0, point.y - 0.012380952380952381*fullMapHeight);
+        point.x = mapDimensions.left + Math.max(0, point.x - 0.07045675413022352*fullMapWidth);
+        point.y = mapDimensions.top + Math.max(0, point.y - 0.012380952380952381*fullMapHeight);
         return point;
     }
 
@@ -169,9 +141,9 @@ class Map {
         var convertedCoordinates = this._convertCoordinates(latitude, longitude);
         var closestCell = this._getClosestCell(convertedCoordinates.x, convertedCoordinates.y);
         if (closestCell) {
-        	this._highlightCell(closestCell, className);
+        	this.highlightCell(closestCell, className);
 		}
+		return closestCell;
 	}
 }
-Map.MAX_HIGHLIGHT_COUNT = 2;
 Map.MAX_CELL_DISTANCE = 3; // in terms of cells
