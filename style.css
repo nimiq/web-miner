@@ -199,6 +199,8 @@ header .logo svg {
 	bottom: 25vh;
 	top: 20vh;
 	transition: opacity 1s;
+}
+#landingSection h1 {
 	animation: 3s scale-in ease-in;
 }
 #landingSection > div {
@@ -211,7 +213,7 @@ header .logo svg {
 #connectBtn {
     display: none;
     opacity: 0;
-    animation: 1s fade-in 1s forwards;
+    animation: 2s fade-in 1s forwards;
 }
 
 #miningSection {
@@ -259,7 +261,7 @@ header .logo svg {
 	color: rgba(255, 255, 255, .6);
 	text-transform: uppercase;
 	letter-spacing: 0.16em;
-	margin-bottom: 4px;
+	margin-bottom: 6px;
 }
 
 .facts .number {
@@ -286,6 +288,7 @@ header .logo svg {
     color: inherit;
     font-size: 12px;
     text-decoration: underline;
+	white-space: nowrap;
 }
 #rewardInfo a:hover {
     color: white;
@@ -304,13 +307,12 @@ header .logo svg {
 #progress{
 	color: #ffc107;
 	font-size: 34px;
-	text-transform: capitalize;
 }
 
 #progressBarContainer {
 	background-color: rgba(255, 255, 255, 0.7);
 	height: 3px;
-	width: 214px; /* width of the text "Synchronizing" */
+	width: 40%;
 	margin-top: 8px;
 	margin-left: auto;
 	margin-right: auto;
@@ -420,9 +422,16 @@ header .logo svg {
 
 /* Tablet / Phone */
 @media screen and (max-width: 800px){
-	.facts{
+	.facts {
 		flex-direction: column;
 		align-items: center;
+	}
+	.fact {
+		width: 50%;
+		margin-bottom: 6px;
+	}
+	.facts .label {
+		margin-bottom: 2px;
 	}
 	#miningSection{
 		text-shadow: 2px 1px 3px black;
