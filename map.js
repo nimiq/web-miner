@@ -153,4 +153,4 @@ class Map {
 		return closestCell;
 	}
 }
-Map.MAX_CELL_DISTANCE = 10; // in terms of cells
+Map.MAX_CELL_DISTANCE = 20; // in terms of cells
