@@ -49,6 +49,31 @@
         width: 100%;
         position: absolute;
       }
+
+      .test {
+        fill: ;
+      }
+
+      .hexagon {
+        transition: fill 1s;
+        -webkit-animation: node 5s cubic-bezier(1,0,0,1) infinite;
+        animation: node 5s cubic-bezier(1,0,0,1) infinite;
+      }
+
+
+      @-webkit-keyframes node {
+        0% { fill: #f6ae2d; }
+        33% { fill: #b48222; }
+        67% { fill: #f6ae2d; }
+        100% { fill: #b48222; }
+      }
+
+      @keyframes node {
+        0% { fill: #f6ae2d; }
+        33% { fill: #b48222; }
+        67% { fill: #f6ae2d; }
+        100% { fill: #b48222; }
+      }
     </style>
   </head>
   <body>

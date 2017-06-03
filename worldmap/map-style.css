@@ -1,0 +1,30 @@
+.hexagon {
+    transition: fill 1s;
+    -webkit-animation: node 4s ease infinite;
+    animation: node 4s ease infinite;
+}
+
+
+@-webkit-keyframes node {
+    0% {
+        fill: #f6ae2d;
+    }
+    50% {
+        fill: #805e19;
+    }
+    100% {
+        fill: #f6ae2d;
+    }
+}
+
+@keyframes node {
+    0% {
+        fill: #f6ae2d;
+    }
+    50% {
+        fill: #805e19;
+    }
+    100% {
+        fill: #f6ae2d;
+    }
+}

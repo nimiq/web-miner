@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 502" style="enable-background:new 0 0 1082 502;" xml:space="preserve">
+	<defs>
+        <link href="map-style.css" type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml"/>
+    </defs>
 	<polygon points="904.82,270.33 907.61,275.16 913.2,275.16 915.99,270.33 913.2,265.49 907.61,265.49 	"/>
 	<polygon points="945.72,305.19 941.41,305.19 939.2,309.02 941.41,312.86 945.84,312.86 947.99,309.13 	"/>
 	<polygon points="954.09,308.02 956.3,304.19 954.09,300.35 949.66,300.35 947.51,304.08 949.78,308.02 	"/>
