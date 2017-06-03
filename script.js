@@ -69,7 +69,7 @@ class FactsUI {
     }
 
     set myBalance(balance) {
-        this._myBalance.textContent = Policy.satoshisToCoins(balance).toFixed(2);
+        this._myBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
     }
 
     set syncing(isSyncing) {
@@ -187,8 +187,8 @@ class NimiqMiner {
 
     get globalHashrate() {
         const nBits = this.$.blockchain.head.header.nBits;
-        const difficulty = BlockUtils.compactToDifficulty(nBits);
-        return difficulty * Math.pow(2, 16) / Policy.BLOCK_TIME;
+        const difficulty = Nimiq.BlockUtils.compactToDifficulty(nBits);
+        return difficulty * Math.pow(2, 16) / Nimiq.Policy.BLOCK_TIME;
     }
 
     _onConsensus() {
@@ -237,7 +237,7 @@ class NimiqMiner {
 
     _expectedHashTimeChanged() {
         let myWinProbability = this.hashrate / this.globalHashrate;
-        this.ui.facts.expectedHashTime = (1/myWinProbability) * Policy.BLOCK_TIME;
+        this.ui.facts.expectedHashTime = (1/myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
     _onBalanceChanged(balance){
