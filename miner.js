@@ -118,9 +118,6 @@ class MinerUI {
         this._progressBar = document.querySelector('#progressBar');
         this.facts = new FactsUI();
 
-        this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
-        this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
-
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
         resumeMinerBtn.onclick = () => miner.toggleMining();
 
@@ -157,15 +154,11 @@ class MinerUI {
 
     minerStopped() {
         this._toggleMinerBtn.innerText = 'Resume mining';
-        if (this.miner.paused) {
-            this._warningMinerStopped.style.display = 'block';
-        }
         this._miningAnimation.pauseAnimations();
     }
 
     minerWorking() {
         this._toggleMinerBtn.innerText = 'Pause mining';
-        this._warningMinerStopped.style.display = 'none';
         this._miningAnimation.unpauseAnimations();
     }
 }
@@ -205,22 +198,22 @@ class MapUI {
     }
 
     _noise(lat, lng) {
-        return  (1 - Math.random()*2) * 0.5;
+        return (1 - Math.random() * 2) * 0.9;
     }
 
     _incCellCount(cell) {
-        if (!this._cellCount[cell]) {
-            this._cellCount[cell] = 0;
+        if (!this._cellCount[cell.cellId]) {
+            this._cellCount[cell.cellId] = 0;
         }
-        this._cellCount[cell]++;
+        this._cellCount[cell.cellId]++;
     }
 
     _decCellCount(cell) {
-        if (!this._cellCount[cell]) {
-            this._cellCount[cell] = 0;
+        if (!this._cellCount[cell.cellId]) {
+            this._cellCount[cell.cellId] = 0;
         }
-        if (this._cellCount[cell] > 0) {
-            return --this._cellCount[cell];
+        if (this._cellCount[cell.cellId] > 0) {
+            return --this._cellCount[cell.cellId];
         }
         return 0;
     }
@@ -277,10 +270,7 @@ class MapUI {
         }
         if (this._polled.length > 0) {
             var wsAddr = this._polled.shift();
-            if (!this._connectedPeers.contains(wsAddr)) {
-                // only highlight if not connected to this peer
-                GeoIP.retrieve(response => this._highlightKnownPeer(wsAddr, response), wsAddr.host);
-            }
+            GeoIP.retrieve(response => this._highlightKnownPeer(wsAddr, response), wsAddr.host);
         }
     }
 }
@@ -298,6 +288,9 @@ class Miner {
 
         this.syncing = true;
         this.paused = false;
+
+        this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
+        this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
     }
 
     connect() {
@@ -323,9 +316,16 @@ class Miner {
         if (this.$.miner.working) {
             this.paused = true;
             this.$.miner.stopWork();
-        } else {
+            this._warningMinerStopped.style.display = 'block';
+            this._warningMinerStopped.offsetWidth; // enforce style update
+            this._warningMinerStopped.style.opacity = 1;
+        } else if (this.$.consensus.established) {
             this.paused = false;
             this.$.miner.startWork();
+            this._warningMinerStopped.style.opacity = 0;
+            setTimeout(() => {
+                this._warningMinerStopped.style.display = 'none';
+            }, 1000);
         }
     }
 
@@ -345,6 +345,8 @@ class Miner {
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance));
+
+        this._warningConsensusLost.style.display = 'none';
 
         if (!this.paused) {
             this.$.miner.startWork();
@@ -369,6 +371,26 @@ class Miner {
 
     _onPeersChanged() {
         this.ui.facts.peers = this.$.network.peerCount;
+
+        if (this.$.network.peerCount > 0) {
+            if (this._warningConsensusLost.style.display === 'block') {
+                this._warningConsensusLost.style.opacity = 0;
+                setTimeout(() => {
+                    this._warningConsensusLost.style.display = 'none';
+                }, 1000);
+
+                if (this.paused) {
+                    this._warningMinerStopped.style.display = 'block';
+                    this._warningMinerStopped.offsetWidth; // enforce style update
+                    this._warningMinerStopped.style.opacity = 1;
+                }
+            }
+        } else {
+            this._warningMinerStopped.style.display = 'none';
+            this._warningConsensusLost.style.display = 'block';
+            this._warningConsensusLost.offsetWidth; // enforce style update
+            this._warningConsensusLost.style.opacity = 1;
+        }
     }
 
     _onHeadChanged() {
@@ -413,8 +435,8 @@ class Miner {
 
 // Initialize Nimiq Core.
 Nimiq.init($ => {
-    // When all other tabs are closed, the success case gets invoked.
     document.getElementById('warning-multiple-tabs').style.display = 'none';
+    window.$ = $;
     window.Miner = new Miner($);
 }, function(error) {
     if (error === Nimiq.ERR_WAIT) {

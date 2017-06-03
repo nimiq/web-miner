@@ -60,6 +60,9 @@ class Map {
 	constructor(svgElement) {
         this._svg = svgElement;
         var hexagons = svgElement.querySelectorAll('polygon');
+        for (var i = 0; i < hexagons.length; ++i) {
+            hexagons[i].cellId = i;
+        }
         this._cells = hexagons;
 	}
 
@@ -72,6 +75,10 @@ class Map {
     }
 
     highlightCell(cell, className) {
+	    // XXX hack
+	    var curClass = cell.getAttribute('class');
+	    if (curClass === 'own-peer' || curClass === 'connected-peer') return;
+
         cell.setAttribute('class', className);
     }
 
@@ -114,7 +121,7 @@ class Map {
         var hexagonSize = 0; // we use this to estimate the distance in terms of cells
         var bestDistance = 0;
         var bestCell = null;
-        for (var i=0; i<this._cells.length; ++i) {
+        for (var i = 0; i < this._cells.length; ++i) {
         	// Calculate position from bounding box.
         	var cell = this._cells[i];
         	var box = cell.getBoundingClientRect();

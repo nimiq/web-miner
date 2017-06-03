@@ -33,20 +33,21 @@ body > * {
     margin: auto;
 }
 
-
-header .logo svg {
-	margin-right: 16px;
+.own-peer {
+	fill: white;
 }
 
-
-.own-peer, .connected-peer, .known-peer {
-	transition: fill 1s;
-	-webkit-animation: node 4s ease infinite;
-	animation: node 4s ease infinite;
+.connected-peer {
+	-webkit-animation: connected 6s ease infinite;
+	animation: connected 6s ease infinite;
 }
 
+.known-peer {
+	-webkit-animation: known 6s ease infinite;
+	animation: known 6s ease infinite;
+}
 
-@-webkit-keyframes node {
+@-webkit-keyframes connected {
 	0% {
 		fill: #f6ae2d;
 	}
@@ -57,8 +58,7 @@ header .logo svg {
 		fill: #f6ae2d;
 	}
 }
-
-@keyframes node {
+@keyframes connected {
 	0% {
 		fill: #f6ae2d;
 	}
@@ -69,9 +69,31 @@ header .logo svg {
 		fill: #f6ae2d;
 	}
 }
+@-webkit-keyframes known {
+	0% {
+		stroke: #f6ae2d;
+	}
+	50% {
+		stroke: #805e19;
+	}
+	100% {
+		stroke: #f6ae2d;
+	}
+}
+@keyframes known {
+	0% {
+		stroke: #f6ae2d;
+	}
+	50% {
+		stroke: #805e19;
+	}
+	100% {
+		stroke: #f6ae2d;
+	}
+}
 
 
-@keyframes fade-in{
+@keyframes fade-in {
 	from {
 		opacity: 0;
 	}
@@ -85,6 +107,11 @@ header {
 	animation: 1s fade-in 5s forwards;
 	opacity: 0;
 }
+
+header .logo svg {
+	margin-right: 16px;
+}
+
 
 .button {
     /*background-image: linear-gradient(110deg, #e2a62f, #d7941a);*/
@@ -198,14 +225,22 @@ header {
 }
 
 #warning-miner-stopped {
+	transition: opacity 1s;
+	opacity: 0;
 	font-size: 24px;
+	padding: 1vh 0;
 }
 #warning-miner-stopped a {
 	font-size: 24px;
 }
-#warning-consensus-lost {
 
+#warning-consensus-lost {
+	transition: opacity 1s;
+	opacity: 0;
+	font-size: 24px;
+	padding: 1vh 0;
 }
+
 
 .facts {
 	width: 100%;
