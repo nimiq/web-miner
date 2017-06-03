@@ -15,7 +15,7 @@ if (isSupportedBrowser()) {
     var scripts = ['geoip.js', 'map.js', 'miner.js'];
     // Load main script.
     var head = document.getElementsByTagName('head')[0];
-    for (var i=0; i<scripts.length; ++i) {
+    for (var i = 0; i < scripts.length; ++i) {
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = scripts[i];

@@ -114,13 +114,6 @@ header {
 }
 
 
-#connBtn {
-	display: none;
-	opacity: 0;
-	animation: 1s fade-in 1s forwards;
-}
-
-
 .continue-anyways-button {
 	color: white;
 }
@@ -170,30 +163,29 @@ header {
 	}
 }
 
-#headingSection {
+#landingSection {
 	display: block;
 	text-shadow: 2px 1px 3px black;
 	position: absolute;
 	left: 16px;
 	right: 16px;
-	top: 20%;
-	bottom: 50%;
+	bottom: 25vh;
+	top: 20vh;
 	transition: opacity 1s;
 	animation: 3s scale-in ease-in;
 }
-
-#startSection {
-	display: block;
-	text-shadow: 2px 1px 3px black;
-	position: absolute;
-	left: 16px;
-	right: 16px;
-	bottom: 16px;
-	top: 66%;
-	transition: opacity 1s;
-	animation: 3s scale-in ease-in;
+#landingSection > div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
-
+#connectBtn {
+    display: none;
+    opacity: 0;
+    animation: 1s fade-in 1s forwards;
+}
 
 #miningSection {
     position: absolute;
@@ -205,6 +197,15 @@ header {
     opacity: 0;
 }
 
+#warning-miner-stopped {
+	font-size: 24px;
+}
+#warning-miner-stopped a {
+	font-size: 24px;
+}
+#warning-consensus-lost {
+
+}
 
 .facts {
 	width: 100%;
@@ -220,7 +221,7 @@ header {
 
 .facts .label {
 	font-size: 16px;
-	color: rgba(255,255,255,0.7);
+	color: rgba(255, 255, 255, .6);
 	text-transform: uppercase;
 	letter-spacing: 0.16em;
 	margin-bottom: 4px;
@@ -240,16 +241,21 @@ header {
 }
 
 #rewardInfo {
-	font-size: 24px;
-	letter-spacing: 0.5px;
+	font-size: 13px;
+	letter-spacing: 1pt;
     margin-top: 8px;
     opacity: 0;
+    color: rgba(255, 255, 255, .6);
+}
+#rewardInfo a {
+    color: inherit;
+    font-size: 12px;
+    text-decoration: underline;
+}
+#rewardInfo a:hover {
+    color: white;
 }
 
-#factBlockContainer {
-	min-width: 125px; /* so that the layout doesn't change when chaning from text "fetching"
-		to "mining on" */
-}
 
 #factBalanceContainer {
 	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
@@ -267,7 +273,7 @@ header {
 }
 
 #progressBarContainer {
-	background-color: rgba(255,255,255,0.7);
+	background-color: rgba(255, 255, 255, 0.7);
 	height: 3px;
 	width: 214px; /* width of the text "Synchronizing" */
 	margin-top: 8px;
@@ -330,11 +336,6 @@ header {
 		font-size: 14px;
 	}
 
-	#rewardInfo {
-		font-size: 20px;
-		letter-spacing: 0.5px;
-	}
-
 	#miningAnimation, #nimiqCoinIcon {
 		height: 25px;
 	}
@@ -352,11 +353,6 @@ header {
 
 	.facts .unit{
 		font-size: 12px;
-	}
-
-	#rewardInfo {
-		font-size: 16px;
-		letter-spacing: 0.5px;
 	}
 
 	#progress{
@@ -396,4 +392,7 @@ header {
 	#miningSection{
 		text-shadow: 2px 1px 3px black;
 	}
+    #rewardInfo a {
+        font-size: 12px;
+    }
 }

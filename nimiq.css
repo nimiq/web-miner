@@ -110,7 +110,7 @@ h2.large {
     font-size: 34px;
 }
 
-p{
+p {
     font-size: 13px;
     line-height: 18px;
 }
@@ -119,6 +119,7 @@ a {
     text-decoration: none;
     font-size: 17px;
     color: #e2a62f;
+    transition: color .3s, text-decoration .3s;
 }
 
 .button,

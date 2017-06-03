@@ -30,12 +30,14 @@ class FactsUI {
     }
 
     set expectedHashTime(expectedHashTime) {
-        if (!Number.isFinite(expectedHashTime)) {
+        if (!expectedHashTime || !Number.isFinite(expectedHashTime)) {
+            this._expectedHashTime.innerHTML = '&infin; years';
             return;
         }
+
         // the time is given in seconds. Convert it to an appropriate base unit:
-        let timesteps = [{unit:'minutes', factor:60}, {unit:'hours', factor:60}, {unit:'days', factor:24},
-            {unit:'months', factor:365/12}, {unit:'years', factor:12}, {unit:'decades', factor:10}];
+        let timesteps = [{unit: 'minutes', factor: 60}, {unit: 'hours', factor: 60}, {unit: 'days', factor: 24},
+            {unit: 'months', factor: 365 / 12}, {unit: 'years', factor: 12}, {unit: 'decades', factor: 10}];
         let convertedTime = expectedHashTime;
         let unit = 'seconds';
         for (let i=0; i<timesteps.length; ++i) {
@@ -101,25 +103,39 @@ class FactsUI {
 }
 
 class MinerUI {
-    constructor() {
-        this.connBtn = document.getElementById('connBtn');
-        this._progressBar = document.getElementById('progressBar');
+    constructor(miner) {
+        this.miner = miner;
+
+        this._connectBtn = document.querySelector('#connectBtn');
+        this._connectBtn.onclick = () => miner.connect();
+
+        this._toggleMinerBtn = document.querySelector('#toggleMinerBtn');
+        this._toggleMinerBtn.onclick = () => miner.toggleMining();
+
+        this._miningAnimation = document.querySelector('#miningAnimation');
+        this._miningAnimation.pauseAnimations();
+
+        this._progressBar = document.querySelector('#progressBar');
         this.facts = new FactsUI();
-        this._sections = {
-            'landing': document.getElementById("startSection"),
-            'mining': document.getElementById("miningSection")
-        };
+
+        this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
+        this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
+
+        const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
+        resumeMinerBtn.onclick = () => miner.toggleMining();
+
     }
 
     setState(newState) {
-        let states = ['landing', 'mining'];
+        let states = ['landing', 'loading', 'mining'];
         states.forEach(function(state) {
-            let style = this._sections[state].style;
+            const section = document.querySelector(`#${state}Section`);
+            const style = section.style;
             if (state === newState) {
                 setTimeout(function() {
                     // show as soon as the other page is hidden
                     style.display = 'block';
-                    this._sections[state].offsetWidth; // enforce style update
+                    section.offsetWidth; // enforce style update
                     style.opacity = 1; // fades for 1s
                 }.bind(this), 1000);
             } else {
@@ -136,7 +152,21 @@ class MinerUI {
     }
 
     enableConnectButton() {
-        this.connBtn.style.display = 'inline-block';
+        this._connectBtn.style.display = 'inline-block';
+    }
+
+    minerStopped() {
+        this._toggleMinerBtn.innerText = 'Resume mining';
+        if (this.miner.paused) {
+            this._warningMinerStopped.style.display = 'block';
+        }
+        this._miningAnimation.pauseAnimations();
+    }
+
+    minerWorking() {
+        this._toggleMinerBtn.innerText = 'Pause mining';
+        this._warningMinerStopped.style.display = 'none';
+        this._miningAnimation.unpauseAnimations();
     }
 }
 
@@ -259,27 +289,44 @@ MapUI.REFRESH_INTERVAL = 1000;
 
 class Miner {
     constructor($) {
-        this.ui = new MinerUI();
-        this.ui.connBtn.onclick = () => this._connect($);
-        this.ui.enableConnectButton();
-        this.syncing = true;
-        this.map = new MapUI($);
-    }
-
-    _initCore($) {
         this.$ = $;
 
-        $.consensus.on('established', () => this._onConsensusEstablished());
-        $.consensus.on('lost', () => this._onConsensusLost());
-        $.consensus.on('syncing', _targetHeight => this._onSyncing(_targetHeight));
+        this.ui = new MinerUI(this);
+        this.ui.enableConnectButton();
 
-        $.blockchain.on('head-changed', _ => this._onHeadChanged());
-        $.network.on('peers-changed', () => this._onPeersChanged());
-        $.miner.on('hashrate-changed', () => this._onHashrateChanged());
+        this.map = new MapUI($);
 
-        $.network.connect();
+        this.syncing = true;
+        this.paused = false;
+    }
+
+    connect() {
+        this.$.consensus.on('established', () => this._onConsensusEstablished());
+        this.$.consensus.on('lost', () => this._onConsensusLost());
+        this.$.consensus.on('syncing', _targetHeight => this._onSyncing(_targetHeight));
+
+        this.$.blockchain.on('head-changed', _ => this._onHeadChanged());
+        this.$.network.on('peers-changed', () => this._onPeersChanged());
+
+        this.$.miner.on('hashrate-changed', () => this._onHashrateChanged());
+        this.$.miner.on('start', () => this._onMinerChanged());
+        this.$.miner.on('stop', () => this._onMinerChanged());
+
+        this.$.network.connect();
+
+        this.ui.setState('mining');
 
         this._onHeadChanged();
+    }
+
+    toggleMining() {
+        if (this.$.miner.working) {
+            this.paused = true;
+            this.$.miner.stopWork();
+        } else {
+            this.paused = false;
+            this.$.miner.startWork();
+        }
     }
 
     get hashrate() {
@@ -299,7 +346,9 @@ class Miner {
             .then(balance => this._onBalanceChanged(balance));
         this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance));
 
-        this.$.miner.startWork();
+        if (!this.paused) {
+            this.$.miner.startWork();
+        }
 
         this.ui.facts.syncing = false;
         this.syncing = false;
@@ -332,6 +381,16 @@ class Miner {
         }
     }
 
+    _onMinerChanged() {
+        if (this.$.miner.working) {
+            this.ui.minerWorking();
+        } else {
+            this.ui.minerStopped();
+            this.ui.facts.myHashrate = 0;
+            this.ui.facts.expectedHashTime = null;
+        }
+    }
+
     _onGlobalHashrateChanged() {
         this.ui.facts.globalHashrate = this.globalHashrate;
         this._onExpectedHashTimeChanged();
@@ -349,11 +408,6 @@ class Miner {
 
     _onBalanceChanged(balance) {
         this.ui.facts.myBalance = balance.value;
-    }
-
-    _connect($) {
-        this.ui.setState('mining');
-        this._initCore($)
     }
 }
 
