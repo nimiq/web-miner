@@ -147,15 +147,18 @@ class MapUI {
         this._polled = [];
         this._connectedPeers = new Nimiq.HashMap();
         this._knownPeers = new Nimiq.HashMap();
+        this._cellCount = {};
 
         $.network.on('peer-joined', peer => this._onPeerJoined(peer));
         $.network.on('peer-left', peer => this._onPeerLeft(peer));
         setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
+
+        GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
     }
 
     _onPeerJoined(peer) {
         var netAddr = peer.netAddress;
-        if (netAddr) {
+        if (netAddr && !this._connectedPeers.contains(peer.peerAddress)) {
             GeoIP.retrieve(response => this._highlightConnectedPeer(peer.peerAddress, response), netAddr.host);
         }
     }
@@ -163,18 +166,53 @@ class MapUI {
     _onPeerLeft(peer) {
         var cell = this._connectedPeers.get(peer.peerAddress);
         if (cell) {
-            map.unhighlightCell(cell);
+            // Only remove highlight if there are no more peers on this cell.
+            if (this._decCellCount(cell) === 0) {
+                this._map.unhighlightCell(cell);
+            }
             this._connectedPeers.remove(peer.peerAddress);
+        }
+    }
+
+    _noise(lat, lng) {
+        return  (1 - Math.random()*2) * 0.5;
+    }
+
+    _incCellCount(cell) {
+        if (!this._cellCount[cell]) {
+            this._cellCount[cell] = 0;
+        }
+        this._cellCount[cell]++;
+    }
+
+    _decCellCount(cell) {
+        if (!this._cellCount[cell]) {
+            this._cellCount[cell] = 0;
+        }
+        if (this._cellCount[cell] > 0) {
+            return --this._cellCount[cell];
+        }
+        return 0;
+    }
+
+    _highlightOwnPeer(response) {
+        if (response && response.location && response.location.latitude) {
+            var loc = response.location;
+            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer');
+            if (cell) {
+                this._ownCell = cell;
+                this._incCellCount(cell);
+            }
         }
     }
 
     _highlightConnectedPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'connected-peer');
+            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer');
             if (cell) {
-                this._knownPeers.remove(addr);
                 this._connectedPeers.put(addr, cell);
+                this._incCellCount(cell);
             }
         }
     }
@@ -182,16 +220,18 @@ class MapUI {
     _highlightKnownPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'known-peer');
+            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'known-peer');
             if (cell) {
                 var numKnown = this._knownPeers.length;
-                this._knownPeers.put(addr, response);
+                this._knownPeers.put(addr, cell);
                 // if too many are already highlighted, remove a random one
                 if (numKnown >= MapUI.KNOWN_PEERS_MAX) {
                     var i = Math.floor(Math.random() * numKnown);
                     var addr = this._knownPeers.keys()[i];
                     var cell = this._knownPeers.get(addr);
-                    this._map.unhighlightCell(cell);
+                    if (this._decCellCount(cell) === 0) {
+                        this._map.unhighlightCell(cell);
+                    }
                     this._knownPeers.remove(addr);
                 }
             }
@@ -199,14 +239,12 @@ class MapUI {
     }
 
     _pollPeers() {
-        console.log('Map before', this._polled);
         if (this._polled.length === 0) {
             this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS, Nimiq.Services.DEFAULT);
             // choose random subset
             var index = Math.floor(Math.random() * (this._polled.length + 1));
             this._polled = this._polled.splice(index, 10);
         }
-        console.log('Map after', this._polled);
         if (this._polled.length > 0) {
             var wsAddr = this._polled.shift();
             if (!this._connectedPeers.contains(wsAddr)) {

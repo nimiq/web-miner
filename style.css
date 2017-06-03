@@ -39,7 +39,7 @@ header .logo svg {
 }
 
 
-.connected-peer, .known-peer {
+.own-peer, .connected-peer, .known-peer {
 	transition: fill 1s;
 	-webkit-animation: node 4s ease infinite;
 	animation: node 4s ease infinite;
