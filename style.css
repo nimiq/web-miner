@@ -391,7 +391,7 @@ header .logo svg {
 
 
 /* Tablet / Phone */
-@media screen and (max-width: 800px){
+@media screen and (max-width: 920px){
 	.facts {
 		flex-direction: column;
 		align-items: center;
@@ -424,5 +424,9 @@ header .logo svg {
     #miningSection{
     	width: 90%;
     	left: 5%;
+    }
+
+    #map{
+    	opacity: 0.3;
     }
 }
