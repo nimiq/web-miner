@@ -456,7 +456,7 @@ header .logo svg {
     }
     .fact {
         width: 64%;
-        margin-bottom: 6px;
+        margin-bottom: 2px;
     }
     .facts .label {
         margin-bottom: 0px;
@@ -471,6 +471,9 @@ header .logo svg {
     }
     header {
         padding: 16px;
+    }
+    header .logo svg {
+        margin-right: 12px;
     }
     #progress {
         font-size: 16px;
@@ -487,7 +490,9 @@ header .logo svg {
         padding-top: 0;
     }
     #rewardInfo a {
-        display: none;
+        /* display: none; */
+        display: block;
+        padding: 1px;
     }
     #map svg {
         width: 102%;
@@ -495,7 +500,14 @@ header .logo svg {
         box-sizing: border-box;
     }
     #initialLoadingSpinner {
-        width: 56px;
+        width: 48px;
+    }
+    #progressBarContainer {
+        margin-top: 2px;
+    }
+
+    #progressContainer{
+        padding-bottom: 8px;
     }
 }
 
