@@ -154,7 +154,7 @@ header .logo svg {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     border: 2px solid #e2a62f;
     display: inline-block;
-    font-size: 24px;
+    font-size: 20px;
     text-shadow: none;
     /* transition: color .3s, background-color .3s, border .3s; */
     vertical-align: middle;
@@ -209,7 +209,7 @@ header .logo svg {
 
 .warning-advice {
 	color: #ffc107;
-	font-size: 34px;
+	font-size: 24px;
 }
 
 #enable-javascript {
@@ -456,5 +456,15 @@ header .logo svg {
 
     #rewardInfo a{
     	display: none;
+    }
+
+    #map svg{
+    	width: 102%;
+    	/* padding: 8px; */
+    	box-sizing: border-box;
+    }
+
+    #initialLoadingSpinner{
+    	width: 56px;
     }
 }
