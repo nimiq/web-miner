@@ -43,7 +43,6 @@ body > * {
 .peer-desc {
     color: #ffc107;
     /* height: 64px; */
-    margin-top: -21px;
     width: 200px;
     margin: 0;
     background: rgba(0,0,0, 0.3);
@@ -61,6 +60,7 @@ body > * {
     padding-bottom: 8px;
     text-align: center;
     height: 64px;
+    margin-top: -24px;
 }
 
 

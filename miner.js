@@ -194,9 +194,9 @@ class PeerDescUI {
     }
 
     show(desc) {
-        this._setNodeType(desc.addr && desc.addr.protocol !== 1 ); // TODO: Remove EVIL HACK !!!
-        const isBrowser = desc.addr.protocol !== 1 ? 'Browser' : 'Backbone';
-        this._text.innerHTML = `<b>${desc.status} ${isBrowser}</b><br>${desc.country} ${desc.city}<br>${desc.addr.host||''}`;
+        this._setNodeType(!desc.addr || desc.addr.protocol !== 1); // TODO: Remove EVIL HACK !!!
+        const isBrowser = !desc.addr || desc.addr.protocol !== 1 ? 'Browser' : 'Backbone';
+        this._text.innerHTML = `<b>${desc.status} ${isBrowser}</b><br>${desc.country} ${desc.city}<br>${desc.addr?desc.addr.host||'':''}`;
         this._container.style.opacity = 1;
     }
 
@@ -281,7 +281,7 @@ class MapUI {
     _highlightOwnPeer(response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, null, 'My Location');
+            var locDesc = this._responseToDesc(response, null, 'My');
             var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer', locDesc);
             if (cell) {
                 this._ownCell = cell;
