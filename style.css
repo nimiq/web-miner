@@ -54,6 +54,10 @@ body > * {
     transition: 0.3s opacity;
     text-align: center;
     pointer-events: none;
+    position: absolute;
+    margin-left: -100px;
+    left: 50%;
+    top: 128px;
 }
 .peer-desc-container {
     width: 100%;
@@ -327,7 +331,7 @@ header .logo svg {
     color: rgba(255, 255, 255, .6);
     text-transform: uppercase;
     letter-spacing: 0.16em;
-    margin-bottom: 6px;
+    margin-bottom: 0px;
 }
 
 .facts .number {
