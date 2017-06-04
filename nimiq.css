@@ -29,6 +29,7 @@ header .logo {
     align-items: center;
     color: white;
     width: 168px;
+    font-size: 15px;
 }
 
 header .logo img {
@@ -221,3 +222,4 @@ footer a {
         display: none;
     }
 }
+

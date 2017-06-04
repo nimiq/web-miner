@@ -55,18 +55,27 @@ body > * {
     transition: 0.3s opacity;
     text-align: center;
     pointer-events: none;
-    position: absolute;
+    position: fixed;
     margin-left: -100px;
     left: 50%;
     top: 128px;
 }
+
+@media (max-height: 800px) {
+    .peer-desc {
+        top: 40px;
+    }
+}
+
 .peer-desc-container {
     width: 100%;
-    padding-bottom: 32px;
+    /* padding-bottom: 32px; */
     text-align: center;
-    height: 64px;
+    /* height: 64px; */
+    pointer-events: none;
 }
-.peer-desc img{
+
+.peer-desc img {
     width: 24px;
     display: inline-block;
 }
@@ -144,8 +153,8 @@ body > * {
 
 /*
 header {
-	animation: 1s fade-in 5s forwards;
-	opacity: 0;
+    animation: 1s fade-in 5s forwards;
+    opacity: 0;
 }
 */
 
@@ -258,15 +267,15 @@ header .logo svg {
 }
 
 #disclaimer {
-	position: fixed !important;
-	bottom: 16px !important;
-	width: 100%;
-	color: rgba(255, 255, 255, 0.7);
+    position: fixed !important;
+    bottom: 16px !important;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 #copyright {
-	margin-top: 32px;
-	color: rgba(255,255,255,0.4);
+    margin-top: 32px;
+    color: rgba(255, 255, 255, 0.4);
 }
 
 #initialLoadingSpinner {
@@ -280,7 +289,8 @@ header .logo svg {
     display: none;
 }
 
-#connectBtn, #disclaimer {
+#connectBtn,
+#disclaimer {
     display: none;
     animation: 700ms fade-in 700ms both;
 }
@@ -301,6 +311,7 @@ header .logo svg {
     font-size: 24px;
     padding: 1vh 0;
 }
+
 #warning-miner-stopped a {
     font-size: 24px;
 }
@@ -311,6 +322,7 @@ header .logo svg {
     font-size: 24px;
     padding: 1vh 0;
 }
+
 #warning-consensus-lost a {
     font-size: 24px;
 }
@@ -399,7 +411,7 @@ header .logo svg {
     height: 100%;
     width: 100%;
     /* set the value of the progress bar via transform instead of width. that way, we get subpixel
-	precision and thus a smoother animation */
+    precision and thus a smoother animation */
     transform: scaleX(0) translateZ(0);
     -webkit-transform: scaleX(0) translateZ(0);
     -moz-transform: scaleX(0) translateZ(0);
@@ -411,7 +423,7 @@ header .logo svg {
 .syncing #progress {
     animation: 1s fade-in 0s normal forwards;
     /* using animation instead of opacity such that it works well
-		with .synched #progress */
+        with .synched #progress */
 }
 
 .synced #progress {
@@ -421,7 +433,7 @@ header .logo svg {
 .syncing #progressBarContainer {
     animation: 1s fade-in 0s normal forwards;
     /* using animation instead of opacity such that it works well
-		with .synched #progressBarContainer */
+        with .synched #progressBarContainer */
 }
 
 .synced #progressBarContainer {
@@ -489,6 +501,7 @@ header .logo svg {
 
 
 /* Large Screen */
+
 @media screen and (min-width: 1080px) {
     #map svg {
         /* width: 1082px; */
@@ -498,6 +511,7 @@ header .logo svg {
         transform: scale(1.28);
     }
 }
+
 @media screen and (min-width: 1400px) {
     #map svg {
         /* width: 1082px; */
@@ -507,6 +521,7 @@ header .logo svg {
         transform: scale(1.5);
     }
 }
+
 @media screen and (min-width: 1800px) {
     #map svg {
         /* width: 1082px; */
