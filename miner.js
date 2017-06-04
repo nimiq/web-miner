@@ -43,7 +43,7 @@ class FactsUI {
         let unit = 'seconds';
         for (let i = 0; i < timesteps.length; ++i) {
             let timestep = timesteps[i];
-            if (convertedTimmape / timestep.factor < 1) {
+            if (convertedTime / timestep.factor < 1) {
                 break;
             } else {
                 convertedTime /= timestep.factor;
