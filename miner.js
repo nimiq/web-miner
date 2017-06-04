@@ -160,7 +160,7 @@ class MinerUI {
     minerWorking() {
         this._toggleMinerBtn.innerText = 'Pause mining';
         if (!this._miningAnimationStarted) {
-            document.querySelector('#circleanimate').beginElement();
+            //document.querySelector('#circleanimate').beginElement();
             this._miningAnimationStarted = true;
         } else {
             this._miningAnimation.unpauseAnimations();

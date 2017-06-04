@@ -27,7 +27,7 @@ body > * {
     padding: 60px 16px;
 }
 #map svg {
-    fill: #031a38;
+    fill: rgba(255, 255, 255, .25);
     max-height: 80vh;
     width: 85vw;
     margin: auto;
@@ -35,8 +35,8 @@ body > * {
 
 .own-peer {
 	fill: white;
-	-webkit-animation: own 6s ease infinite;
-	animation: own 6s ease infinite;
+	//-webkit-animation: own 6s ease infinite;
+	//animation: own 6s ease infinite;
 }
 @-webkit-keyframes own {
 	0% {
@@ -62,8 +62,9 @@ body > * {
 }
 
 .connected-peer {
-	-webkit-animation: connected 6s ease infinite;
-	animation: connected 6s ease infinite;
+	fill: #f6ae2d;
+	//-webkit-animation: connected 6s ease infinite;
+	//animation: connected 6s ease infinite;
 }
 @-webkit-keyframes connected {
 	0% {
@@ -89,8 +90,9 @@ body > * {
 }
 
 .known-peer {
-	-webkit-animation: known 6s ease infinite;
-	animation: known 6s ease infinite;
+	stroke: #f6ae2d;
+	//-webkit-animation: known 6s ease infinite;
+	//animation: known 6s ease infinite;
 }
 @-webkit-keyframes known {
 	0% {
@@ -215,7 +217,6 @@ header .logo svg {
 
 #landingSection {
 	display: block;
-	text-shadow: 2px 1px 3px black;
 	position: absolute;
 	left: 16px;
 	right: 16px;
