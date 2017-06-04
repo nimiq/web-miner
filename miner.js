@@ -216,7 +216,7 @@ class MapUI {
         }
     }
 
-    _noise(lat, lng) {
+    _noise() {
         return (1 - Math.random() * 2) * 0.9;
     }
 

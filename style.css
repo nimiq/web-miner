@@ -242,8 +242,7 @@ header .logo svg {
     text-align: center;
 }
 #connectBtn {
-    /* display: none; */
-    ne; */
+    display: none;
     opacity: 0;
     animation: 700ms fade-in 700ms forwards;
 }
@@ -312,9 +311,9 @@ header .logo svg {
 #rewardInfo {
 	font-size: 13px;
 	letter-spacing: 1pt;
-    margin-top: 8px;
-    opacity: 0;
-    color: rgba(255, 255, 255, .6);
+	margin-top: 8px;
+	opacity: 0;
+	color: rgba(255, 255, 255, .6);
 }
 #rewardInfo a {
     color: inherit;
@@ -426,10 +425,18 @@ header .logo svg {
     #miningSection{
     	width: 90%;
     	left: 5%;
-    	top: 72px;
+    	bottom: 16px;
     }
 
     #map{
     	opacity: 0.3;
+    }
+
+    #rewardInfo{
+    	padding-top: 0;
+    }
+
+    #rewardInfo a{
+    	display: none;
     }
 }
