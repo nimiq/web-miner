@@ -256,11 +256,12 @@ header .logo svg {
 	position: fixed !important;
 	bottom: 16px !important;
 	width: 100%;
-	color: rgba(255, 255, 255, .6)
+	color: rgba(255, 255, 255, 0.7);
 }
 
 #copyright {
-	margin-top: 8px;
+	margin-top: 32px;
+	color: rgba(255,255,255,0.4);
 }
 
 #initialLoadingSpinner {
