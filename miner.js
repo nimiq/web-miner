@@ -183,19 +183,19 @@ class PeerDescUI {
         this._text = document.querySelector('.peer-desc .peer-desc-text');
     }
 
-    // _setNodeType(isBrowser) {
-    //     if (isBrowser) {
-    //         this._iconBrowser.style.display = 'block';
-    //         this._iconBackbone.style.display = 'none';
-    //     } else {
-    //         this._iconBrowser.style.display = 'none';
-    //         this._iconBackbone.style.display = 'block';
-    //     }
-    // }
+    _setNodeType(isBrowser) {
+        if (isBrowser) {
+            this._iconBrowser.style.display = 'inline-block';
+            this._iconBackbone.style.display = 'none';
+        } else {
+            this._iconBrowser.style.display = 'none';
+            this._iconBackbone.style.display = 'inline-block';
+        }
+    }
 
     show(desc) {
-        // this._setNodeType(desc.addr.protocol !== 1 ); // TODO: Remove EVIL HACK !!!
-        const isBrowser = desc.addr.protocol !== 1 ? 'Browser' : 'Backbone Node'
+        this._setNodeType(desc.addr && desc.addr.protocol !== 1 ); // TODO: Remove EVIL HACK !!!
+        const isBrowser = desc.addr.protocol !== 1 ? 'Browser' : 'Backbone';
         this._text.innerHTML = `<b>${desc.status} ${isBrowser}</b><br>${desc.country} ${desc.city}<br>${desc.addr.host||''}`;
         this._container.style.opacity = 1;
     }
