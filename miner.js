@@ -43,7 +43,7 @@ class FactsUI {
         let unit = 'seconds';
         for (let i = 0; i < timesteps.length; ++i) {
             let timestep = timesteps[i];
-            if (convertedTime / timestep.factor < 1) {
+            if (convertedTimmape / timestep.factor < 1) {
                 break;
             } else {
                 convertedTime /= timestep.factor;
@@ -176,8 +176,8 @@ class MinerUI {
 
 class MapUI {
     constructor($) {
-        const mapElem = document.querySelector('#map svg');
-        this._map = new Map(mapElem);
+        this._mapElem = document.querySelector('#map svg');
+        this._map = new Map(this._mapElem);
         this.$ = $;
         this._polled = [];
         this._connectedPeers = new Nimiq.HashMap();
@@ -190,8 +190,12 @@ class MapUI {
 
         GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
 
-        mapElem.onmousemove = e => this._mapHighlight(e);
+        this._mapElem.onmousemove = e => this._mapHighlight(e);
         this._locationDesc = document.querySelector('#map .location-desc');
+    }
+
+    fadeIn(){
+        this._mapElem.style.opacity = 1;
     }
 
     _mapHighlight(e) {
@@ -338,6 +342,7 @@ class Miner {
 
         this.$.network.connect();
 
+        this.map.fadeIn();
         this.ui.setState('mining');
 
         this._onHeadChanged();

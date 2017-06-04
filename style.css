@@ -27,10 +27,12 @@ body > * {
     padding: 60px 16px;
 }
 #map svg {
-    fill: rgba(255, 255, 255, .25);
+    fill: rgba(255, 255, 255, .3);
     max-height: 80vh;
     width: 85vw;
     margin: auto;
+    opacity: 0.3;
+    transition: 1s opacity;
 }
 
 .location-desc{
@@ -154,6 +156,8 @@ header .logo svg {
     font-size: 24px;
     text-shadow: none;
     /* transition: color .3s, background-color .3s, border .3s; */
+    vertical-align: middle;
+    line-height: 31px;
 }
 .button:hover {
     color: #e2a62f;
@@ -227,9 +231,10 @@ header .logo svg {
 	position: absolute;
 	left: 16px;
 	right: 16px;
-	bottom: 25vh;
-	top: 20vh;
+	height: 166px;
+	top: 50%;
 	transition: opacity 1s;
+	margin-top: -124px;
 }
 #landingSection h1 {
 	animation: 700ms scale-in ease-in;
@@ -246,6 +251,7 @@ header .logo svg {
 	display: block;
 	margin: auto;
 	animation: 1s fade-in 1s both;
+	width: 80px;
 }
 .warning #initialLoadingSpinner {
 	display: none;
@@ -346,7 +352,8 @@ header .logo svg {
 
 #progress{
 	color: #ffc107;
-	font-size: 30px;
+	font-size: 26px;
+	line-height: 32px;
 }
 
 #progressBarContainer {
@@ -356,6 +363,7 @@ header .logo svg {
 	margin-top: 8px;
 	margin-left: auto;
 	margin-right: auto;
+	border-radius: 3px;
 }
 
 #progressBar {
@@ -378,7 +386,7 @@ header .logo svg {
 }
 
 .synced #progress {
-	animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
+	/* animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards; */
 }
 
 .syncing #progressBarContainer {
@@ -387,7 +395,7 @@ header .logo svg {
 }
 
 .synced #progressBarContainer {
-	animation: 1s fade-in 4s reverse forwards;
+	/* animation: 1s fade-in 4s reverse forwards; */
 }
 
 .synced #rewardInfo {
