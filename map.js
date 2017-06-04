@@ -211,6 +211,7 @@ class Map {
                 || link.end === startCell && link.start === endCell) {
                 // we found the link
                 link.path.parentElement.removeChild(link.path);
+                this._links.splice(i, 1);
                 return;
             }
         }
