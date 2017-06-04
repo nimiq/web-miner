@@ -39,7 +39,7 @@ body > * {
 }
 
 .own-peer {
-	fill: red;
+	fill: #4bf12a;
 	//
 	-webkit-animation: own 6s ease infinite;
 	//
@@ -134,12 +134,12 @@ body > * {
     }
 }
 
-
+/*
 header {
 	animation: 1s fade-in 5s forwards;
 	opacity: 0;
 }
-
+*/
 header .logo svg {
 	margin-right: 16px;
 }
@@ -162,7 +162,7 @@ header .logo svg {
 }
 .secondary-button {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .2);
-    border: 2px solid white;
+    border: 2px solid rgba(255,255,255,0.7);
     color: white;
     transition: color .3s, border .3s;
 }
@@ -213,7 +213,7 @@ header .logo svg {
 
 @keyframes scale-in {
 	from {
-		transform: translateY(16px);
+		transform: translateY(-8px);
 		opacity: 0;
 	}
 	to {
