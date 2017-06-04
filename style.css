@@ -248,7 +248,7 @@ header .logo svg {
 
 #miningSection {
     position: absolute;
-	width: 75%;
+    width: 75%;
     bottom: 32px;
     left: 12.5%;
     display: none;
@@ -287,7 +287,7 @@ header .logo svg {
 }
 
 .facts .label {
-	font-size: 16px;
+	font-size: 13px;
 	color: rgba(255, 255, 255, .6);
 	text-transform: uppercase;
 	letter-spacing: 0.16em;
@@ -295,7 +295,7 @@ header .logo svg {
 }
 
 .facts .number {
-	font-size: 45px;
+	font-size: 33px;
 }
 
 .facts .unit {
@@ -304,7 +304,7 @@ header .logo svg {
 }
 
 #miningAnimation, #nimiqCoinIcon {
-	height: 32px;
+	height: 23px;
 }
 
 #rewardInfo {
@@ -390,83 +390,39 @@ header .logo svg {
 
 
 
-@media screen and (max-width: 1500px) {
-	.facts .label{
-		font-size: 14px;
-	}
-
-	.facts .number{
-		font-size: 34px;
-	}
-
-	.facts .unit{
-		font-size: 14px;
-	}
-
-	#miningAnimation, #nimiqCoinIcon {
-		height: 25px;
-	}
-}
-
-
-@media screen and (max-width: 1279px) {
-	.facts .label{
-		font-size: 12px;
-	}
-
-	.facts .number{
-		font-size: 24px;
-	}
-
-	.facts .unit{
-		font-size: 12px;
-	}
-
-	#progress{
-		font-size: 24px;
-	}
-
-	#progressBarContainer {
-		width: 151px;  /* width of the text "Synchronizing" */
-	}
-
-	#miningAnimation, #nimiqCoinIcon {
-		height: 18px;
-	}
-
-	#warning-old-browser {
-		font-size: 20px;
-	}
-
-	.continue-anyways-button {
-		font-size: 20px;
-	}
-}
-
-@media screen and (max-width: 1100px) {
-	.facts .label{
-		min-height: 28px;
-	}
-}
-
-
 /* Tablet / Phone */
 @media screen and (max-width: 800px){
 	.facts {
 		flex-direction: column;
 		align-items: center;
+		margin-bottom: 0;
 	}
 	.fact {
-		width: 50%;
+		width: 64%;
 		margin-bottom: 6px;
 	}
 	.facts .label {
-		margin-bottom: 2px;
+		margin-bottom: 0px;
+		min-height: 13px;
+		line-height: 12px;
 	}
 	#miningSection{
-		text-shadow: 2px 1px 3px black;
+		/* text-shadow: 2px 1px 3px black; */
 	}
     #rewardInfo a {
         font-size: 12px;
+    }
+
+    header{
+    	padding: 16px;
+    }
+
+    #progress{
+    	font-size: 16px;
+    }
+
+    #miningSection{
+    	width: 90%;
+    	left: 5%;
     }
 }
