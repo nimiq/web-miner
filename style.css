@@ -44,7 +44,7 @@ body > * {
 }
 
 .own-peer {
-	fill: #4bf12a;
+	fill: #ffffff;
 	-webkit-animation: connected 1s ease 3s;
 	animation: connected 1s ease 3s;
 	will-change: opacity;

@@ -160,7 +160,7 @@ class MinerUI {
 
     minerStopped() {
         this._toggleMinerBtn.innerText = 'Resume mining';
-        this._miningAnimation.pauseAnimations();
+        //this._miningAnimation.pauseAnimations();
     }
 
     minerWorking() {
@@ -169,7 +169,7 @@ class MinerUI {
             //document.querySelector('#circleanimate').beginElement();
             this._miningAnimationStarted = true;
         } else {
-            this._miningAnimation.unpauseAnimations();
+            //this._miningAnimation.unpauseAnimations();
         }
     }
 }
