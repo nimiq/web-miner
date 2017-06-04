@@ -240,8 +240,7 @@ header .logo svg {
     text-align: center;
 }
 #connectBtn {
-    /* display: none; */
-    ne; */
+    display: none;
     opacity: 0;
     animation: 700ms fade-in 700ms forwards;
 }
