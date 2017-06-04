@@ -33,6 +33,11 @@ body > * {
     margin: auto;
 }
 
+.location-desc{
+	color: #ffc107;
+	height: 24px;
+}
+
 .own-peer {
 	fill: white;
 	//-webkit-animation: own 6s ease infinite;
@@ -146,7 +151,7 @@ header .logo svg {
     display: inline-block;
     font-size: 24px;
     text-shadow: none;
-    transition: color .3s, background-color .3s, border .3s;
+    /* transition: color .3s, background-color .3s, border .3s; */
 }
 .button:hover {
     color: #e2a62f;
@@ -225,7 +230,7 @@ header .logo svg {
 	transition: opacity 1s;
 }
 #landingSection h1 {
-	animation: 3s scale-in ease-in;
+	animation: 700ms scale-in ease-in;
 }
 #landingSection > div {
     position: absolute;
@@ -235,9 +240,10 @@ header .logo svg {
     text-align: center;
 }
 #connectBtn {
-    display: none;
+    /* display: none; */
+    ne; */
     opacity: 0;
-    animation: 2s fade-in 1s forwards;
+    animation: 700ms fade-in 700ms forwards;
 }
 
 #miningSection {

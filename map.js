@@ -72,14 +72,18 @@ class Map {
 
     unhighlightCell(cell) {
         cell.setAttribute('class', '');
+        cell.data = null;
     }
 
-    highlightCell(cell, className) {
+    highlightCell(cell, className, data) {
 	    // XXX hack
 	    var curClass = cell.getAttribute('class');
 	    if (curClass === 'own-peer' || curClass === 'connected-peer') return;
 
         cell.setAttribute('class', className);
+
+        // XXX another hack
+        cell.data = data;
     }
 
     _convertCoordinates(latitude, longitude) {
@@ -144,11 +148,11 @@ class Map {
         return bestDistance > Map.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
     }
 
-    highlightLocation(latitude, longitude, className) {
+    highlightLocation(latitude, longitude, className, data) {
         var convertedCoordinates = this._convertCoordinates(latitude, longitude);
         var closestCell = this._getClosestCell(convertedCoordinates.x, convertedCoordinates.y);
         if (closestCell) {
-        	this.highlightCell(closestCell, className);
+        	this.highlightCell(closestCell, className, data);
 		}
 		return closestCell;
 	}

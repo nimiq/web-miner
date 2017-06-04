@@ -170,7 +170,8 @@ class MinerUI {
 
 class MapUI {
     constructor($) {
-        this._map = new Map(document.querySelector('#map svg'));
+        const mapElem = document.querySelector('#map svg');
+        this._map = new Map(mapElem);
         this.$ = $;
         this._polled = [];
         this._connectedPeers = new Nimiq.HashMap();
@@ -182,6 +183,18 @@ class MapUI {
         setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
 
         GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
+
+        mapElem.onmousemove = e => this._mapHighlight(e);
+        this._locationDesc = document.querySelector('#map .location-desc');
+    }
+
+    _mapHighlight(e){
+        if(e.target.data){
+            const data = e.target.data;
+            this._locationDesc.textContent = data
+        } else{
+            this._locationDesc.textContent = ''
+        }
     }
 
     _onPeerJoined(peer) {
@@ -237,7 +250,8 @@ class MapUI {
     _highlightConnectedPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer');
+            var locDesc = response.country + ' | ' + response.city
+            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer', locDesc);
             if (cell) {
                 this._connectedPeers.put(addr, cell);
                 this._incCellCount(cell);
