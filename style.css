@@ -1,17 +1,19 @@
-html, body {
-	background-color: #042146;
-	overflow: hidden;
-	color: rgba(255, 255, 255, 0.88);
-	text-align: center;
-	font-family: 'Source Sans Pro', sans-serif;
+html,
+body {
+    background-color: #042146;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.88);
+    text-align: center;
+    font-family: 'Source Sans Pro', sans-serif;
 }
-
 
 body > * {
-	z-index: 1;
+    z-index: 1;
 }
 
+
 /* map styling */
+
 #map {
     position: absolute;
     top: 0;
@@ -20,12 +22,14 @@ body > * {
     height: 100%;
     display: table;
 }
+
 #map > div {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
     padding: 60px 16px;
 }
+
 #map svg {
     fill: rgba(255, 255, 255, .3);
     /* max-height: 80vh; */
@@ -36,79 +40,82 @@ body > * {
     max-width: 800px;
 }
 
-.location-desc{
-	color: #ffc107;
-	height: 24px;
-	margin-top: -16px;
-	padding-bottom: 8px;
+.location-desc {
+    color: #ffc107;
+    height: 24px;
+    margin-top: -16px;
+    padding-bottom: 8px;
 }
 
 .own-peer {
-	fill: #ffffff;
-	-webkit-animation: connected 1s ease 3s;
-	animation: connected 1s ease 3s;
-	will-change: opacity;
+    fill: #ffffff;
+    -webkit-animation: connected 1800ms ease 8;
+    animation: connected 1800ms ease 8;
 }
 
 .connected-peer {
-	fill: #f6ae2d;
-	-webkit-animation: connected 1s ease 3s;
-	animation: connected 1s ease 3s;
-	will-change: opacity;
+    fill: #f6ae2d;
+    -webkit-animation: connected 1800ms ease 3;
+    animation: connected 1800ms ease 3;
 }
 
 .known-peer {
-	stroke: #f6ae2d;
-	-webkit-animation: connected 1s ease 3s;
-	animation: connected 1s ease 3s;
-	will-change: opacity;
+    stroke: #f6ae2d;
+    -webkit-animation: connected 1800ms ease 1;
+    animation: connected 1800ms ease 1;
+}
+
+.own-peer,
+.connected-peer,
+.known-peer {
+    will-change: opacity;
 }
 
 @-webkit-keyframes connected {
-	0% {
-		opacity: 0.5;
-	}
-	25%{
-		opacity: 1;
-	}
-	50%{
-		opacity: 0.5;
-	}
-	100% {
-		opacity: 0;
-	}
+    0% {
+        opacity: 0.5;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+    }
 }
+
 @keyframes connected {
-	0% {
-		opacity: 0.5;
-	}
-	25%{
-		opacity: 1;
-	}
-	50%{
-		opacity: 0.5;
-	}
-	100% {
-		opacity: 0;
-	}
+    0% {
+        opacity: 0.5;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 .link {
-	stroke: #e2a62f;
-	stroke-width: 1;
-	stroke-dasharray: 5 5;
+    stroke: #e2a62f;
+    stroke-width: 1;
+    stroke-dasharray: 5 5;
 }
 
-
-
 @keyframes fade-in {
-	from {
-		opacity: 0;
-	}
-	to {
+    from {
+        opacity: 0;
+    }
+    to {
         opacity: 1;
     }
 }
+
 
 /*
 header {
@@ -116,10 +123,10 @@ header {
 	opacity: 0;
 }
 */
-header .logo svg {
-	margin-right: 16px;
-}
 
+header .logo svg {
+    margin-right: 16px;
+}
 
 .button {
     /*background-image: linear-gradient(110deg, #e2a62f, #d7941a);*/
@@ -134,86 +141,89 @@ header .logo svg {
     line-height: 28px;
     margin: 8px;
 }
+
 .button:hover {
     color: #e2a62f;
     //border-color: white;
     background: transparent;
 }
+
 .secondary-button {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .2);
-    border: 2px solid rgba(255,255,255,0.7);
+    border: 2px solid rgba(255, 255, 255, 0.7);
     color: white;
     transition: color .3s, border .3s;
 }
 
 .secondary-button:hover {
-	border: 2px solid #ffc107;
-	color: #ffc107;
+    border: 2px solid #ffc107;
+    color: #ffc107;
 }
 
-
 .continue-anyways-button {
-	color: white;
+    color: white;
 }
 
 .landing-warning {
-	animation: 1s fade-in 2s forwards;
-	position: absolute;
+    animation: 1s fade-in 2s forwards;
+    position: absolute;
     top: 75%;
     left: 0;
     width: 100%;
     bottom: 32px;
     opacity: 0;
     display: none;
-	font-size: 24px;
+    font-size: 24px;
 }
 
 .bottom-center {
-	position: absolute;
-	bottom: 16px;
-	padding: 0 16px;
-	left: 0;
-	right: 0;
+    position: absolute;
+    bottom: 16px;
+    padding: 0 16px;
+    left: 0;
+    right: 0;
 }
 
 .bottom-center>* {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .warning-advice {
-	color: #ffc107;
-	font-size: 24px;
+    color: #ffc107;
+    font-size: 24px;
 }
 
 #enable-javascript {
-	font-size: 45px;
+    font-size: 45px;
 }
 
 @keyframes scale-in {
-	from {
-		transform: translateY(-8px);
-		opacity: 0;
-	}
-	to {
-		transform: translateY(0);
-		opacity: 1;
-	}
+    from {
+        transform: translateY(-8px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 #landingSection {
-	display: block;
-	position: absolute;
-	left: 16px;
-	right: 16px;
-	height: 166px;
-	top: 50%;
-	transition: opacity 1s;
-	margin-top: -124px;
+    display: block;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    height: 166px;
+    top: 50%;
+    transition: opacity 1s;
+    margin-top: -124px;
 }
+
 #landingSection h1 {
-	animation: 700ms scale-in ease-in;
+    animation: 700ms scale-in ease-in;
 }
+
 #landingSection > div {
     position: absolute;
     bottom: 0;
@@ -223,14 +233,16 @@ header .logo svg {
 }
 
 #initialLoadingSpinner {
-	display: block;
-	margin: auto;
-	animation: 1s fade-in 1s both;
-	width: 56px;
+    display: block;
+    margin: auto;
+    animation: 1s fade-in 1s both;
+    width: 56px;
 }
+
 .warning #initialLoadingSpinner {
-	display: none;
+    display: none;
 }
+
 #connectBtn {
     display: none;
     opacity: 0;
@@ -248,197 +260,191 @@ header .logo svg {
 }
 
 #warning-miner-stopped {
-	transition: opacity 1s;
-	opacity: 0;
-	font-size: 24px;
-	padding: 1vh 0;
+    transition: opacity 1s;
+    opacity: 0;
+    font-size: 24px;
+    padding: 1vh 0;
 }
+
 #warning-miner-stopped a {
-	font-size: 24px;
+    font-size: 24px;
 }
 
 #warning-consensus-lost {
-	transition: opacity 1s;
-	opacity: 0;
-	font-size: 24px;
-	padding: 1vh 0;
+    transition: opacity 1s;
+    opacity: 0;
+    font-size: 24px;
+    padding: 1vh 0;
 }
 
-
 .facts {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	margin: 16px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
 }
 
 .fact {
-	padding: 8px 0;
-	width: 20%;
+    padding: 8px 0;
+    width: 20%;
 }
 
 .facts .label {
-	font-size: 13px;
-	color: rgba(255, 255, 255, .6);
-	text-transform: uppercase;
-	letter-spacing: 0.16em;
-	margin-bottom: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, .6);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 6px;
 }
 
 .facts .number {
-	font-size: 33px;
+    font-size: 33px;
 }
 
 .facts .unit {
-	color: rgba(255,255,255,0.7);
-	font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
 }
 
-#miningAnimation, #nimiqCoinIcon {
-	height: 23px;
+#miningAnimation,
+#nimiqCoinIcon {
+    height: 23px;
 }
 
 #rewardInfo {
-	font-size: 13px;
-	letter-spacing: 1pt;
-	margin-top: 8px;
-	opacity: 0;
-	color: rgba(255, 255, 255, .6);
+    font-size: 13px;
+    letter-spacing: 1pt;
+    margin-top: 8px;
+    opacity: 0;
+    color: rgba(255, 255, 255, .6);
 }
+
 #rewardInfo a {
     color: inherit;
     font-size: 12px;
     text-decoration: underline;
-	white-space: nowrap;
+    white-space: nowrap;
 }
+
 #rewardInfo a:hover {
     color: white;
 }
 
-
 #factBalanceContainer {
-	min-width: 131px; /* such that it can accomodate up to 3 digit balances without changing ui */
+    min-width: 131px;
+    /* such that it can accomodate up to 3 digit balances without changing ui */
 }
 
 #progressContainer {
-	padding-bottom: 16px;
-	pointer-events: none;
+    padding-bottom: 16px;
+    pointer-events: none;
 }
 
-#progress{
-	color: #ffc107;
-	font-size: 26px;
-	line-height: 32px;
+#progress {
+    color: #ffc107;
+    font-size: 26px;
+    line-height: 32px;
 }
 
 #progressBarContainer {
-	background-color: rgba(255, 255, 255, 0.7);
-	height: 3px;
-	width: 160px;
-	margin-top: 8px;
-	margin-left: auto;
-	margin-right: auto;
-	border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.7);
+    height: 3px;
+    width: 160px;
+    margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 3px;
 }
 
 #progressBar {
-	background-color: #ffc107;
-	height: 100%;
-	width: 100%;
-	/* set the value of the progress bar via transform instead of width. that way, we get subpixel
+    background-color: #ffc107;
+    height: 100%;
+    width: 100%;
+    /* set the value of the progress bar via transform instead of width. that way, we get subpixel
 	precision and thus a smoother animation */
-	transform: scaleX(0) translateZ(0);
-	-webkit-transform: scaleX(0) translateZ(0);
-	-moz-transform: scaleX(0) translateZ(0);
-	-ms-transform: scaleX(0) translateZ(0);
-	transform-origin: left;
-	transition: transform 0.5s;
+    transform: scaleX(0) translateZ(0);
+    -webkit-transform: scaleX(0) translateZ(0);
+    -moz-transform: scaleX(0) translateZ(0);
+    -ms-transform: scaleX(0) translateZ(0);
+    transform-origin: left;
+    transition: transform 0.5s;
 }
 
 .syncing #progress {
-	animation: 1s fade-in 0s normal forwards; /* using animation instead of opacity such that it works well
+    animation: 1s fade-in 0s normal forwards;
+    /* using animation instead of opacity such that it works well
 		with .synched #progress */
 }
 
 .synced #progress {
-	animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
+    animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
 .syncing #progressBarContainer {
-	animation: 1s fade-in 0s normal forwards; /* using animation instead of opacity such that it works well
+    animation: 1s fade-in 0s normal forwards;
+    /* using animation instead of opacity such that it works well
 		with .synched #progressBarContainer */
 }
 
 .synced #progressBarContainer {
-	animation: 1s fade-in 4s reverse forwards;
+    animation: 1s fade-in 4s reverse forwards;
 }
 
 .synced #rewardInfo {
-	/* wait 5 seconds until fading in because this is when we get the first hashrate value */
-	animation: 1s fade-in 5s normal forwards;
+    /* wait 5 seconds until fading in because this is when we get the first hashrate value */
+    animation: 1s fade-in 5s normal forwards;
 }
 
 
-
-
-
-
 /* Tablet / Phone */
-@media screen and (max-width: 920px){
-	.facts {
-		flex-direction: column;
-		align-items: center;
-		margin-bottom: 0;
-	}
-	.fact {
-		width: 64%;
-		margin-bottom: 6px;
-	}
-	.facts .label {
-		margin-bottom: 0px;
-		min-height: 13px;
-		line-height: 12px;
-	}
-	#miningSection{
-		/* text-shadow: 2px 1px 3px black; */
-	}
+
+@media screen and (max-width: 920px) {
+    .facts {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0;
+    }
+    .fact {
+        width: 64%;
+        margin-bottom: 6px;
+    }
+    .facts .label {
+        margin-bottom: 0px;
+        min-height: 13px;
+        line-height: 12px;
+    }
+    #miningSection {
+        /* text-shadow: 2px 1px 3px black; */
+    }
     #rewardInfo a {
         font-size: 12px;
     }
-
-    header{
-    	padding: 16px;
+    header {
+        padding: 16px;
     }
-
-    #progress{
-    	font-size: 16px;
+    #progress {
+        font-size: 16px;
     }
-
-    #miningSection{
-    	width: 90%;
-    	left: 5%;
-    	bottom: 16px;
+    #miningSection {
+        width: 90%;
+        left: 5%;
+        bottom: 16px;
     }
-
-    #map{
-    	opacity: 0.3;
+    #map {
+        opacity: 0.3;
     }
-
-    #rewardInfo{
-    	padding-top: 0;
+    #rewardInfo {
+        padding-top: 0;
     }
-
-    #rewardInfo a{
-    	display: none;
+    #rewardInfo a {
+        display: none;
     }
-
-    #map svg{
-    	width: 102%;
-    	/* padding: 8px; */
-    	box-sizing: border-box;
+    #map svg {
+        width: 102%;
+        /* padding: 8px; */
+        box-sizing: border-box;
     }
-
-    #initialLoadingSpinner{
-    	width: 56px;
+    #initialLoadingSpinner {
+        width: 56px;
     }
 }
