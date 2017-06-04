@@ -27,12 +27,23 @@ header {
 header .logo {
     display: flex;
     align-items: center;
-    font-size: 17px;
+    color: white;
+    width: 168px;
 }
 
 header .logo img {
     width: 32px;
     margin-right: 16px;
+}
+
+header .menu a {
+    color: rgba(255, 255, 255, 0.9);
+    padding: 8px;
+    margin-left: 24px;
+}
+
+header .menu a:hover {
+    color: #e2a62f;
 }
 
 .center,
@@ -49,14 +60,14 @@ header .logo img {
     padding: 16px 0;
 }
 
-.column{
+.column {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
 }
 
-.third{
+.third {
     width: 33%;
     box-sizing: border-box;
     padding: 0 16px;
@@ -126,7 +137,7 @@ a {
 .secondary-button {
     border-radius: 3px;
     margin: 16px 0;
-    padding: 8px 16px;
+    padding: 8px 16px !important;
     font-size: 16px;
     cursor: pointer;
     text-decoration: none;
@@ -146,7 +157,7 @@ section img.large {
     height: 39vw;
 }
 
-footer{
+footer {
     width: 100%;
     padding: 32px 0;
     background: #333;
@@ -154,53 +165,59 @@ footer{
     justify-content: center;
 }
 
-footer a{
+footer a {
     opacity: 0.9;
     padding: 16px;
 }
 
-.uppercase{
+.uppercase {
     text-transform: uppercase;
     letter-spacing: 0.18em;
 }
 
-.icon{
+.icon {
     height: 32px;
     opacity: 0.61;
 }
 
-.icon:hover{
+.icon:hover {
     opacity: 0.8;
 }
 
-@media (max-width: 800px){
-    .row{
+@media (max-width: 800px) {
+    .row {
         flex-direction: column;
     }
-
-    .row .third{
-
-    }
-
+    .row .third {}
     h1 {
         font-size: 24px;
         margin: 10px 0;
     }
-
     h2 {
         font-size: 20px;
     }
-
     h3 {
         margin: 8px;
         opacity: 0.8
     }
-
-    h1.large{
+    h1.large {
         font-size: 34px;
     }
-
-    h2.large{
+    h2.large {
         font-size: 24px;
+    }
+    header {
+        padding: 12px;
+    }
+    header .logo img {
+        margin-right: 8px;
+    }
+
+    header .menu a{
+            font-size: 13px;
+    }
+
+    header .menu .github{
+        display: none;
     }
 }
