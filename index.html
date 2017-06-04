@@ -14,7 +14,11 @@
 <body>
     <div id="map">
         <div>
-            <div class="location-desc"></div>
+            <div class="peer-desc-container">
+                <div class="peer-desc">
+                    <div class="peer-desc-text"></div>
+                </div>
+            </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 502" style="enable-background:new 0 0 1082 502;" preserveAspectRatio="xMinYMin meet" xml:space="preserve">
                 <polygon points="904.82,270.33 907.61,275.16 913.2,275.16 915.99,270.33 913.2,265.49 907.61,265.49      " />
                 <polygon points="945.72,305.19 941.41,305.19 939.2,309.02 941.41,312.86 945.84,312.86 947.99,309.13     " />
@@ -2140,11 +2144,11 @@
         </div>
         <a class="secondary-button" href="https://nimiq.com" target="_blank">Info</a>
     </header>
-
-<!-- Warnings -->
-<noscript id="warning-no-js" class="landing-warning">
-    <style type="text/css">
-        #landing-description, #initialLoadingSpinner {
+    <!-- Warnings -->
+    <noscript id="warning-no-js" class="landing-warning">
+        <style type="text/css">
+        #landing-description,
+        #initialLoadingSpinner {
             display: none;
         }
         
@@ -2179,18 +2183,17 @@
     </div>-->
         <div>
             <svg id="initialLoadingSpinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128">
-                  <defs>
-                        <clipPath id="hexClip">
-                              <path clip-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z"/>
-                        </clipPath>
-                  </defs>
-                  <path fill-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" fill="white" opacity="0.2"/>
-                  <g clip-path="url(#hexClip)"> 
-                        <circle id="circle" cx="32" cy="32" r="16" fill="none" stroke-width="32" stroke="#F6AE2D" stroke-dasharray="101 101" transform="rotate(-120 32 32)"/>
-                        <animate href="#circle" id="circleanimate" attributeName="stroke-dashoffset" from="0" to="-202" dur="3s" repeatCount="indefinite"/>
-                  </g>
+                <defs>
+                    <clipPath id="hexClip">
+                        <path clip-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" />
+                    </clipPath>
+                </defs>
+                <path fill-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" fill="white" opacity="0.2" />
+                <g clip-path="url(#hexClip)">
+                    <circle id="circle" cx="32" cy="32" r="16" fill="none" stroke-width="32" stroke="#F6AE2D" stroke-dasharray="101 101" transform="rotate(-120 32 32)" />
+                    <animate href="#circle" id="circleanimate" attributeName="stroke-dashoffset" from="0" to="-202" dur="3s" repeatCount="indefinite" />
+                </g>
             </svg>
-
             <div class="button" id="connectBtn">
                 Connect to Network
             </div>

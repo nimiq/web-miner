@@ -174,6 +174,37 @@ class MinerUI {
     }
 }
 
+
+class PeerDescUI {
+    constructor() {
+        this._container = document.querySelector('.peer-desc');
+        this._iconBrowser = document.querySelector('.peer-desc .browser');
+        this._iconBackbone = document.querySelector('.peer-desc .backbone');
+        this._text = document.querySelector('.peer-desc .peer-desc-text');
+    }
+
+    // _setNodeType(isBrowser) {
+    //     if (isBrowser) {
+    //         this._iconBrowser.style.display = 'block';
+    //         this._iconBackbone.style.display = 'none';
+    //     } else {
+    //         this._iconBrowser.style.display = 'none';
+    //         this._iconBackbone.style.display = 'block';
+    //     }
+    // }
+
+    show(desc) {
+        // this._setNodeType(desc.addr.protocol !== 1 ); // TODO: Remove EVIL HACK !!!
+        const isBrowser = desc.addr.protocol !== 1 ? 'Browser' : 'Backbone Node'
+        this._text.innerHTML = `<b>${desc.status} ${isBrowser}</b><br>${desc.country} ${desc.city}<br>${desc.addr.host||''}`;
+        this._container.style.opacity = 1;
+    }
+
+    hide() {
+        this._container.style.opacity = 0;
+    }
+}
+
 class MapUI {
     constructor($) {
         this._mapElem = document.querySelector('#map svg');
@@ -183,6 +214,7 @@ class MapUI {
         this._connectedPeers = new Nimiq.HashMap();
         this._knownPeers = new Nimiq.HashMap();
         this._cellCount = {};
+        this._peerDescUI = new PeerDescUI()
 
         $.network.on('peer-joined', peer => this._onPeerJoined(peer));
         $.network.on('peer-left', peer => this._onPeerLeft(peer));
@@ -191,19 +223,18 @@ class MapUI {
         GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
 
         this._mapElem.onmousemove = e => this._mapHighlight(e);
-        this._locationDesc = document.querySelector('#map .location-desc');
     }
 
-    fadeIn(){
+    fadeIn() {
         this._mapElem.style.opacity = 1;
     }
 
     _mapHighlight(e) {
         if (e.target.data) {
             const data = e.target.data;
-            this._locationDesc.textContent = data
+            this._peerDescUI.show(data);
         } else {
-            this._locationDesc.textContent = ''
+            this._peerDescUI.hide();
         }
     }
 
@@ -250,13 +281,13 @@ class MapUI {
     _highlightOwnPeer(response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, 'My Location');
+            var locDesc = this._responseToDesc(response, null, 'My Location');
             var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer', locDesc);
             if (cell) {
                 this._ownCell = cell;
                 this._incCellCount(cell);
                 var connectedPeersCells = this._connectedPeers.values();
-                for (var i=0, peerCell; peerCell=connectedPeersCells[i]; ++i) {
+                for (var i = 0, peerCell; peerCell = connectedPeersCells[i]; ++i) {
                     this._map.addLink(cell, peerCell);
                 }
             }
@@ -266,7 +297,7 @@ class MapUI {
     _highlightConnectedPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, 'Connected');
+            var locDesc = this._responseToDesc(response, addr, 'Connected');
             var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer', locDesc);
             if (cell) {
                 this._connectedPeers.put(addr, cell);
@@ -276,8 +307,13 @@ class MapUI {
         }
     }
 
-    _responseToDesc(response, type) {
-        return type + ': ' + response.city+', '+response.country;
+    _responseToDesc(response, addr, status) {
+        return {
+            status: status,
+            city: response.city ? response.city : '',
+            country: response.country ? isoCountries[response.country] : '',
+            addr: addr
+        }
     }
 
     _highlightKnownPeer(addr, response) {
@@ -490,3 +526,266 @@ Nimiq.init($ => {
         document.getElementById('warning-general-error').style.display = 'block';
     }
 });
+
+
+
+
+
+/*************************** Country Codes *************************************************************/
+
+
+var isoCountries = {
+    'AF': 'Afghanistan',
+    'AX': 'Aland Islands',
+    'AL': 'Albania',
+    'DZ': 'Algeria',
+    'AS': 'American Samoa',
+    'AD': 'Andorra',
+    'AO': 'Angola',
+    'AI': 'Anguilla',
+    'AQ': 'Antarctica',
+    'AG': 'Antigua And Barbuda',
+    'AR': 'Argentina',
+    'AM': 'Armenia',
+    'AW': 'Aruba',
+    'AU': 'Australia',
+    'AT': 'Austria',
+    'AZ': 'Azerbaijan',
+    'BS': 'Bahamas',
+    'BH': 'Bahrain',
+    'BD': 'Bangladesh',
+    'BB': 'Barbados',
+    'BY': 'Belarus',
+    'BE': 'Belgium',
+    'BZ': 'Belize',
+    'BJ': 'Benin',
+    'BM': 'Bermuda',
+    'BT': 'Bhutan',
+    'BO': 'Bolivia',
+    'BA': 'Bosnia And Herzegovina',
+    'BW': 'Botswana',
+    'BV': 'Bouvet Island',
+    'BR': 'Brazil',
+    'IO': 'British Indian Ocean Territory',
+    'BN': 'Brunei Darussalam',
+    'BG': 'Bulgaria',
+    'BF': 'Burkina Faso',
+    'BI': 'Burundi',
+    'KH': 'Cambodia',
+    'CM': 'Cameroon',
+    'CA': 'Canada',
+    'CV': 'Cape Verde',
+    'KY': 'Cayman Islands',
+    'CF': 'Central African Republic',
+    'TD': 'Chad',
+    'CL': 'Chile',
+    'CN': 'China',
+    'CX': 'Christmas Island',
+    'CC': 'Cocos (Keeling) Islands',
+    'CO': 'Colombia',
+    'KM': 'Comoros',
+    'CG': 'Congo',
+    'CD': 'Congo, Democratic Republic',
+    'CK': 'Cook Islands',
+    'CR': 'Costa Rica',
+    'CI': 'Cote D\'Ivoire',
+    'HR': 'Croatia',
+    'CU': 'Cuba',
+    'CY': 'Cyprus',
+    'CZ': 'Czech Republic',
+    'DK': 'Denmark',
+    'DJ': 'Djibouti',
+    'DM': 'Dominica',
+    'DO': 'Dominican Republic',
+    'EC': 'Ecuador',
+    'EG': 'Egypt',
+    'SV': 'El Salvador',
+    'GQ': 'Equatorial Guinea',
+    'ER': 'Eritrea',
+    'EE': 'Estonia',
+    'ET': 'Ethiopia',
+    'FK': 'Falkland Islands (Malvinas)',
+    'FO': 'Faroe Islands',
+    'FJ': 'Fiji',
+    'FI': 'Finland',
+    'FR': 'France',
+    'GF': 'French Guiana',
+    'PF': 'French Polynesia',
+    'TF': 'French Southern Territories',
+    'GA': 'Gabon',
+    'GM': 'Gambia',
+    'GE': 'Georgia',
+    'DE': 'Germany',
+    'GH': 'Ghana',
+    'GI': 'Gibraltar',
+    'GR': 'Greece',
+    'GL': 'Greenland',
+    'GD': 'Grenada',
+    'GP': 'Guadeloupe',
+    'GU': 'Guam',
+    'GT': 'Guatemala',
+    'GG': 'Guernsey',
+    'GN': 'Guinea',
+    'GW': 'Guinea-Bissau',
+    'GY': 'Guyana',
+    'HT': 'Haiti',
+    'HM': 'Heard Island & Mcdonald Islands',
+    'VA': 'Holy See (Vatican City State)',
+    'HN': 'Honduras',
+    'HK': 'Hong Kong',
+    'HU': 'Hungary',
+    'IS': 'Iceland',
+    'IN': 'India',
+    'ID': 'Indonesia',
+    'IR': 'Iran, Islamic Republic Of',
+    'IQ': 'Iraq',
+    'IE': 'Ireland',
+    'IM': 'Isle Of Man',
+    'IL': 'Israel',
+    'IT': 'Italy',
+    'JM': 'Jamaica',
+    'JP': 'Japan',
+    'JE': 'Jersey',
+    'JO': 'Jordan',
+    'KZ': 'Kazakhstan',
+    'KE': 'Kenya',
+    'KI': 'Kiribati',
+    'KR': 'Korea',
+    'KW': 'Kuwait',
+    'KG': 'Kyrgyzstan',
+    'LA': 'Lao People\'s Democratic Republic',
+    'LV': 'Latvia',
+    'LB': 'Lebanon',
+    'LS': 'Lesotho',
+    'LR': 'Liberia',
+    'LY': 'Libyan Arab Jamahiriya',
+    'LI': 'Liechtenstein',
+    'LT': 'Lithuania',
+    'LU': 'Luxembourg',
+    'MO': 'Macao',
+    'MK': 'Macedonia',
+    'MG': 'Madagascar',
+    'MW': 'Malawi',
+    'MY': 'Malaysia',
+    'MV': 'Maldives',
+    'ML': 'Mali',
+    'MT': 'Malta',
+    'MH': 'Marshall Islands',
+    'MQ': 'Martinique',
+    'MR': 'Mauritania',
+    'MU': 'Mauritius',
+    'YT': 'Mayotte',
+    'MX': 'Mexico',
+    'FM': 'Micronesia, Federated States Of',
+    'MD': 'Moldova',
+    'MC': 'Monaco',
+    'MN': 'Mongolia',
+    'ME': 'Montenegro',
+    'MS': 'Montserrat',
+    'MA': 'Morocco',
+    'MZ': 'Mozambique',
+    'MM': 'Myanmar',
+    'NA': 'Namibia',
+    'NR': 'Nauru',
+    'NP': 'Nepal',
+    'NL': 'Netherlands',
+    'AN': 'Netherlands Antilles',
+    'NC': 'New Caledonia',
+    'NZ': 'New Zealand',
+    'NI': 'Nicaragua',
+    'NE': 'Niger',
+    'NG': 'Nigeria',
+    'NU': 'Niue',
+    'NF': 'Norfolk Island',
+    'MP': 'Northern Mariana Islands',
+    'NO': 'Norway',
+    'OM': 'Oman',
+    'PK': 'Pakistan',
+    'PW': 'Palau',
+    'PS': 'Palestinian Territory, Occupied',
+    'PA': 'Panama',
+    'PG': 'Papua New Guinea',
+    'PY': 'Paraguay',
+    'PE': 'Peru',
+    'PH': 'Philippines',
+    'PN': 'Pitcairn',
+    'PL': 'Poland',
+    'PT': 'Portugal',
+    'PR': 'Puerto Rico',
+    'QA': 'Qatar',
+    'RE': 'Reunion',
+    'RO': 'Romania',
+    'RU': 'Russian Federation',
+    'RW': 'Rwanda',
+    'BL': 'Saint Barthelemy',
+    'SH': 'Saint Helena',
+    'KN': 'Saint Kitts And Nevis',
+    'LC': 'Saint Lucia',
+    'MF': 'Saint Martin',
+    'PM': 'Saint Pierre And Miquelon',
+    'VC': 'Saint Vincent And Grenadines',
+    'WS': 'Samoa',
+    'SM': 'San Marino',
+    'ST': 'Sao Tome And Principe',
+    'SA': 'Saudi Arabia',
+    'SN': 'Senegal',
+    'RS': 'Serbia',
+    'SC': 'Seychelles',
+    'SL': 'Sierra Leone',
+    'SG': 'Singapore',
+    'SK': 'Slovakia',
+    'SI': 'Slovenia',
+    'SB': 'Solomon Islands',
+    'SO': 'Somalia',
+    'ZA': 'South Africa',
+    'GS': 'South Georgia And Sandwich Isl.',
+    'ES': 'Spain',
+    'LK': 'Sri Lanka',
+    'SD': 'Sudan',
+    'SR': 'Suriname',
+    'SJ': 'Svalbard And Jan Mayen',
+    'SZ': 'Swaziland',
+    'SE': 'Sweden',
+    'CH': 'Switzerland',
+    'SY': 'Syrian Arab Republic',
+    'TW': 'Taiwan',
+    'TJ': 'Tajikistan',
+    'TZ': 'Tanzania',
+    'TH': 'Thailand',
+    'TL': 'Timor-Leste',
+    'TG': 'Togo',
+    'TK': 'Tokelau',
+    'TO': 'Tonga',
+    'TT': 'Trinidad And Tobago',
+    'TN': 'Tunisia',
+    'TR': 'Turkey',
+    'TM': 'Turkmenistan',
+    'TC': 'Turks And Caicos Islands',
+    'TV': 'Tuvalu',
+    'UG': 'Uganda',
+    'UA': 'Ukraine',
+    'AE': 'United Arab Emirates',
+    'GB': 'United Kingdom',
+    'US': 'United States',
+    'UM': 'United States Outlying Islands',
+    'UY': 'Uruguay',
+    'UZ': 'Uzbekistan',
+    'VU': 'Vanuatu',
+    'VE': 'Venezuela',
+    'VN': 'Viet Nam',
+    'VG': 'Virgin Islands, British',
+    'VI': 'Virgin Islands, U.S.',
+    'WF': 'Wallis And Futuna',
+    'EH': 'Western Sahara',
+    'YE': 'Yemen',
+    'ZM': 'Zambia',
+    'ZW': 'Zimbabwe'
+};
+
+function getCountryName(countryCode) {
+    if (isoCountries.hasOwnProperty(countryCode)) {
+        return isoCountries[countryCode];
+    } else {
+        return countryCode;
+    }
+}

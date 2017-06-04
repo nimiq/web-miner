@@ -40,13 +40,34 @@ body > * {
     max-width: 800px;
 }
 
-.location-desc {
+.peer-desc {
     color: #ffc107;
-    height: 24px;
-    margin-top: -16px;
-    padding-bottom: 8px;
+    /* height: 64px; */
+    margin-top: -21px;
+    width: 200px;
+    margin: 0;
+    background: rgba(0,0,0, 0.3);
+    border-radius: 3px;
+    display: inline-block;
+    padding: 8px;
+    opacity: 0;
+    will-change: opacity;
+    transition: 0.3s opacity;
+    text-align: center;
 }
 
+.peer-desc-container {
+    width: 100%;
+    padding-bottom: 8px;
+    text-align: center;
+    height: 64px;
+}
+
+
+.peer-desc img{
+    width: 48px;
+    display: inline-block;
+}
 .own-peer {
     fill: #ffffff;
     -webkit-animation: connected 1800ms ease 8;
@@ -446,5 +467,18 @@ header .logo svg {
     }
     #initialLoadingSpinner {
         width: 56px;
+    }
+}
+
+
+/* Large Screen */
+
+@media screen and (min-width: 1080px) {
+    #map svg {
+        /* width: 1082px; */
+        /* height: 502px; */
+        /* padding: 8px; */
+        box-sizing: border-box;
+        transform: scale(1.28);
     }
 }
