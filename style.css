@@ -266,6 +266,12 @@ header .logo svg {
 	animation: 1s fade-in 1s both;
 }
 
+@media screen and (max-width: 650px) {
+    #disclaimer-new-line {
+        display: none;
+    }
+}
+
 #copyright {
 	margin-top: 32px;
 	color: rgba(255,255,255,0.4);
