@@ -108,7 +108,6 @@ class MinerUI {
         this.miner = miner;
 
         this._loadingSpinner = document.querySelector('#initialLoadingSpinner');
-        this._disclaimer = document.querySelector('#disclaimer');
 
         this._connectBtn = document.querySelector('#connectBtn');
         this._connectBtn.onclick = () => miner.connect();
@@ -156,7 +155,6 @@ class MinerUI {
         // we won't need the spinner anymore
         this._loadingSpinner.parentElement.removeChild(this._loadingSpinner);
         this._loadingSpinner = null;
-        this._disclaimer.style.display = 'block';
         this._connectBtn.style.display = 'inline-block';
     }
 
@@ -540,6 +538,7 @@ class Miner {
 
 // Initialize Nimiq Core.
 Nimiq.init($ => {
+    document.getElementById('landingSection').classList.remove('warning');
     document.getElementById('warning-multiple-tabs').style.display = 'none';
     window.$ = $;
     window.Miner = new Miner($);

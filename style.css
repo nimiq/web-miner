@@ -261,6 +261,9 @@ header .logo svg {
 	bottom: 16px !important;
 	width: 100%;
 	color: rgba(255, 255, 255, 0.7);
+	padding: 0 8px;
+	box-sizing: border-box;
+	animation: 1s fade-in 1s both;
 }
 
 #copyright {
@@ -275,11 +278,12 @@ header .logo svg {
     width: 56px;
 }
 
-.warning #initialLoadingSpinner {
+.warning #initialLoadingSpinner,
+.warning #disclaimer {
     display: none;
 }
 
-#connectBtn, #disclaimer {
+#connectBtn {
     display: none;
     animation: 700ms fade-in 700ms both;
 }
