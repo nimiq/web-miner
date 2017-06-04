@@ -39,6 +39,8 @@ body > * {
 .location-desc{
 	color: #ffc107;
 	height: 24px;
+	margin-top: -16px;
+	padding-bottom: 8px;
 }
 
 .own-peer {
@@ -154,7 +156,7 @@ header .logo svg {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     border: 2px solid #e2a62f;
     display: inline-block;
-    font-size: 20px;
+    font-size: 21px;
     text-shadow: none;
     /* transition: color .3s, background-color .3s, border .3s; */
     vertical-align: middle;
