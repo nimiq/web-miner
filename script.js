@@ -18,7 +18,7 @@ if (isSupportedBrowser()) {
     if (window.location.hash === '#staging') {
         var nimiq = 'https://cdn.nimiq-network.com/staging/nimiq.js';
     } else {
-        var nimiq = 'https://cdn.nimiq-network.com/dist/nimiq.js';
+        var nimiq = 'https://cdn.nimiq.com/core/nimiq.js';
     }
 
     window.nimiq_loaded = false;
