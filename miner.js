@@ -197,7 +197,7 @@ class PeerDescUI {
         const isBrowser = desc.protocol === Nimiq.Protocol.RTC;
         this._setNodeType(isBrowser);
         const nodeType = isBrowser ? 'Browser' : 'Backbone';
-        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr}</small>`;
+        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr || ''}</small>`;
         this._container.style.opacity = 1;
     }
 
