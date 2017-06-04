@@ -45,7 +45,7 @@ body > * {
     /* height: 64px; */
     width: 200px;
     margin: 0;
-    background: rgba(0,0,0, 0.3);
+    background-color: rgba(4, 33, 70, 0.55);
     border-radius: 3px;
     display: inline-block;
     padding: 8px;
@@ -53,6 +53,7 @@ body > * {
     will-change: opacity;
     transition: 0.3s opacity;
     text-align: center;
+    pointer-events: none;
 }
 
 .peer-desc-container {
@@ -70,13 +71,13 @@ body > * {
 }
 .own-peer {
     fill: #ffffff;
-    -webkit-animation: connected 1800ms ease 8;
+    -webkit-animation: connected 1800ms ease 10;
     animation: connected 1800ms ease 8;
 }
 
 .connected-peer {
     fill: #f6ae2d;
-    -webkit-animation: connected 1800ms ease 3;
+    -webkit-animation: connected 1800ms ease 8;
     animation: connected 1800ms ease 3;
 }
 
