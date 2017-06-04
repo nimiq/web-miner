@@ -241,6 +241,15 @@ header .logo svg {
     right: 0;
     text-align: center;
 }
+
+#initialLoadingSpinner {
+	display: block;
+	margin: auto;
+	animation: 1s fade-in 1s both;
+}
+.warning #initialLoadingSpinner {
+	display: none;
+}
 #connectBtn {
     display: none;
     opacity: 0;

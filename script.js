@@ -44,5 +44,6 @@ if (isSupportedBrowser()) {
     script.src = nimiq;
     head.appendChild(script);
 } else {
+    document.getElementById('landingSection').classList.add('warning');
     document.getElementById('warning-old-browser').style.display = 'block';
 }

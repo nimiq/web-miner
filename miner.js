@@ -107,6 +107,8 @@ class MinerUI {
     constructor(miner) {
         this.miner = miner;
 
+        this._loadingSpinner = document.querySelector('#initialLoadingSpinner');
+
         this._connectBtn = document.querySelector('#connectBtn');
         this._connectBtn.onclick = () => miner.connect();
 
@@ -150,6 +152,9 @@ class MinerUI {
     }
 
     enableConnectButton() {
+        // we won't need the spinner anymore
+        this._loadingSpinner.parentElement.removeChild(this._loadingSpinner);
+        this._loadingSpinner = null;
         this._connectBtn.style.display = 'inline-block';
     }
 
@@ -465,6 +470,7 @@ Nimiq.init($ => {
     window.$ = $;
     window.Miner = new Miner($);
 }, function(error) {
+    document.getElementById('landingSection').classList.add('warning');
     if (error === Nimiq.ERR_WAIT) {
         document.getElementById('warning-multiple-tabs').style.display = 'block';
     } else if (error === Nimiq.ERR_UNSUPPORTED) {
