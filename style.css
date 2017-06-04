@@ -134,12 +134,12 @@ body > * {
     }
 }
 
-
+/*
 header {
 	animation: 1s fade-in 5s forwards;
 	opacity: 0;
 }
-
+*/
 header .logo svg {
 	margin-right: 16px;
 }
