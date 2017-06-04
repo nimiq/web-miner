@@ -255,6 +255,10 @@ class MapUI {
             if (cell) {
                 this._ownCell = cell;
                 this._incCellCount(cell);
+                var connectedPeersCells = this._connectedPeers.values();
+                for (var i=0, peerCell; peerCell=connectedPeersCells[i]; ++i) {
+                    this._map.addLink(cell, peerCell);
+                }
             }
         }
     }
