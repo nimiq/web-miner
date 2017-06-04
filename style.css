@@ -39,9 +39,11 @@ body > * {
 }
 
 .own-peer {
-	fill: white;
-	//-webkit-animation: own 6s ease infinite;
-	//animation: own 6s ease infinite;
+	fill: red;
+	//
+	-webkit-animation: own 6s ease infinite;
+	//
+	animation: own 6s ease infinite;
 }
 @-webkit-keyframes own {
 	0% {
@@ -336,13 +338,13 @@ header .logo svg {
 
 #progress{
 	color: #ffc107;
-	font-size: 34px;
+	font-size: 30px;
 }
 
 #progressBarContainer {
 	background-color: rgba(255, 255, 255, 0.7);
 	height: 3px;
-	width: 40%;
+	width: 160px;
 	margin-top: 8px;
 	margin-left: auto;
 	margin-right: auto;
@@ -424,6 +426,7 @@ header .logo svg {
     #miningSection{
     	width: 90%;
     	left: 5%;
+    	top: 72px;
     }
 
     #map{

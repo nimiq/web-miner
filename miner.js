@@ -21,11 +21,11 @@ class FactsUI {
         this._blockHeight.textContent = height;
     }
 
-    set myHashrate(hashrate){
+    set myHashrate(hashrate) {
         this._setHashrate(hashrate, 'my');
     }
 
-    set globalHashrate(hashrate){
+    set globalHashrate(hashrate) {
         this._setHashrate(hashrate, 'global');
     }
 
@@ -36,11 +36,12 @@ class FactsUI {
         }
 
         // the time is given in seconds. Convert it to an appropriate base unit:
-        let timesteps = [{unit: 'minutes', factor: 60}, {unit: 'hours', factor: 60}, {unit: 'days', factor: 24},
-            {unit: 'months', factor: 365 / 12}, {unit: 'years', factor: 12}, {unit: 'decades', factor: 10}];
+        let timesteps = [{ unit: 'minutes', factor: 60 }, { unit: 'hours', factor: 60 }, { unit: 'days', factor: 24 },
+            { unit: 'months', factor: 365 / 12 }, { unit: 'years', factor: 12 }, { unit: 'decades', factor: 10 }
+        ];
         let convertedTime = expectedHashTime;
         let unit = 'seconds';
-        for (let i=0; i<timesteps.length; ++i) {
+        for (let i = 0; i < timesteps.length; ++i) {
             let timestep = timesteps[i];
             if (convertedTime / timestep.factor < 1) {
                 break;
@@ -49,7 +50,7 @@ class FactsUI {
                 unit = timestep.unit;
             }
         }
-        this._expectedHashTime.textContent = convertedTime.toFixed(1)+' '+unit;
+        this._expectedHashTime.textContent = convertedTime.toFixed(1) + ' ' + unit;
     }
 
     set myBalance(balance) {
@@ -80,7 +81,7 @@ class FactsUI {
     _setHashrate(hashrate, type) {
         let steps = ['k', 'M', 'G', 'T', 'P', 'E']; // kilo, mega, giga, tera, peta, exa
         let prefix = '';
-        for (let i=0, step; step=steps[i]; ++i) {
+        for (let i = 0, step; step = steps[i]; ++i) {
             if (hashrate / 1000 < 1) {
                 break;
             } else {
@@ -88,7 +89,7 @@ class FactsUI {
                 prefix = step;
             }
         }
-        let unit = prefix+'H/s';
+        let unit = prefix + 'H/s';
         let hashrateEl, unitEl;
         if (type === 'global') {
             hashrateEl = this._globalHashrate;
@@ -145,7 +146,7 @@ class MinerUI {
     }
 
     set syncProgress(progress) {
-        this._progressBar.style.transform = 'scaleX('+Math.min(1, progress)+') translateZ(0)';
+        this._progressBar.style.transform = 'scaleX(' + Math.min(1, progress) + ') translateZ(0)';
     }
 
     enableConnectButton() {
@@ -188,11 +189,11 @@ class MapUI {
         this._locationDesc = document.querySelector('#map .location-desc');
     }
 
-    _mapHighlight(e){
-        if(e.target.data){
+    _mapHighlight(e) {
+        if (e.target.data) {
             const data = e.target.data;
             this._locationDesc.textContent = data
-        } else{
+        } else {
             this._locationDesc.textContent = ''
         }
     }
@@ -239,7 +240,8 @@ class MapUI {
     _highlightOwnPeer(response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer');
+            var locDesc = this._responseToDesc(response, 'My Location');
+            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer', locDesc);
             if (cell) {
                 this._ownCell = cell;
                 this._incCellCount(cell);
@@ -250,7 +252,7 @@ class MapUI {
     _highlightConnectedPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = response.country + ' | ' + response.city
+            var locDesc = this._responseToDesc(response, 'Connected');
             var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer', locDesc);
             if (cell) {
                 this._connectedPeers.put(addr, cell);
@@ -259,10 +261,15 @@ class MapUI {
         }
     }
 
+    _responseToDesc(response, type) {
+        return type + ': ' + response.city+', '+response.country;
+    }
+
     _highlightKnownPeer(addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'known-peer');
+            var locDesc = this._responseToDesc(response, 'Available');
+            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'known-peer', locDesc);
             if (cell) {
                 var numKnown = this._knownPeers.length;
                 this._knownPeers.put(addr, cell);
@@ -355,7 +362,7 @@ class Miner {
     get globalHashrate() {
         const nBits = this.$.blockchain.head.header.nBits;
         const difficulty = Nimiq.BlockUtils.compactToDifficulty(nBits);
-        return difficulty * 2**16 / Nimiq.Policy.BLOCK_TIME;
+        return difficulty * 2 ** 16 / Nimiq.Policy.BLOCK_TIME;
     }
 
     _onConsensusEstablished() {
@@ -437,7 +444,7 @@ class Miner {
         this._onExpectedHashTimeChanged();
     }
 
-    _onHashrateChanged(){
+    _onHashrateChanged() {
         this.ui.facts.myHashrate = this.hashrate;
         this._onExpectedHashTimeChanged();
     }
