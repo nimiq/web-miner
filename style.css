@@ -124,6 +124,7 @@ body > * {
     stroke: #e2a62f;
     stroke-width: 1;
     stroke-dasharray: 5 5;
+    opacity: 0.7;
 }
 
 @keyframes fade-in {
@@ -251,6 +252,17 @@ header .logo svg {
     text-align: center;
 }
 
+#disclaimer {
+	position: fixed !important;
+	bottom: 16px !important;
+	width: 100%;
+	color: rgba(255, 255, 255, .6)
+}
+
+#copyright {
+	margin-top: 8px;
+}
+
 #initialLoadingSpinner {
     display: block;
     margin: auto;
@@ -262,10 +274,9 @@ header .logo svg {
     display: none;
 }
 
-#connectBtn {
+#connectBtn, #disclaimer {
     display: none;
-    opacity: 0;
-    animation: 700ms fade-in 700ms forwards;
+    animation: 700ms fade-in 700ms both;
 }
 
 #miningSection {
