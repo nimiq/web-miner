@@ -439,7 +439,7 @@ class Miner {
     get globalHashrate() {
         const nBits = this.$.blockchain.head.header.nBits;
         const difficulty = Nimiq.BlockUtils.compactToDifficulty(nBits);
-        return difficulty * 2 ** 16 / Nimiq.Policy.BLOCK_TIME;
+        return difficulty * Math.pow(2, 16) / Nimiq.Policy.BLOCK_TIME;
     }
 
     _onConsensusEstablished() {
