@@ -28,11 +28,12 @@ body > * {
 }
 #map svg {
     fill: rgba(255, 255, 255, .3);
-    max-height: 80vh;
+    /* max-height: 80vh; */
     width: 85vw;
     margin: auto;
     opacity: 0.3;
     transition: 1s opacity;
+    max-width: 800px;
 }
 
 .location-desc{
@@ -386,7 +387,7 @@ header .logo svg {
 }
 
 .synced #progress {
-	/* animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards; */
+	animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
 .syncing #progressBarContainer {
@@ -395,7 +396,7 @@ header .logo svg {
 }
 
 .synced #progressBarContainer {
-	/* animation: 1s fade-in 4s reverse forwards; */
+	animation: 1s fade-in 4s reverse forwards;
 }
 
 .synced #rewardInfo {
