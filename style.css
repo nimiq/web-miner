@@ -71,13 +71,13 @@ body > * {
 }
 .own-peer {
     fill: #ffffff;
-    -webkit-animation: connected 1800ms ease 10;
+    -webkit-animation: connected 1800ms ease 5;
     animation: connected 1800ms ease 8;
 }
 
 .connected-peer {
     fill: #f6ae2d;
-    -webkit-animation: connected 1800ms ease 8;
+    -webkit-animation: connected 1800ms ease 10;
     animation: connected 1800ms ease 3;
 }
 
