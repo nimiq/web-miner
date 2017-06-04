@@ -44,7 +44,7 @@ class GeoIP {
         var url = 'https://geoip.nimiq-network.com:8443/v1/locate' + (host && host.length > 0 ? '?host=' + host : '');
 
         xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState === 4 && this.status === 200) {
                 var response = JSON.parse(this.responseText);
                 GeoIP._cache(host, response);
                 callback(response);

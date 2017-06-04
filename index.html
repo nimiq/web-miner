@@ -14,15 +14,6 @@
 <body>
     <div id="map">
         <div>
-            <div class="peer-desc-container">
-                <div class="peer-desc">
-                    <div>
-                        <img class="browser" src="images/browser.svg">
-                        <img class="backbone" src="images/cloud.svg">
-                    </div>
-                    <div class="peer-desc-text"></div>
-                </div>
-            </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 502" style="enable-background:new 0 0 1082 502;" preserveAspectRatio="xMinYMin meet" xml:space="preserve">
                 <polygon points="904.82,270.33 907.61,275.16 913.2,275.16 915.99,270.33 913.2,265.49 907.61,265.49      " />
                 <polygon points="945.72,305.19 941.41,305.19 939.2,309.02 941.41,312.86 945.84,312.86 947.99,309.13     " />
@@ -2146,8 +2137,9 @@
             </svg>
             <span class="uppercase">nimiq miner</span>
         </div>
-        <a class="secondary-button" href="https://nimiq.com" target="_blank">Info</a>
+        <a class="secondary-button" href="https://nimiq.com" target="website">Info</a>
     </header>
+
     <!-- Warnings -->
     <noscript id="warning-no-js" class="landing-warning">
         <style type="text/css">
@@ -2181,7 +2173,7 @@
     </div>
     <!-- Landing -->
     <div id="landingSection">
-        <h1>Nimiq is the first browser-based Blockchain.</h1>
+        <h1>Nimiq is the first Browser-based Blockchain.</h1>
         <!--<div id="landing-description">
         Nimiq empowers you to mine, store and transact at a fraction of the effort of conventional cryptocurrency.
     </div>-->
@@ -2203,11 +2195,23 @@
             </div>
         </div>
     </div>
+
     <!-- Loading -->
     <div id="loadingSection">
     </div>
     <!-- Mining -->
     <div id="miningSection" class="syncing">
+        <!-- Peer description -->
+        <div class="peer-desc-container">
+            <div class="peer-desc">
+                <div>
+                    <img class="browser" src="images/browser.svg">
+                    <img class="backbone" src="images/cloud.svg">
+                </div>
+                <div class="peer-desc-text"></div>
+            </div>
+        </div>
+
         <div id="progressContainer">
             <div id="progress">Connecting to peers</div>
             <div id="progressBarContainer">
@@ -2218,7 +2222,7 @@
             Mining is paused. <a href="#" id="resumeMinerBtn">Resume</a>
         </div>
         <div id="warning-consensus-lost" style="display: none;">
-            You are disconnected from the network. Try refreshing your browser window.
+            You are disconnected from the network. Try to <a href="#" id="reconnectBtn">reconnect</a> or refresh your browser window.
         </div>
         <div class="facts">
             <div class="fact">

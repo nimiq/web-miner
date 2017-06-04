@@ -199,7 +199,7 @@ class Map {
         this._links.push({
             start: startCell,
             end: endCell,
-            path: path
+            path: pathEl
         });
         // insert the path before the startCell such that it will not be drawn over the startCell
         startCell.parentElement.insertBefore(pathEl, startCell);
@@ -210,7 +210,7 @@ class Map {
             if (link.start === startCell && link.end === endCell
                 || link.end === startCell && link.start === endCell) {
                 // we found the link
-                link.path.parentElement.removeChild(link.path);
+                startCell.parentElement.removeChild(link.path);
                 this._links.splice(i, 1);
                 return;
             }

@@ -194,9 +194,10 @@ class PeerDescUI {
     }
 
     show(desc) {
-        this._setNodeType(!desc.addr || desc.addr.protocol !== 1); // TODO: Remove EVIL HACK !!!
-        const isBrowser = !desc.addr || desc.addr.protocol !== 1 ? 'Browser' : 'Backbone';
-        this._text.innerHTML = `<b>${desc.status} ${isBrowser}</b><br>${desc.country} ${desc.city}<br>${desc.addr?desc.addr.host||'':''}`;
+        const isBrowser = desc.protocol === Nimiq.Protocol.RTC;
+        this._setNodeType(isBrowser);
+        const nodeType = isBrowser ? 'Browser' : 'Backbone';
+        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr || '&nbsp;'}</small>`;
         this._container.style.opacity = 1;
     }
 
@@ -238,22 +239,35 @@ class MapUI {
         }
     }
 
+    _getPeerHost(peer) {
+        if (peer.netAddress && !peer.netAddress.isPrivate()) {
+            return peer.netAddress;
+        } else if (peer.peerAddress.protocol === Nimiq.Protocol.WS) {
+            return peer.peerAddress.host;
+        } else {
+            return null;
+        }
+    }
+
     _onPeerJoined(peer) {
-        var netAddr = peer.netAddress;
-        if (netAddr && !this._connectedPeers.contains(peer.peerAddress)) {
-            GeoIP.retrieve(response => this._highlightConnectedPeer(peer.peerAddress, response), netAddr.host);
+        var host = this._getPeerHost(peer);
+        if (host && !this._connectedPeers.contains(host)) {
+            GeoIP.retrieve(response => this._highlightConnectedPeer(peer.peerAddress.protocol, host, response), host);
         }
     }
 
     _onPeerLeft(peer) {
-        var cell = this._connectedPeers.get(peer.peerAddress);
+        var host = this._getPeerHost(peer);
+        if (!host) return;
+
+        var cell = this._connectedPeers.get(host);
         if (cell) {
             // Only remove highlight if there are no more peers on this cell.
             if (this._decCellCount(cell) === 0) {
                 this._map.unhighlightCell(cell);
                 this._map.removeLink(this._ownCell, cell);
             }
-            this._connectedPeers.remove(peer.peerAddress);
+            this._connectedPeers.remove(host);
         }
     }
 
@@ -281,7 +295,7 @@ class MapUI {
     _highlightOwnPeer(response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, null, 'My');
+            var locDesc = this._responseToDesc(response, Nimiq.Protocol.RTC, null, 'My');
             var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer', locDesc);
             if (cell) {
                 this._ownCell = cell;
@@ -294,10 +308,10 @@ class MapUI {
         }
     }
 
-    _highlightConnectedPeer(addr, response) {
+    _highlightConnectedPeer(protocol, addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, addr, 'Connected');
+            var locDesc = this._responseToDesc(response, protocol, addr, 'Connected');
             var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer', locDesc);
             if (cell) {
                 this._connectedPeers.put(addr, cell);
@@ -307,19 +321,20 @@ class MapUI {
         }
     }
 
-    _responseToDesc(response, addr, status) {
+    _responseToDesc(response, protocol, addr, status) {
         return {
             status: status,
             city: response.city ? response.city : '',
             country: response.country ? isoCountries[response.country] : '',
+            protocol: protocol,
             addr: addr
         }
     }
 
-    _highlightKnownPeer(addr, response) {
+    _highlightKnownPeer(protocol, addr, response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
-            var locDesc = this._responseToDesc(response, 'Available');
+            var locDesc = this._responseToDesc(response, protocol, addr, 'Available');
             var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'known-peer', locDesc);
             if (cell) {
                 var numKnown = this._knownPeers.length;
@@ -340,14 +355,17 @@ class MapUI {
 
     _pollPeers() {
         if (this._polled.length === 0) {
-            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS, Nimiq.Services.DEFAULT);
+            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.DEFAULT);
             // choose random subset
             var index = Math.floor(Math.random() * (this._polled.length + 1));
             this._polled = this._polled.splice(index, 10);
         }
         if (this._polled.length > 0) {
-            var wsAddr = this._polled.shift();
-            GeoIP.retrieve(response => this._highlightKnownPeer(wsAddr, response), wsAddr.host);
+            var peerAddress = this._polled.shift();
+            var host = peerAddress.netAddress || peerAddress.host;
+            if (host) {
+                GeoIP.retrieve(response => this._highlightKnownPeer(peerAddress.protocol, host, response), host);
+            }
         }
     }
 }
@@ -368,6 +386,13 @@ class Miner {
 
         this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
         this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
+
+        const reconnectBtn = document.querySelector('#reconnectBtn');
+        reconnectBtn.onclick = () => {
+            // XXX HACK!!!!!!!!!!!!!!!!!!
+            this.$.network._connectingCount = 0;
+            this.$.network.connect();
+        }
     }
 
     connect() {
