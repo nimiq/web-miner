@@ -124,6 +124,12 @@ body > * {
 	}
 }
 
+.link {
+	stroke: #e2a62f;
+	stroke-width: 1;
+	stroke-dasharray: 5 5;
+}
+
 
 @keyframes fade-in {
 	from {

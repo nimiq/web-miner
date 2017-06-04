@@ -64,6 +64,7 @@ class Map {
             hexagons[i].cellId = i;
         }
         this._cells = hexagons;
+        this._links = [];
 	}
 
     getDimensions() {
@@ -81,6 +82,12 @@ class Map {
 	    if (curClass === 'own-peer' || curClass === 'connected-peer') return;
 
         cell.setAttribute('class', className);
+
+        if (className === 'own-peer') {
+            // put my own cell on top of everything else. In svg the stacking is not affected by z-index, but
+            // only by document order. So we make the cell the last child
+            cell.parentElement.appendChild(cell);
+        }
 
         // XXX another hack
         cell.data = data;
@@ -156,5 +163,57 @@ class Map {
 		}
 		return closestCell;
 	}
+
+    addLink(startCell, endCell) {
+        if (!startCell || !endCell) {
+            return;
+        }
+        // search whether we already drew that link
+        for (var i=0, link; link = this._links[i]; ++i) {
+            if (link.start === startCell && link.end === endCell
+                || link.end === startCell && link.start === endCell) {
+                return;
+            }
+        }
+        // draw the link
+        var svgBoundingRect = this.getDimensions();
+        var startBoundingRect = startCell.getBoundingClientRect();
+        var endBoundingRect = endCell.getBoundingClientRect();
+        // positions as relative numbers between 0 and 1:
+        var startCenter = {
+            x: (startBoundingRect.left + startBoundingRect.width/2 - svgBoundingRect.left) / svgBoundingRect.width,
+            y: (startBoundingRect.top + startBoundingRect.height/2 - svgBoundingRect.top) / svgBoundingRect.height
+        };
+        var endCenter = {
+            x: (endBoundingRect.left + endBoundingRect.width/2 - svgBoundingRect.left) / svgBoundingRect.width,
+            y: (endBoundingRect.top + endBoundingRect.height/2 - svgBoundingRect.top) / svgBoundingRect.height
+        };
+        var viewBox = this._svg.viewBox;
+        var viewBoxWidth = viewBox.baseVal.width;
+        var viewBoxHeight = viewBox.baseVal.height;
+        var pathEl = document.createElementNS(this._svg.namespaceURI, 'path');  
+        var path = 'M'+(startCenter.x*viewBoxWidth)+' '+(startCenter.y*viewBoxHeight)
+            +'L'+(endCenter.x*viewBoxWidth)+' '+(endCenter.y*viewBoxHeight);
+        pathEl.setAttributeNS(null,'d', path);
+        pathEl.classList.add('link');
+        this._links.push({
+            start: startCell,
+            end: endCell,
+            path: path
+        });
+        // insert the path before the startCell such that it will not be drawn over the startCell
+        startCell.parentElement.insertBefore(pathEl, startCell);
+    }
+
+    removeLink(startCell, endCell) {
+        for (var i=0, link; link = this._links[i]; ++i) {
+            if (link.start === startCell && link.end === endCell
+                || link.end === startCell && link.start === endCell) {
+                // we found the link
+                link.path.parentElement.removeChild(link.path);
+                return;
+            }
+        }
+    }
 }
 Map.MAX_CELL_DISTANCE = 20; // in terms of cells

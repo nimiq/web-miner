@@ -216,6 +216,7 @@ class MapUI {
             // Only remove highlight if there are no more peers on this cell.
             if (this._decCellCount(cell) === 0) {
                 this._map.unhighlightCell(cell);
+                this._map.removeLink(this._ownCell, cell);
             }
             this._connectedPeers.remove(peer.peerAddress);
         }
@@ -262,6 +263,7 @@ class MapUI {
             if (cell) {
                 this._connectedPeers.put(addr, cell);
                 this._incCellCount(cell);
+                this._map.addLink(this._ownCell, cell);
             }
         }
     }
