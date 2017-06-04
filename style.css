@@ -160,6 +160,7 @@ header {
 
 header .logo svg {
     margin-right: 16px;
+    /* width: 32px; */
 }
 
 .button {
