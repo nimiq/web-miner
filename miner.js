@@ -197,7 +197,7 @@ class PeerDescUI {
         const isBrowser = desc.protocol === Nimiq.Protocol.RTC;
         this._setNodeType(isBrowser);
         const nodeType = isBrowser ? 'Browser' : 'Backbone';
-        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr || ''}</small>`;
+        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr || '&nbsp;'}</small>`;
         this._container.style.opacity = 1;
     }
 
@@ -386,6 +386,13 @@ class Miner {
 
         this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
         this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
+
+        const reconnectBtn = document.querySelector('#reconnectBtn');
+        reconnectBtn.onclick = () => {
+            // XXX HACK!!!!!!!!!!!!!!!!!!
+            this.$.network._connectingCount = 0;
+            this.$.network.connect();
+        }
     }
 
     connect() {
