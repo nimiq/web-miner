@@ -6,6 +6,7 @@ body {
     text-align: center;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 13px;
+    -webkit-font-smoothing: antialiased;
 }
 
 body > * {

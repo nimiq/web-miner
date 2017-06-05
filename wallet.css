@@ -23,7 +23,7 @@ body.has-overlay #wallet {
   display: none;
   justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.3);
 }
 
 #wallet p, h1, h2, h3, ul {
@@ -62,6 +62,8 @@ body.has-overlay #wallet {
   font-family: inherit;
   font-size: inherit;
   line-height: 1;
+  cursor: pointer;
+  background: none;
 }
 
 #wallet input {
@@ -91,6 +93,10 @@ body.has-overlay #wallet {
 .wallet-overlay-container {
   display: flex;
   justify-content: center;
+  height: 100%;
+  max-height: 630px;
+  box-sizing: border-box;
+  padding: 24px;
 }
 
 .wallet-overlay {
@@ -99,9 +105,24 @@ body.has-overlay #wallet {
   border-radius: 3px;
   box-shadow: 0 2px 44px 0 rgba(0,0,0,0.3);
   font-size: 22px;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 24px;
+  opacity: .6;
+  transition: opacity .2s ease;
+}
+
+.wallet-close:hover {
+  opacity: 1;
 }
 
 #wallet-account {
@@ -114,7 +135,8 @@ body.has-overlay #wallet {
 }
 
 .wallet-head {
-  padding: 32px 32px 96px;
+  padding: 32px;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   background: rgba(3,32,71,.03);
@@ -181,7 +203,7 @@ body.has-overlay #wallet {
 
 #wallet-amount-input {
   font-size: 80px;
-  padding: 48px 0;
+  /*padding: 24px 0;*/
 }
 
 #wallet-amount-input input {
@@ -197,9 +219,11 @@ body.has-overlay #wallet {
   font-size: inherit;
   font-weight: 600;
   border: none;
+  flex: 0 0 auto;
   background: rgba(3,32,71,.1);
   color: rgba(3,32,71,.3);
   transition: background .2s ease, color .2s ease;
+  cursor: pointer;
 }
 
 .wallet-submit-button.is-active {
@@ -208,7 +232,7 @@ body.has-overlay #wallet {
   cursor: pointer;
 }
 
-.wallet-submit-button:hover {
+.wallet-submit-button.is-active:hover {
   outline: none;
   background: #E69E1D;
 }
@@ -231,6 +255,7 @@ body.has-overlay #wallet {
 
 .wallet-sidebar {
   position: relative;
+  z-index: 1;
   width: 300px; /* TODO: make this dynamic */
   background: #F6AE2D;
   flex: 0 0 auto;
@@ -287,4 +312,16 @@ body.has-overlay #wallet {
 .wallet-sidebar-detail p {
   word-wrap: break-word;
   color: rgba(3,32,71,.6);
+}
+
+@media (min-height: 600px) {
+  #wallet-amount-input {
+    padding: 24px 0;
+  }
+}
+
+@media (min-height: 700px) {
+  #wallet-amount-input {
+    padding: 32px 0;
+  }
 }
