@@ -123,7 +123,7 @@ class WalletUI {
         this._sendTxBtn.disabled = true;
 
         $$('#pendingReceiver').innerText = tx.recipientAddr.toHex();
-        $$('#pendingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value);
+        $$('#pendingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         this._pendingInterval = setInterval(() => {
             this._pendingElapsed++;
