@@ -56,6 +56,15 @@ body.has-overlay #wallet {
   color: rgba(3,32,71,.5);
 }
 
+.is-currency:before {
+  content: "";
+  background: url('images/logo_blue.svg') no-repeat;
+  display: inline-block;
+  background-size: contain;
+  vertical-align: baseline;
+  position: relative;
+}
+
 #wallet input, #wallet button {
   border: none;
   color: inherit;
@@ -142,21 +151,16 @@ body.has-overlay #wallet {
   background: rgba(3,32,71,.03);
 }
 
-#wallet-balance {
-  display: flex;
-  align-items: center;
-}
-
-#wallet-balance img {
-  margin-right: 8px;
-  width: 38px;
-  height: auto;
-}
-
-#wallet-balance p {
+p#wallet-balance {
   font-size: 50px;
   font-weight: 600;
   line-height: 1;
+}
+
+p#wallet-balance.is-currency:before {
+  width: 38px;
+  height: 32px;
+  margin-right: 8px;
 }
 
 .wallet-tabbar {
@@ -312,6 +316,14 @@ body.has-overlay #wallet {
 .wallet-sidebar-detail p {
   word-wrap: break-word;
   color: rgba(3,32,71,.6);
+}
+
+.wallet-sidebar-detail .is-currency:before {
+  width: 17px;
+  height: 15px;
+  margin-right: 4px;
+  top: 1px;
+  opacity: .6;
 }
 
 @media (min-height: 600px) {
