@@ -98,6 +98,12 @@ body.has-overlay #wallet {
 
 /* Elements */
 
+
+/* Open Wallet */
+
+
+
+
 .wallet-overlay-container {
   display: flex;
   justify-content: center;
@@ -149,6 +155,10 @@ body.has-overlay #wallet {
   display: flex;
   justify-content: space-between;
   background: rgba(3,32,71,.03);
+}
+
+#wallet .wallet-head-col .wallet-label {
+  margin-bottom: 8px;
 }
 
 p#wallet-balance {
@@ -386,6 +396,10 @@ p#wallet-balance.is-currency:before {
 .wallet-sidebar-confirmation .wallet-sidebar-row {
   margin: 20px 0 0;
 }
+
+/* Receive Notification */
+
+.
 
 @media (min-height: 600px) {
   #wallet-amount-input {

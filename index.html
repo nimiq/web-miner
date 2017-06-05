@@ -2289,12 +2289,18 @@
                 </div>
             </div>
             <div id="factBalanceContainer" class="fact">
-                <div class="label">My Balance</div>
-                <div>
+                <div id="factBalanceContainerInner">
+                    <div class="label">
+                        <span>Balance</span>
+                        <span class="show-on-hover">Open Wallet</span>
+                        <img src="images/arrow_right.svg" />
+                    </div>
+                    <div>
                     <span class="number">
                         <img id="nimiqCoinIcon" src="images/nimiq_white.svg">
                         <span id="factBalance">0.00</span>
                     </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2313,11 +2319,11 @@
         <div class="wallet-overlay">
             <div class="wallet-head">
                 <div class="wallet-head-col left" id="wallet-account">
-                    <small class="wallet-label small">Account</small>
+                    <p class="wallet-label small">Account</p>
                     <p class="small">xaOWokH2pSkFR0b38uTG2PocXskxaOWokH2pSkFR</p>
                 </div>
                 <div class="wallet-head-col right">
-                    <small class="wallet-label small">Balance</small>
+                    <p class="wallet-label small">Balance</p>
                     <p id="wallet-balance" class="is-currency">00000.00</p>
                 </div>
             </div>

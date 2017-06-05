@@ -354,7 +354,8 @@ header .logo svg {
     font-size: 13px;
     color: rgba(255, 255, 255, .6);
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 1px;
+    font-weight: 600;
     margin-bottom: 0px;
 }
 
@@ -392,9 +393,45 @@ header .logo svg {
 }
 
 #factBalanceContainer {
-    min-width: 131px;
     /* such that it can accomodate up to 3 digit balances without changing ui */
+    display: flex;
+    justify-content: center;
+    padding: 0;
 }
+
+/* Balance Hover */
+
+#factBalanceContainerInner {
+    padding: 8px;
+    min-width: 131px;
+    cursor: pointer;
+    transition: background .2s ease;
+}
+
+#factBalanceContainerInner .label {
+    display: flex;
+    justify-content: space-between;
+}
+
+#factBalanceContainerInner:hover {
+    border-radius: 3px;
+    background: rgba(255,255,255,0.1);
+}
+
+#factBalanceContainerInner .show-on-hover {
+    color: #F6AE2D;
+}
+
+#factBalanceContainerInner .show-on-hover,
+#factBalanceContainerInner:hover .label span {
+    display: none;
+}
+
+#factBalanceContainerInner:hover .label .show-on-hover {
+    display: inline-block;
+}
+
+
 
 #progressContainer {
     padding-bottom: 16px;
@@ -455,7 +492,6 @@ header .logo svg {
     /* wait 5 seconds until fading in because this is when we get the first hashrate value */
     animation: 1s fade-in 5s normal forwards;
 }
-
 
 /* Tablet / Phone */
 
