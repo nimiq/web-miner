@@ -203,12 +203,33 @@ p#wallet-balance.is-currency:before {
 #wallet-account-input {
   border-bottom: 1px solid rgba(3,32,71,.15);
   padding: 32px;
+  position: relative;
 }
 
 #wallet-amount-input {
   font-size: 80px;
-  /*padding: 24px 0;*/
+  position: relative;
 }
+
+#wallet-account-input.invalid:after, #wallet-amount-input.invalid:after {
+  color: #FF795F;
+  font-size: 16px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+}
+
+#wallet-account-input.invalid:after {
+  bottom: 10px;
+  content: "Sorry, this seems like an invalid account number.";
+}
+
+#wallet-amount-input.invalid:after {
+  bottom: 20px;
+  content: "Sorry, this transaction would exceed your balance.";
+}
+
 
 #wallet-amount-input input {
   max-width: 450px; /* TODO: investigate why the input resizes the parent relative to font size */
