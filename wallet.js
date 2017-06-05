@@ -33,6 +33,8 @@ class WalletUI {
 
         $$('#factBalanceContainer').onclick = () => this.show();
         $$('.wallet-close').onclick = () => this.hide();
+
+        $$('.wallet-sidebar-leave').onclick = () => $$('#wallet').classList.remove('transaction-received');
     }
 
     show() {
@@ -75,7 +77,11 @@ class WalletUI {
     _onTxReceived(tx) {
         if (!this.$.wallet.address.equals(tx.recipientAddr)) return;
 
-        // TODO Show incoming message.
+        tx.senderAddr().then(sender => $$('#receivedSender').innerText = sender.toHex());
+        $$('#receivedAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value);
+
+        $$('body').className = 'has-overlay';
+        $$('#wallet').classList.add('transaction-received');
     }
 
     _onTxsProcessed() {
@@ -127,7 +133,7 @@ class WalletUI {
             $$('#pendingElapsed').innerText = minutes + ':' + seconds;
         }, 1000);
 
-        $$('#wallet').className = 'transaction-pending';
+        $$('#wallet').classList.add('transaction-pending');
         this._pendingTx = tx;
     }
 
@@ -138,8 +144,9 @@ class WalletUI {
         this._pendingTx = null;
         this._pendingElapsed = 0;
 
-        $$('#wallet').className = '';
+        $$('#wallet').classList.remove('transaction-pending');
 
+        $$('#pendingElapsed').innerText = '0:00';
         if (this._pendingInterval) {
             clearInterval(this._pendingInterval);
             this._pendingInterval = null;
