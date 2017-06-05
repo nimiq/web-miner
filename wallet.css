@@ -441,7 +441,7 @@ p#wallet-balance.is-currency:before {
     display: none;
   }
 
-  #wallet.has-sidebar .wallet-sidebar-container {
+  #wallet.transaction-pending .wallet-sidebar-container {
     display: flex;
     position: absolute;
     top: 0;
@@ -501,7 +501,7 @@ p#wallet-balance.is-currency:before {
     max-height: none;
   }
 
-  .wallet-overlay-container, #wallet.has-sidebar .wallet-sidebar-container {
+  .wallet-overlay-container, #wallet.transaction-pending .wallet-sidebar-container {
     padding: 80px 8px 8px;
   }
 
