@@ -441,6 +441,78 @@ p#wallet-balance.is-currency:before {
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 560px) {
+  #wallet .small {
+    font-size: 16px;
+  }
 
+  #wallet-account {
+    margin-right: 32px;
+  }
+
+  p#wallet-balance {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 470px) {
+
+  .wallet-overlay-container {
+    max-height: none;
+  }
+
+  .wallet-overlay-container, #wallet.has-sidebar .wallet-sidebar-container {
+    padding: 80px 8px 8px;
+  }
+
+  .wallet-close {
+    top: 4px;
+    right: 4px;
+  }
+
+  #wallet-account {
+    margin-right: 24px;
+  }
+
+  p#wallet-balance.is-currency:before {
+    width: 30px;
+    height: 27px;
+    margin-right: 4px;
+    top: 1px;
+  }
+
+  /*.wallet-overlay {*/
+    /*border-radius: 0;*/
+  /*}*/
+
+  .wallet-head {
+    padding: 24px;
+  }
+
+  #wallet-account-input {
+    padding: 32px 24px;
+  }
+
+  #wallet .wallet-submit-button {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .wallet-sidebar {
+    padding: 0 0 24px;
+  }
+
+  .wallet-sidebar h2 {
+    padding: 24px;
+    max-width: none;
+  }
+
+  .wallet-sidebar-confirmation {
+    padding: 20px 24px;
+  }
+
+  .wallet-sidebar-row {
+    margin: 24px 24px 0;
+  }
 }
