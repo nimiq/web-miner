@@ -291,7 +291,7 @@ p#wallet-balance.is-currency:before {
   transition: width .5s ease;
 }
 
-#wallet.has-sidebar .wallet-sidebar-container {
+#wallet.transaction-pending .wallet-sidebar-container {
   width: 300px;
   display: flex;
   justify-content: flex-end;
@@ -410,7 +410,7 @@ p#wallet-balance.is-currency:before {
     margin-right: 32px;
   }
 
-  #wallet.has-sidebar .wallet-sidebar-container {
+  #wallet.transaction-pending .wallet-sidebar-container {
     width: 250px;
   }
 
@@ -539,6 +539,18 @@ p#wallet-balance.is-currency:before {
 }
 
 @media (max-width: 360px) {
+  .wallet-head {
+    display: block;
+  }
+
+  #wallet .wallet-head-col {
+    text-align: left;
+  }
+
+  #wallet-account {
+    margin-bottom: 24px;
+  }
+
   .wallet-sidebar {
     padding: 0 0 24px;
   }
