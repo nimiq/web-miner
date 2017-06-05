@@ -224,19 +224,24 @@ p#wallet-balance.is-currency:before {
   font-weight: 600;
   border: none;
   flex: 0 0 auto;
-  background: rgba(3,32,71,.1);
-  color: rgba(3,32,71,.3);
-  transition: background .2s ease, color .2s ease;
-  cursor: pointer;
-}
-
-.wallet-submit-button.is-active {
   background: #F6AE2D;
   color: rgba(3,32,71,1);
-  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
 }
 
-.wallet-submit-button.is-active:hover {
+#wallet .wallet-submit-button:disabled {
+  background: rgba(3,32,71,.1);
+  color: rgba(3,32,71,.3);
+  cursor: default;
+}
+
+#wallet .wallet-submit-button:disabled:hover {
+  background: rgba(3,32,71,.1);
+  color: rgba(3,32,71,.3);
+  cursor: default;
+}
+
+#wallet .wallet-submit-button:hover {
   outline: none;
   background: #E69E1D;
 }
