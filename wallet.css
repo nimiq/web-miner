@@ -50,7 +50,6 @@ body.has-overlay #wallet {
 
 .wallet-label {
   font-weight: 600;
-  font-size: 19px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(3,32,71,.5);
@@ -103,9 +102,10 @@ body.has-overlay #wallet {
   display: flex;
   justify-content: center;
   height: 100%;
-  max-height: 630px;
+  max-height: 650px;
   box-sizing: border-box;
   padding: 24px;
+  position: relative;
 }
 
 .wallet-overlay {
@@ -136,11 +136,11 @@ body.has-overlay #wallet {
 
 #wallet-account {
   max-width: 232px;
-  margin-right: 64px;
+  margin-right: 32px;
 }
 
 #wallet-account {
-  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .wallet-head {
@@ -155,6 +155,7 @@ p#wallet-balance {
   font-size: 50px;
   font-weight: 600;
   line-height: 1;
+  white-space: nowrap;
 }
 
 p#wallet-balance.is-currency:before {
@@ -202,7 +203,6 @@ p#wallet-balance.is-currency:before {
 #wallet-account-input {
   border-bottom: 1px solid rgba(3,32,71,.15);
   padding: 32px;
-  min-width: 500px;
 }
 
 #wallet-amount-input {
@@ -252,7 +252,7 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet.has-sidebar .wallet-sidebar-container {
-  width: 300px;
+  width: 250px;
   display: flex;
   justify-content: flex-end;
 }
@@ -260,7 +260,7 @@ p#wallet-balance.is-currency:before {
 .wallet-sidebar {
   position: relative;
   z-index: 1;
-  width: 300px; /* TODO: make this dynamic */
+  width: 250px; /* TODO: make this dynamic */
   background: #F6AE2D;
   flex: 0 0 auto;
   border-top-right-radius: 3px;
@@ -273,7 +273,7 @@ p#wallet-balance.is-currency:before {
   justify-content: space-between;
 }
 
-.wallet-sidebar-back {
+.wallet-sidebar-leave {
   background: none;
   position: absolute;
   top: 0;
@@ -282,8 +282,12 @@ p#wallet-balance.is-currency:before {
   transition: opacity .2s ease;
 }
 
-.wallet-sidebar-back:hover {
+.wallet-sidebar-leave:hover {
   opacity: .7;
+}
+
+.wallet-sidebar-close {
+  display: none;
 }
 
 .wallet-sidebar h2 {
@@ -314,7 +318,7 @@ p#wallet-balance.is-currency:before {
 }
 
 .wallet-sidebar-detail p {
-  word-wrap: break-word;
+  word-break: break-all;
   color: rgba(3,32,71,.6);
 }
 
@@ -336,4 +340,59 @@ p#wallet-balance.is-currency:before {
   #wallet-amount-input {
     padding: 32px 0;
   }
+}
+
+@media (min-width: 900px) {
+  #wallet-account-input {
+    min-width: 500px;
+  }
+}
+
+@media (min-width: 850px) {
+  #wallet-account {
+    margin-right: 64px;
+  }
+
+  #wallet.has-sidebar .wallet-sidebar-container {
+    width: 300px;
+  }
+  .wallet-sidebar {
+    width: 300px;
+  }
+}
+
+@media (max-width: 750px) {
+  #wallet.has-sidebar .wallet-sidebar-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    width: auto;
+    padding: 24px;
+  }
+
+  .wallet-sidebar {
+    width: 100%;
+    border-radius: 3px;
+  }
+
+  .wallet-sidebar h2 {
+    max-width: 70%;
+  }
+
+  .wallet-sidebar-back {
+    display: none;
+  }
+
+  .wallet-sidebar-close {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 450px) {
+
 }
