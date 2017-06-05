@@ -136,7 +136,7 @@ body.has-overlay #wallet {
 
 #wallet-account {
   max-width: 232px;
-  margin-right: 32px;
+  margin-right: 64px;
 }
 
 #wallet-account {
@@ -252,7 +252,7 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet.has-sidebar .wallet-sidebar-container {
-  width: 250px;
+  width: 300px;
   display: flex;
   justify-content: flex-end;
 }
@@ -260,12 +260,12 @@ p#wallet-balance.is-currency:before {
 .wallet-sidebar {
   position: relative;
   z-index: 1;
-  width: 250px; /* TODO: make this dynamic */
+  width: 300px; /* TODO: make this dynamic */
   background: #F6AE2D;
   flex: 0 0 auto;
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
-  padding: 80px 32px 48px;
+  padding: 0 0 48px;
   box-sizing: border-box;
   color: rgba(3,32,71,1);
   display: flex;
@@ -292,6 +292,7 @@ p#wallet-balance.is-currency:before {
 
 .wallet-sidebar h2 {
   font-size: 30px;
+  padding: 48px 32px;
   opacity: 1;
   letter-spacing: 0;
   font-weight: 600;
@@ -305,16 +306,17 @@ p#wallet-balance.is-currency:before {
 
 .wallet-sidebar-row {
   display: flex;
-  margin-top: 40px;
+  margin: 40px 32px 0;
 }
 
 .wallet-sidebar-detail {
+  width: 50%;
   max-width: 100%;
-  margin-right: 64px;
 }
 
 .wallet-sidebar-detail:last-child {
   margin-right: 0;
+  width: auto;
 }
 
 .wallet-sidebar-detail p {
@@ -328,6 +330,21 @@ p#wallet-balance.is-currency:before {
   margin-right: 4px;
   top: 1px;
   opacity: .6;
+}
+
+.wallet-sidebar-confirmation {
+  background: #E69E1E;
+  padding: 20px 32px;
+}
+
+.wallet-sidebar-confirmation h3 {
+  font-size: 22px;
+  opacity: .6;
+  letter-spacing: 0;
+}
+
+.wallet-sidebar-confirmation .wallet-sidebar-row {
+  margin: 20px 0 0;
 }
 
 @media (min-height: 600px) {
@@ -348,16 +365,33 @@ p#wallet-balance.is-currency:before {
   }
 }
 
-@media (min-width: 850px) {
+@media (max-width: 850px) {
   #wallet-account {
-    margin-right: 64px;
+    margin-right: 32px;
   }
 
   #wallet.has-sidebar .wallet-sidebar-container {
-    width: 300px;
+    width: 250px;
   }
+
   .wallet-sidebar {
-    width: 300px;
+    width: 250px;
+  }
+
+  .wallet-sidebar {
+    padding: 0 0 24px;
+  }
+
+  .wallet-sidebar h2 {
+    padding: 24px;
+  }
+
+  .wallet-sidebar-confirmation {
+    padding: 20px 24px;
+  }
+
+  .wallet-sidebar-row {
+    margin: 24px 24px 0;
   }
 }
 
