@@ -246,6 +246,20 @@ p#wallet-balance.is-currency:before {
   background: #E69E1D;
 }
 
+#wallet.transaction-pending .wallet-tab.active {
+  color: rgba(3,32,71,.3);
+}
+
+#wallet.transaction-pending input {
+  cursor: default;
+}
+
+#wallet.transaction-pending .wallet-submit-button {
+  background: none;
+  color: rgba(3,32,71,.3);
+  cursor: default;
+}
+
 /* sidebar */
 
 .wallet-sidebar-container {
