@@ -365,7 +365,7 @@ p#wallet-balance.is-currency:before {
   }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 850px) and (min-width: 751px) {
   #wallet-account {
     margin-right: 32px;
   }
@@ -396,7 +396,13 @@ p#wallet-balance.is-currency:before {
 }
 
 @media (max-width: 750px) {
+
+  .wallet-sidebar-container {
+    display: none;
+  }
+
   #wallet.has-sidebar .wallet-sidebar-container {
+    display: flex;
     position: absolute;
     top: 0;
     left: 0;
@@ -424,6 +430,14 @@ p#wallet-balance.is-currency:before {
     display: block;
     width: 20px;
     height: 20px;
+  }
+
+  .wallet-sidebar-detail {
+    width: auto;
+    margin-right: 64px;
+  }
+  .wallet-sidebar-detail:last-child {
+    margin-right: 0;
   }
 }
 
