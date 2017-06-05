@@ -78,7 +78,7 @@ class WalletUI {
         if (!this.$.wallet.address.equals(tx.recipientAddr)) return;
 
         tx.senderAddr().then(sender => $$('#receivedSender').innerText = sender.toHex());
-        $$('#receivedAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value);
+        $$('#receivedAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         $$('body').className = 'has-overlay';
         $$('#wallet').classList.add('transaction-received');
