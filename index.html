@@ -12,7 +12,7 @@
     <title>Nimiq Miner</title>
 </head>
 
-<body class="has-overlay">
+<body>
 <div class="miner-container">
     <div id="map">
         <div>
@@ -2314,13 +2314,13 @@
 
 <!-- Wallet Start -->
 
-<div id="wallet" class="transaction-pending transaction-received">
+<div id="wallet">
     <div class="wallet-overlay-container">
         <div class="wallet-overlay">
             <div class="wallet-head">
                 <div class="wallet-head-col left" id="wallet-account">
                     <p class="wallet-label small">Account</p>
-                    <p class="small">xaOWokH2pSkFR0b38uTG2PocXskxaOWokH2pSkFR</p>
+                    <p class="small address"></p>
                 </div>
                 <div class="wallet-head-col right">
                     <p class="wallet-label small">Balance</p>
@@ -2336,11 +2336,11 @@
                         <input type="text" required placeholder="Paste an Acc. Number" />
                     </div>
                     <div id="wallet-amount-input">
-                        <input type="text" required placeholder="0.00" pattern="(^\d+(\.|\,)\d{2}$)" />
+                        <input type="text" required placeholder="0.00" pattern="^\d+(.|,)\d{2}$" />
                     </div>
                 </div>
             </div>
-            <button class="wallet-submit-button">
+            <button class="wallet-submit-button" disabled>
                 Send Transaction
             </button>
         </div>
@@ -2360,8 +2360,8 @@
                         <h3>Waiting for confirmation</h3>
                         <div class="wallet-sidebar-row">
                             <div class="wallet-sidebar-detail">
-                                <div class="wallet-label">Duration</div>
-                                <p>0:04</p>
+                                <div class="wallet-label">Elapsed</div>
+                                <p id="pendingElapsed">0:00</p>
                             </div>
                             <div class="wallet-sidebar-detail">
                                 <div class="wallet-label">Estimated</div>
@@ -2372,13 +2372,13 @@
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Receiver</div>
-                            <p>xaOWokH2pSkFR0b38uTG2PocXskxaOWokH2pSkFR</p>
+                            <p id="pendingReceiver"></p>
                         </div>
                     </div>
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Value</div>
-                            <p class="is-currency">1.74</p>
+                            <p class="is-currency" id="pendingAmount">1.74</p>
                         </div>
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Fee</div>
@@ -2399,17 +2399,17 @@
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Sender</div>
-                            <p>xaOWokH2pSkFR0b38uTG2PocXskxaOWokH2pSkFR</p>
+                            <p id="receivedSender"></p>
                         </div>
                     </div>
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
-                            <div class="wallet-label">Date</div>
-                            <p>05/06/17</p>
+                            <div class="wallet-label">Value</div>
+                            <p class="is-currency" id="receivedAmount">1.74</p>
                         </div>
                         <div class="wallet-sidebar-detail">
-                            <div class="wallet-label">Block</div>
-                            <p>#1983</p>
+                            <div class="wallet-label">Fee</div>
+                            <p class="is-currency">0.00</p>
                         </div>
                     </div>
                 </div>

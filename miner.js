@@ -447,7 +447,7 @@ class Miner {
         // can be called multiple times
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
-        this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance));
+        this.$.accounts.on(this.$.wallet.address, account => this._onBalanceChanged(account.balance));
 
         this._warningConsensusLost.style.display = 'none';
 
@@ -542,6 +542,7 @@ Nimiq.init($ => {
     document.getElementById('warning-multiple-tabs').style.display = 'none';
     window.$ = $;
     window.Miner = new Miner($);
+    window.Wallet = new WalletUI($);
 }, function(error) {
     document.getElementById('landingSection').classList.add('warning');
     if (error === Nimiq.ERR_WAIT) {
