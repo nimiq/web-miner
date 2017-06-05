@@ -447,7 +447,7 @@ class Miner {
         // can be called multiple times
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
-        this.$.accounts.on(this.$.wallet.address, balance => this._onBalanceChanged(balance));
+        this.$.accounts.on(this.$.wallet.address, account => this._onBalanceChanged(account.balance));
 
         this._warningConsensusLost.style.display = 'none';
 
