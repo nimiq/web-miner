@@ -22,6 +22,7 @@ header {
     margin: 0 auto;
     box-sizing: border-box;
     z-index: 1;
+    font-weight: bold;
 }
 
 header .logo {
@@ -224,7 +225,8 @@ footer a {
 }
 
 @media (min-width: 1024px) {
-    header a{
+    header a, header .logo{
         font-size: 17px;
+        width: 200px;
     }
 }
