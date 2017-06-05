@@ -40,6 +40,11 @@ body.has-overlay #wallet {
   font-size: 19px;
 }
 
+#wallet .uppercase {
+  text-transform: uppercase;
+  letter-spacing: initial;
+}
+
 #wallet .left {
   text-align: left;
 }
@@ -212,8 +217,12 @@ p#wallet-balance.is-currency:before {
 
 #wallet-account-input {
   border-bottom: 1px solid rgba(3,32,71,.15);
-  padding: 32px;
   position: relative;
+}
+
+#wallet-account-input input {
+  padding: 32px;
+  box-sizing: border-box;
 }
 
 #wallet-amount-input {
@@ -387,6 +396,10 @@ p#wallet-balance.is-currency:before {
   font-weight: 600;
 }
 
+.wallet-sidebar.transaction-received h2 {
+  padding-top: 80px;
+}
+
 .wallet-sidebar .wallet-label {
   font-size: 16px;
   color: white;
@@ -494,7 +507,8 @@ p#wallet-balance.is-currency:before {
     display: none;
   }
 
-  #wallet.transaction-pending .wallet-sidebar-container {
+  #wallet.transaction-pending .wallet-sidebar-container,
+  #wallet.transaction-received .wallet-sidebar-container {
     display: flex;
     position: absolute;
     top: 0;
@@ -507,8 +521,19 @@ p#wallet-balance.is-currency:before {
   }
 
   .wallet-sidebar {
-    width: 100%;
+    display: none;
+    top: 24px;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    width: auto;
     border-radius: 3px;
+    transform: translate3D(0,0,0) !important;
+  }
+
+  #wallet.transaction-pending .wallet-sidebar.transaction-pending,
+  #wallet.transaction-received .wallet-sidebar.transaction-received {
+    display: flex;
   }
 
   .wallet-sidebar h2 {
@@ -558,8 +583,24 @@ p#wallet-balance.is-currency:before {
     max-height: none;
   }
 
-  .wallet-overlay-container, #wallet.transaction-pending .wallet-sidebar-container {
+  .wallet-overlay-container {
     padding: 80px 8px 8px;
+  }
+
+  #wallet.transaction-pending .wallet-sidebar-container,
+  #wallet.transaction-received .wallet-sidebar-container {
+    top: 80px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  #wallet.transaction-pending .wallet-sidebar,
+  #wallet.transaction-received .wallet-sidebar {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .wallet-close {
@@ -582,7 +623,7 @@ p#wallet-balance.is-currency:before {
     padding: 24px;
   }
 
-  #wallet-account-input {
+  #wallet-account-input input {
     padding: 32px 24px;
   }
 
