@@ -223,3 +223,8 @@ footer a {
     }
 }
 
+@media (min-width: 1024px) {
+    header a{
+        font-size: 17px;
+    }
+}
