@@ -299,16 +299,42 @@ p#wallet-balance.is-currency:before {
   justify-content: flex-end;
   padding: 8px 0;
   transition: width .5s ease;
+  overflow: hidden;
 }
 
-#wallet.transaction-pending .wallet-sidebar-container {
+#wallet.transaction-pending .wallet-sidebar-container,
+#wallet.transaction-received .wallet-sidebar-container {
   width: 300px;
   display: flex;
   justify-content: flex-end;
 }
 
+/* sidebar cases */
+
+#wallet.transaction-pending .wallet-sidebar.transaction-pending {
+  transform: translate3D(0,0,0);
+}
+
+#wallet.transaction-pending .wallet-sidebar.transaction-received {
+  transform: translate3D(-100%,0,0);
+  opacity: 1;
+}
+
+#wallet.transaction-received .wallet-sidebar.transaction-received {
+  opacity: 1;
+  transform: translate3D(0,0,0);
+}
+
+#wallet.transaction-received .wallet-sidebar.transaction-pending {
+  transform: translate3D(-100%,0,0);
+}
+
+#wallet.transaction-pending.transaction-received .wallet-sidebar.transaction-pending,
+#wallet.transaction-pending.transaction-received .wallet-sidebar.transaction-pending {
+  transform: translate3D(0,0,0);
+}
+
 .wallet-sidebar {
-  position: relative;
   z-index: 1;
   width: 300px; /* TODO: make this dynamic */
   background: #F6AE2D;
@@ -321,12 +347,25 @@ p#wallet-balance.is-currency:before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
+
+  position: absolute;
+  right: 24px;
+  top: 32px;
+  bottom: 32px;
+  transform: translate3D(0,0,0);
+  transition: transform .3s ease;
+}
+
+.wallet-sidebar.transaction-received {
+  background: #24C173;
+  opacity: 0;
 }
 
 .wallet-sidebar-leave {
   background: none;
   position: absolute;
-  top: 0;
+  top: 0px;
   right: 0;
   padding: 24px;
   transition: opacity .2s ease;

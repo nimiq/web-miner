@@ -2314,7 +2314,7 @@
 
 <!-- Wallet Start -->
 
-<div id="wallet" class="has-sidebar">
+<div id="wallet" class="transaction-pending transaction-received">
     <div class="wallet-overlay-container">
         <div class="wallet-overlay">
             <div class="wallet-head">
@@ -2345,7 +2345,7 @@
             </button>
         </div>
         <div class="wallet-sidebar-container">
-            <div class="wallet-sidebar left">
+            <div class="wallet-sidebar transaction-pending left">
                 <!--
                 <button class="wallet-sidebar-leave">
                     <img class="wallet-sidebar-back" src="images/arrow_back.svg" />
@@ -2383,6 +2383,33 @@
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Fee</div>
                             <p class="is-currency">0.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="wallet-sidebar transaction-received left">
+                <button class="wallet-sidebar-leave">
+                    <img class="wallet-sidebar-back" src="images/arrow_back.svg" />
+                    <img class="wallet-sidebar-close" src="images/close.svg"/>
+                </button>
+                <h2>
+                    You received a transaction.
+                </h2>
+                <div class="wallet-sidebar-details">
+                    <div class="wallet-sidebar-row">
+                        <div class="wallet-sidebar-detail">
+                            <div class="wallet-label">Sender</div>
+                            <p>xaOWokH2pSkFR0b38uTG2PocXskxaOWokH2pSkFR</p>
+                        </div>
+                    </div>
+                    <div class="wallet-sidebar-row">
+                        <div class="wallet-sidebar-detail">
+                            <div class="wallet-label">Date</div>
+                            <p>05/06/17</p>
+                        </div>
+                        <div class="wallet-sidebar-detail">
+                            <div class="wallet-label">Block</div>
+                            <p>#1983</p>
                         </div>
                     </div>
                 </div>
