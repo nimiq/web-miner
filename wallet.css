@@ -493,6 +493,10 @@ p#wallet-balance.is-currency:before {
   p#wallet-balance {
     font-size: 40px;
   }
+
+  #wallet-amount-input {
+    font-size: 60px;
+  }
 }
 
 @media (max-width: 470px) {
@@ -521,10 +525,6 @@ p#wallet-balance.is-currency:before {
     top: 1px;
   }
 
-  /*.wallet-overlay {*/
-    /*border-radius: 0;*/
-  /*}*/
-
   .wallet-head {
     padding: 24px;
   }
@@ -549,6 +549,10 @@ p#wallet-balance.is-currency:before {
 
   #wallet-account {
     margin-bottom: 24px;
+  }
+
+  #wallet-amount-input {
+    padding: 8px;
   }
 
   .wallet-sidebar {
