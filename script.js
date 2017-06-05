@@ -12,13 +12,14 @@ function isSupportedBrowser() {
 }
 
 if (isSupportedBrowser()) {
-    var scripts = ['geoip.js', 'map.js', 'miner.js'];
+    var scripts = ['geoip.js', 'map.js', 'wallet.js', 'miner.js'];
 
     // allow to load staging branch instead
+    var nimiq;
     if (window.location.hash === '#staging') {
-        var nimiq = 'https://cdn.nimiq-network.com/staging/nimiq.js';
+        nimiq = 'https://cdn.nimiq-network.com/staging/nimiq.js';
     } else {
-        var nimiq = 'https://cdn.nimiq.com/core/nimiq.js';
+        nimiq = 'https://cdn.nimiq.com/core/nimiq.js';
     }
 
     window.nimiq_loaded = false;

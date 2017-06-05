@@ -542,6 +542,7 @@ Nimiq.init($ => {
     document.getElementById('warning-multiple-tabs').style.display = 'none';
     window.$ = $;
     window.Miner = new Miner($);
+    window.Wallet = new WalletUI($);
 }, function(error) {
     document.getElementById('landingSection').classList.add('warning');
     if (error === Nimiq.ERR_WAIT) {
