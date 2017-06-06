@@ -219,7 +219,6 @@ class MapUI {
 
         $.network.on('peer-joined', peer => this._onPeerJoined(peer));
         $.network.on('peer-left', peer => this._onPeerLeft(peer));
-        setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
 
         GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
 
@@ -228,6 +227,7 @@ class MapUI {
 
     fadeIn() {
         this._mapElem.style.opacity = 1;
+        setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
     }
 
     _mapHighlight(e) {
