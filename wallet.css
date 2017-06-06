@@ -498,13 +498,12 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet .transaction-received .wallet-sidebar-confirmation {
-  background: rgba(0,0,0,0.1);
+  background: #21B069;
 }
 
 /* Confirmation loader */
 
 .wallet-sidebar-confirmation-loader {
-  background: rgba(255,255,255,0.1);
   position: absolute;
   top: 0;
   left: 0;
