@@ -23,12 +23,7 @@ class WalletUI {
         this._amountInput.onkeyup = () => this._validateAmount();
 
         this._sendTxBtn = $$('.wallet-submit-button');
-
-        $$('#wallet form').onsubmit = () => {
-            this._sendTx();
-            return false;
-        };
-        //this._sendTxBtn.onclick = () => this._sendTx();
+        this._sendTxBtn.onclick = () => this._sendTx();
 
         const accountAddr = $$('#wallet-account .address');
         accountAddr.innerText = $.wallet.address.toHex();
