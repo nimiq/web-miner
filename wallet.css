@@ -103,12 +103,6 @@ body.has-overlay #wallet {
 
 /* Elements */
 
-
-/* Open Wallet */
-
-
-
-
 .wallet-overlay-container {
   display: flex;
   justify-content: center;
@@ -160,6 +154,7 @@ body.has-overlay #wallet {
   display: flex;
   justify-content: space-between;
   background: rgba(3,32,71,.03);
+  flex: 1;
 }
 
 #wallet .wallet-head-col .wallet-label {
@@ -241,14 +236,13 @@ p#wallet-balance.is-currency:before {
 
 #wallet-account-input.invalid:after {
   bottom: 10px;
-  content: "Sorry, this seems like an invalid account number.";
+  content: "This seems like an invalid account number.";
 }
 
 #wallet-amount-input.invalid:after {
   bottom: 20px;
-  content: "Sorry, this transaction would exceed your balance.";
+  content: "This is not a valid amount.";
 }
-
 
 #wallet-amount-input input {
   max-width: 450px; /* TODO: investigate why the input resizes the parent relative to font size */
@@ -298,6 +292,19 @@ p#wallet-balance.is-currency:before {
   background: none;
   color: rgba(3,32,71,.3);
   cursor: default;
+}
+
+#wallet.transaction-pending .wallet-submit-button:hover {
+  background: none;
+  color: rgba(3,32,71,.3);
+}
+
+#wallet.transaction-pending .wallet-submit-button span {
+  display: none;
+}
+
+#wallet.transaction-pending .wallet-submit-button:before {
+  content: "Only one transaction at a time..."
 }
 
 /* sidebar */
