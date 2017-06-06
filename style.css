@@ -98,7 +98,7 @@ b {
 }
 
 .known-peer {
-    stroke: #f6ae2d;
+    fill: rgba(246, 174, 45, .5);
     -webkit-animation: connected 1800ms ease 1;
     animation: connected 1800ms ease 1;
 }
