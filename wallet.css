@@ -151,10 +151,23 @@ body.has-overlay #wallet {
 #wallet-account {
   max-width: 200px;
   margin-right: 72px;
+  word-break: break-all;
 }
 
-#wallet-account {
-  word-break: break-all;
+#wallet-account .wallet-label:after {
+  content: "Copied!";
+  font-weight: 500;
+  text-transform: none;
+  color: #F6AE2D;
+  letter-spacing: 0;
+  margin-left: 8px;
+  transition: opacity .5s ease-out;
+  opacity: 0;
+}
+
+#wallet-account.copied .wallet-label:after {
+  opacity: 1;
+  transition: opacity .2s ease-in;
 }
 
 .wallet-head {
