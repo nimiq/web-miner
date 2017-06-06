@@ -89,6 +89,10 @@ body.has-overlay #wallet {
   width: 100%;
 }
 
+#wallet input:required {
+  box-shadow:none;
+}
+
 #wallet button {
   margin: 0;
   line-height: 1;
