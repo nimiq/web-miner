@@ -13,6 +13,10 @@ body > * {
     z-index: 1;
 }
 
+b {
+    font-weight: 600;
+}
+
 
 /* map styling */
 
@@ -159,10 +163,6 @@ header {
 }
 */
 
-header .logo svg {
-    margin-right: 16px;
-    /* width: 32px; */
-}
 
 .button {
     /*background-image: linear-gradient(110deg, #e2a62f, #d7941a);*/
@@ -521,9 +521,7 @@ header .logo svg {
     header {
         padding: 16px;
     }
-    header .logo svg {
-        margin-right: 12px;
-    }
+
     #progress {
         font-size: 16px;
     }
