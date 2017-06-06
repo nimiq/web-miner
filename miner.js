@@ -59,14 +59,12 @@ class FactsUI {
 
     set syncing(isSyncing) {
         if (isSyncing) {
-            console.log('synchronization state: syncing');
             this._blockProcessingState.textContent = "Fetching";
             this._consensusProgress.textContent = "Synchronizing";
             this._miningSection.classList.remove('synced');
             this._miningSection.offsetWidth; // enforce an update
             this._miningSection.classList.add('syncing');
         } else {
-            console.log('synchronization state: synced');
             this._blockProcessingState.textContent = "Mining on";
             this._miningSection.classList.remove('syncing');
             this._miningSection.offsetWidth; // enforce an update
