@@ -272,7 +272,7 @@ class MapUI {
     }
 
     _noise() {
-        return (1 - Math.random() * 2) * 0.9;
+        return 0; //(1 - Math.random() * 2) * 0.9;
     }
 
     _incCellCount(cell) {
