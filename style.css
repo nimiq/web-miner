@@ -498,14 +498,14 @@ header .logo svg {
 
 @media screen and (max-width: 920px) {
     .facts {
-        flex-direction: column;
+        /*flex-direction: column;*/
         align-items: center;
+        flex-wrap: wrap;
         margin-bottom: 0;
     }
     .fact {
-        width: 64%;
-        margin-bottom: 2px;
-        margin-right: 0;
+        /*width: 64%;*/
+        margin: 0 12px 24px;
     }
     .facts .label {
         margin-bottom: 0px;
