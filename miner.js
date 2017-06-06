@@ -204,6 +204,33 @@ class PeerDescUI {
     }
 }
 
+class CellCounter {
+    constructor() {
+        this._cellCount = {};
+    }
+
+    incCellCount(cell) {
+        if (!this._cellCount[cell.cellId]) {
+            this._cellCount[cell.cellId] = 0;
+        }
+        this._cellCount[cell.cellId]++;
+    }
+
+    decCellCount(cell) {
+        if (!this._cellCount[cell.cellId]) {
+            this._cellCount[cell.cellId] = 0;
+        }
+        if (this._cellCount[cell.cellId] > 0) {
+            return --this._cellCount[cell.cellId];
+        }
+        return 0;
+    }
+
+    getCellCount(cell) {
+        return this._cellCount[cell.cellId] || 0;
+    }
+}
+
 class MapUI {
     constructor($) {
         this._mapElem = document.querySelector('#map svg');
@@ -212,7 +239,8 @@ class MapUI {
         this._polled = Nimiq.PeerAddresses.SEED_PEERS;
         this._connectedPeers = new Nimiq.HashMap();
         this._knownPeers = new Nimiq.HashMap();
-        this._cellCount = {};
+        this._cellCountKnown = new CellCounter();
+        this._cellCountConnected = new CellCounter();
         this._peerDescUI = new PeerDescUI()
 
         $.network.on('peer-joined', peer => this._onPeerJoined(peer));
@@ -261,8 +289,15 @@ class MapUI {
         var cell = this._connectedPeers.get(host);
         if (cell) {
             // Only remove highlight if there are no more peers on this cell.
-            if (this._decCellCount(cell) === 0) {
-                this._map.unhighlightCell(cell);
+            if (this._cellCountConnected.decCellCount(cell) === 0) {
+                // Either change class if there are still known peers there.
+                if (this._cellCountKnown.getCellCount(cell) > 0) {
+                    this._map.highlightCell(cell, 'known-peer', undefined);
+                }
+                // Or remove class at all.
+                else {
+                    this._map.unhighlightCell(cell);
+                }
                 this._map.removeLink(this._ownCell, cell);
             }
             this._connectedPeers.remove(host);
@@ -273,31 +308,15 @@ class MapUI {
         return 0; //(1 - Math.random() * 2) * 0.9;
     }
 
-    _incCellCount(cell) {
-        if (!this._cellCount[cell.cellId]) {
-            this._cellCount[cell.cellId] = 0;
-        }
-        this._cellCount[cell.cellId]++;
-    }
-
-    _decCellCount(cell) {
-        if (!this._cellCount[cell.cellId]) {
-            this._cellCount[cell.cellId] = 0;
-        }
-        if (this._cellCount[cell.cellId] > 0) {
-            return --this._cellCount[cell.cellId];
-        }
-        return 0;
-    }
-
     _highlightOwnPeer(response) {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
             var locDesc = this._responseToDesc(response, Nimiq.Protocol.RTC, null, 'My');
-            var cell = this._map.highlightLocation(loc.latitude, loc.longitude, 'own-peer', locDesc);
+            var cell = this._map.getCellByLocation(loc.latitude, loc.longitude);
             if (cell) {
                 this._ownCell = cell;
-                this._incCellCount(cell);
+                this._map.highlightCell(cell, 'own-peer', locDesc);
+                this._cellCountConnected.incCellCount(cell);
                 var connectedPeersCells = this._connectedPeers.values();
                 for (var i = 0, peerCell; peerCell = connectedPeersCells[i]; ++i) {
                     this._map.addLink(cell, peerCell);
@@ -310,10 +329,14 @@ class MapUI {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
             var locDesc = this._responseToDesc(response, protocol, addr, 'Connected');
-            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'connected-peer', locDesc);
+            var cell = this._map.getCellByLocation(loc.latitude + this._noise(), loc.longitude + this._noise());
             if (cell) {
+                if (this._ownCell !== cell) {
+                    // do not highlight own cell
+                    this._map.highlightCell(cell, 'connected-peer', locDesc);
+                }
                 this._connectedPeers.put(addr, cell);
-                this._incCellCount(cell);
+                this._cellCountConnected.incCellCount(cell);
                 this._map.addLink(this._ownCell, cell);
             }
         }
@@ -333,19 +356,28 @@ class MapUI {
         if (response && response.location && response.location.latitude) {
             var loc = response.location;
             var locDesc = this._responseToDesc(response, protocol, addr, 'Available');
-            var cell = this._map.highlightLocation(loc.latitude + this._noise(), loc.longitude + this._noise(), 'known-peer', locDesc);
+            var cell = this._map.getCellByLocation(loc.latitude + this._noise(), loc.longitude + this._noise());
             if (cell) {
                 var numKnown = this._knownPeers.length;
                 this._knownPeers.put(addr, cell);
-                // if too many are already highlighted, remove a random one
+                this._cellCountKnown.incCellCount(cell);
+                // Highlight only if necessary.
+                if (this._cellCountConnected.getCellCount(cell) === 0) {
+                    this._map.highlightCell(cell, 'known-peer', locDesc);
+                }
+                // If too many are already highlighted, remove a random one.
                 if (numKnown >= MapUI.KNOWN_PEERS_MAX) {
                     var i = Math.floor(Math.random() * numKnown);
                     var addr = this._knownPeers.keys()[i];
                     var cell = this._knownPeers.get(addr);
-                    if (this._decCellCount(cell) === 0) {
+                    this._knownPeers.remove(addr);
+                    this._cellCountKnown.decCellCount(cell);
+                    // If we now have neither connected nor known peers, remove highlight.
+                    if (this._cellCountKnown.getCellCount(cell) === 0 && this._cellCountConnected.getCellCount(cell) === 0) {
                         this._map.unhighlightCell(cell);
                     }
-                    this._knownPeers.remove(addr);
+                    // Otherwise, we either have a connected peer -> do not change the class.
+                    // Or we still have known peers -> do not change the class.
                 }
             }
         }
@@ -366,7 +398,7 @@ class MapUI {
         }
     }
 }
-MapUI.KNOWN_PEERS_MAX = 100;
+MapUI.KNOWN_PEERS_MAX = 500;
 MapUI.REFRESH_INTERVAL = 1000;
 
 class Miner {
