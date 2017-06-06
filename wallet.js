@@ -9,6 +9,9 @@ class WalletUI {
         this._pendingTx = null;
         this._pendingElapsed = 0;
 
+        this._receivingTx = null;
+        this._receivingElapsed = 0;
+
         this._accountContainer = $$('#wallet-account-input');
         this._accountInput = $$('#wallet-account-input input');
         this._accountInput.onchange = () => this._validateAddress();
@@ -20,7 +23,12 @@ class WalletUI {
         this._amountInput.onkeyup = () => this._validateAmount();
 
         this._sendTxBtn = $$('.wallet-submit-button');
-        this._sendTxBtn.onclick = () => this._sendTx();
+
+        $$('#wallet form').onsubmit = () => {
+            this._sendTx();
+            return false;
+        };
+        //this._sendTxBtn.onclick = () => this._sendTx();
 
         const accountAddr = $$('#wallet-account .address');
         accountAddr.innerText = $.wallet.address.toHex();
@@ -65,7 +73,7 @@ class WalletUI {
     _isAmountValid() {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
-        return satoshis > 0 && satoshis <= this._balance.value;
+        return satoshis >= 1 / 1e8 && satoshis <= this._balance.value;
     }
 
     _validateAmount() {
@@ -85,18 +93,44 @@ class WalletUI {
     _onTxReceived(tx) {
         if (!this.$.wallet.address.equals(tx.recipientAddr)) return;
 
-        tx.senderAddr().then(sender => $$('#receivedSender').innerText = sender.toHex());
-        $$('#receivedAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
+        if (this._receivingTx) {
+            if (this._receivingInterval) {
+                clearInterval(this._receivingInterval);
+            }
+
+            this._receivingElapsed = 0;
+            $$('#receivingElapsed').innerText = '0:00';
+        }
+
+        tx.senderAddr().then(sender => $$('#receivingSender').innerText = sender.toHex());
+        $$('#receivingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
+
+        this._receivingInterval = setInterval(() => {
+            this._receivingElapsed++;
+            const minutes = Math.floor(this._receivingElapsed / 60);
+            let seconds = this._receivingElapsed % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            $$('#receivingElapsed').innerText = minutes + ':' + seconds;
+        }, 1000);
 
         $$('body').className = 'has-overlay';
         $$('#wallet').classList.add('transaction-received');
+        this._receivingTx = tx;
     }
 
     _onTxsProcessed() {
         if (this._pendingTx) {
             this._pendingTx.hash().then(hash => {
                 if (!this.$.mempool.getTransaction(hash)) {
-                    this._transactionConfirmed();
+                    this._pendingTransactionConfirmed();
+                }
+            });
+        }
+
+        if (this._receivingTx) {
+            this._receivingTx.hash().then(hash => {
+                if (!this.$.mempool.getTransaction(hash)) {
+                    this._receivingTransactionConfirmed();
                 }
             });
         }
@@ -145,7 +179,7 @@ class WalletUI {
         this._pendingTx = tx;
     }
 
-    _transactionConfirmed() {
+    _pendingTransactionConfirmed() {
         this._accountInput.disabled = false;
         this._amountInput.disabled = false;
 
@@ -160,5 +194,20 @@ class WalletUI {
             this._pendingInterval = null;
         }
     }
+
+    _receivingTransactionConfirmed() {
+        this._receivingTx = null;
+        this._receivingElapsed = 0;
+
+        $$('#wallet').classList.remove('transaction-received');
+
+        $$('#receivingElapsed').innerText = '0:00';
+        if (this._receivingInterval) {
+            clearInterval(this._receivingInterval);
+            this._receivingInterval = null;
+        }
+    }
+
+
 }
 

@@ -2332,10 +2332,10 @@
             <form class="wallet-actions">
                 <div id="wallet-transfer">
                     <div id="wallet-account-input">
-                        <input type="text" required placeholder="Paste an Account Number" />
+                        <input required placeholder="Paste an Account Number" />
                     </div>
                     <div id="wallet-amount-input">
-                        <input type="text" required placeholder="0.00" pattern="^\d+(.|,)\d{2}$" />
+                        <input required placeholder="0.00" pattern="^\d+((.|,)\d{1,2}$)?$" />
                     </div>
                 </div>
                 <button class="wallet-submit-button" disabled>
@@ -2394,7 +2394,7 @@
                         <div class="wallet-sidebar-row">
                             <div class="wallet-sidebar-detail">
                                 <div class="wallet-label">Elapsed</div>
-                                <p id="pendingElapsed">0:00</p>
+                                <p id="receivingElapsed">0:00</p>
                             </div>
                             <div class="wallet-sidebar-detail">
                                 <div class="wallet-label">Estimated</div>
@@ -2405,13 +2405,13 @@
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Sender</div>
-                            <p id="receivedSender" class="uppercase"></p>
+                            <p id="receivingSender" class="uppercase"></p>
                         </div>
                     </div>
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Value</div>
-                            <p class="is-currency" id="receivedAmount">1.74</p>
+                            <p class="is-currency" id="receivingAmount">1.74</p>
                         </div>
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Fee</div>
