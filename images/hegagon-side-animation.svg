@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+	<style>
+		@keyframes dash-animation {
+			to {
+				transform: rotate(240deg) translateZ(0);
+			}
+		}
+		
+		#circle {
+			animation: 5s dash-animation infinite linear;
+			transform: rotate(-120deg) translateZ(0);
+			transform-origin: center;
+		}
+	</style>
+	<defs>
+		<clipPath id="hexClip">
+			<path clip-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z"/>
+		</clipPath>
+	</defs>
+	<path fill-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" fill="white" opacity="0.2"/>
+	<g clip-path="url(#hexClip)"> 
+		<circle id="circle" cx="32" cy="32" r="16" fill="none" stroke-width="32" stroke="#F6AE2D" stroke-dasharray="16.666 84.666"/>
+	</g>
+</svg>

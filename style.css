@@ -490,6 +490,11 @@ header {
     animation: 1s fade-in 5s normal forwards;
 }
 
+#block-loader {
+    height: 22px;
+    width: auto;
+}
+
 /* Tablet / Phone */
 
 @media screen and (max-width: 920px) {
@@ -526,9 +531,6 @@ header {
         left: 5%;
         bottom: 16px;
     }
-    #map {
-        opacity: 0.3;
-    }
     #rewardInfo {
         padding-top: 0;
     }
@@ -551,6 +553,12 @@ header {
 
     #progressContainer{
         padding-bottom: 8px;
+    }
+}
+
+@media (max-width: 800px) {
+    #map {
+        opacity: 0.3;
     }
 }
 
