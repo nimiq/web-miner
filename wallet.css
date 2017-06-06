@@ -74,18 +74,19 @@ body.has-overlay #wallet {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
-  line-height: 1;
   cursor: pointer;
   background: none;
 }
 
 #wallet input {
   padding: 0;
+  line-height: 100%;
   width: 100%;
 }
 
 #wallet button {
   margin: 0;
+  line-height: 1;
 }
 
 #wallet input:focus, #wallet button:focus {
@@ -94,15 +95,19 @@ body.has-overlay #wallet {
 
 #wallet input::-webkit-input-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input::-moz-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input:-ms-input-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input:-moz-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 
 /* Elements */
@@ -145,7 +150,7 @@ body.has-overlay #wallet {
 
 #wallet-account {
   max-width: 200px;
-  margin-right: 64px;
+  margin-right: 72px;
 }
 
 #wallet-account {
@@ -419,9 +424,9 @@ p#wallet-balance.is-currency:before {
   font-weight: 600;
 }
 
-.wallet-sidebar.transaction-received h2 {
-  padding-top: 80px;
-}
+/*.wallet-sidebar.transaction-received h2 {*/
+  /*padding-top: 80px;*/
+/*}*/
 
 .wallet-sidebar .wallet-label {
   font-size: 16px;
