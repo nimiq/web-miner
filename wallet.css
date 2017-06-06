@@ -539,6 +539,15 @@ p#wallet-balance.is-currency:before {
   }
 }
 
+@-webkit-keyframes loading {
+  from {
+    transform: translate3D(-100%,0,0);
+  }
+  to {
+    transform: translate3D(200%,0,0);
+  }
+}
+
 .wallet-sidebar-confirmation h3 {
   font-size: 22px;
   opacity: .6;

@@ -113,14 +113,12 @@ b {
     0% {
         opacity: 0.5;
     }
-    25% {
+
+    50% {
         opacity: 1;
     }
-    50% {
-        opacity: 0.5;
-    }
     100% {
-        opacity: 0;
+        opacity: 0.5;
     }
 }
 
@@ -128,14 +126,12 @@ b {
     0% {
         opacity: 0.5;
     }
-    25% {
+
+    50% {
         opacity: 1;
     }
-    50% {
-        opacity: 0.5;
-    }
     100% {
-        opacity: 0;
+        opacity: 0.5;
     }
 }
 
