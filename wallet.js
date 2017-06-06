@@ -149,7 +149,7 @@ class WalletUI {
             .then(tx => {
                 this.$.mempool.pushTransaction(tx).then(result => {
                     if (!result) {
-                        alert('Transaction failed! Please try again.');
+                        alert('Sending the transaction failed. You might have an unconfirmed transaction pending. Please try again in a few seconds.');
                     } else {
                         this._transactionPending(tx);
                     }
