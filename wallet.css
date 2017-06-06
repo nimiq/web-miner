@@ -415,7 +415,7 @@ p#wallet-balance.is-currency:before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: auto;
+  overflow: hidden;
 
   position: absolute;
   right: 24px;
