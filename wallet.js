@@ -97,7 +97,7 @@ class WalletUI {
             $$('#receivingElapsed').innerText = '0:00';
         }
 
-        tx.senderAddr().then(sender => $$('#receivingSender').innerText = sender.toHex());
+        tx.getSenderAddr().then(sender => $$('#receivingSender').innerText = sender.toHex());
         $$('#receivingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         this._receivingInterval = setInterval(() => {
