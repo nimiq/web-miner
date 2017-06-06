@@ -261,7 +261,7 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet-amount-input.invalid:after {
-  bottom: 20px;
+  bottom: 10px;
   content: "This is not a valid amount.";
 }
 
@@ -307,6 +307,19 @@ p#wallet-balance.is-currency:before {
 
 #wallet.transaction-pending input {
   cursor: default;
+}
+
+#wallet.transaction-pending input::-webkit-input-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input::-moz-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input:-ms-input-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input:-moz-placeholder {
+  color: rgba(3,32,71,0.2);
 }
 
 #wallet.transaction-pending .wallet-submit-button {
@@ -470,8 +483,8 @@ p#wallet-balance.is-currency:before {
   background: #E69E1E;
 }
 
-#wallet .transaction-pending .wallet-sidebar-confirmation {
-  background: #E69E1E;
+#wallet .transaction-received .wallet-sidebar-confirmation {
+  background: rgba(0,0,0,0.1);
 }
 
 .wallet-sidebar-confirmation h3 {
@@ -486,17 +499,23 @@ p#wallet-balance.is-currency:before {
 
 /* Receive Notification */
 
-
-
 @media (min-height: 600px) {
   #wallet-amount-input {
     padding: 24px 0;
+  }
+
+  #wallet-amount-input.invalid:after {
+    bottom: 15px;
   }
 }
 
 @media (min-height: 700px) {
   #wallet-amount-input {
     padding: 32px 0;
+  }
+
+  #wallet-amount-input.invalid:after {
+    bottom: 20px;
   }
 }
 
