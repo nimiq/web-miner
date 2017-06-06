@@ -25,6 +25,14 @@ class WalletUI {
         const accountAddr = $$('#wallet-account .address');
         accountAddr.innerText = $.wallet.address.toHex();
 
+        const wa = $$('#wallet-account');
+        wa.setAttribute('data-clipboard-text', $.wallet.address.toHex().toUpperCase());
+        const clipboard = new Clipboard('#wallet-account');
+        clipboard.on('success', () => {
+            wa.classList.add('copied');
+            setTimeout(() => wa.classList.remove('copied'), 3000);
+        });
+
         $.accounts.getBalance($.wallet.address).then(balance => this._onBalanceChanged(balance));
         $.accounts.on($.wallet.address, account => this._onBalanceChanged(account.balance));
 

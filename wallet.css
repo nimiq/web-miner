@@ -74,14 +74,19 @@ body.has-overlay #wallet {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
-  line-height: 1;
   cursor: pointer;
   background: none;
 }
 
 #wallet input {
   padding: 0;
+  line-height: 100%;
   width: 100%;
+}
+
+#wallet button {
+  margin: 0;
+  line-height: 1;
 }
 
 #wallet input:focus, #wallet button:focus {
@@ -90,24 +95,22 @@ body.has-overlay #wallet {
 
 #wallet input::-webkit-input-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input::-moz-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input:-ms-input-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 #wallet input:-moz-placeholder {
   color: rgba(3,32,71,0.4);
+  line-height: 100%;
 }
 
 /* Elements */
-
-
-/* Open Wallet */
-
-
-
 
 .wallet-overlay-container {
   display: flex;
@@ -146,12 +149,25 @@ body.has-overlay #wallet {
 }
 
 #wallet-account {
-  max-width: 232px;
-  margin-right: 64px;
+  max-width: 200px;
+  margin-right: 72px;
+  word-break: break-all;
 }
 
-#wallet-account {
-  word-break: break-all;
+#wallet-account .wallet-label:after {
+  content: "Copied!";
+  font-weight: 500;
+  text-transform: none;
+  color: #F6AE2D;
+  letter-spacing: 0;
+  margin-left: 8px;
+  transition: opacity .5s ease-out;
+  opacity: 0;
+}
+
+#wallet-account.copied .wallet-label:after {
+  opacity: 1;
+  transition: opacity .2s ease-in;
 }
 
 .wallet-head {
@@ -160,10 +176,22 @@ body.has-overlay #wallet {
   display: flex;
   justify-content: space-between;
   background: rgba(3,32,71,.03);
+  flex: 1;
 }
 
 #wallet .wallet-head-col .wallet-label {
   margin-bottom: 8px;
+}
+
+#wallet .wallet-account-data {
+  padding: 8px;
+  margin: -8px;
+  transition: background .2s ease;
+  cursor: pointer;
+}
+
+#wallet .wallet-account-data:hover {
+  background: rgba(3,32,71,.05);
 }
 
 p#wallet-balance {
@@ -228,6 +256,7 @@ p#wallet-balance.is-currency:before {
 #wallet-amount-input {
   font-size: 80px;
   position: relative;
+  padding: 16px 0;
 }
 
 #wallet-account-input.invalid:after, #wallet-amount-input.invalid:after {
@@ -241,14 +270,13 @@ p#wallet-balance.is-currency:before {
 
 #wallet-account-input.invalid:after {
   bottom: 10px;
-  content: "Sorry, this seems like an invalid account number.";
+  content: "This seems like an invalid account number.";
 }
 
 #wallet-amount-input.invalid:after {
-  bottom: 20px;
-  content: "Sorry, this transaction would exceed your balance.";
+  bottom: 10px;
+  content: "This is not a valid amount.";
 }
-
 
 #wallet-amount-input input {
   max-width: 450px; /* TODO: investigate why the input resizes the parent relative to font size */
@@ -294,10 +322,36 @@ p#wallet-balance.is-currency:before {
   cursor: default;
 }
 
+#wallet.transaction-pending input::-webkit-input-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input::-moz-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input:-ms-input-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+#wallet.transaction-pending input:-moz-placeholder {
+  color: rgba(3,32,71,0.2);
+}
+
 #wallet.transaction-pending .wallet-submit-button {
   background: none;
   color: rgba(3,32,71,.3);
   cursor: default;
+}
+
+#wallet.transaction-pending .wallet-submit-button:hover {
+  background: none;
+  color: rgba(3,32,71,.3);
+}
+
+#wallet.transaction-pending .wallet-submit-button span {
+  display: none;
+}
+
+#wallet.transaction-pending .wallet-submit-button:before {
+  content: "Only one transaction at a time..."
 }
 
 /* sidebar */
@@ -396,9 +450,9 @@ p#wallet-balance.is-currency:before {
   font-weight: 600;
 }
 
-.wallet-sidebar.transaction-received h2 {
-  padding-top: 80px;
-}
+/*.wallet-sidebar.transaction-received h2 {*/
+  /*padding-top: 80px;*/
+/*}*/
 
 .wallet-sidebar .wallet-label {
   font-size: 16px;
@@ -435,8 +489,15 @@ p#wallet-balance.is-currency:before {
 }
 
 .wallet-sidebar-confirmation {
-  background: #E69E1E;
   padding: 20px 32px;
+}
+
+#wallet .transaction-pending .wallet-sidebar-confirmation {
+  background: #E69E1E;
+}
+
+#wallet .transaction-received .wallet-sidebar-confirmation {
+  background: rgba(0,0,0,0.1);
 }
 
 .wallet-sidebar-confirmation h3 {
@@ -451,17 +512,23 @@ p#wallet-balance.is-currency:before {
 
 /* Receive Notification */
 
-.
-
 @media (min-height: 600px) {
   #wallet-amount-input {
     padding: 24px 0;
+  }
+
+  #wallet-amount-input.invalid:after {
+    bottom: 15px;
   }
 }
 
 @media (min-height: 700px) {
   #wallet-amount-input {
     padding: 32px 0;
+  }
+
+  #wallet-amount-input.invalid:after {
+    bottom: 20px;
   }
 }
 
@@ -539,6 +606,11 @@ p#wallet-balance.is-currency:before {
   .wallet-sidebar h2 {
     max-width: 70%;
   }
+
+  .wallet-sidebar.transaction-received h2 {
+    padding-top: 48px;
+  }
+
 
   .wallet-sidebar-back {
     display: none;
@@ -630,6 +702,10 @@ p#wallet-balance.is-currency:before {
   #wallet .wallet-submit-button {
     padding: 24px;
   }
+
+  .wallet-sidebar-row {
+    margin-top: 20px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -645,6 +721,10 @@ p#wallet-balance.is-currency:before {
     margin-bottom: 24px;
   }
 
+  #wallet-account-input input {
+    padding: 16px 24px;
+  }
+
   #wallet-amount-input {
     padding: 8px;
   }
@@ -654,7 +734,7 @@ p#wallet-balance.is-currency:before {
   }
 
   .wallet-sidebar h2 {
-    padding: 24px;
+    padding: 24px !important;
     max-width: none;
   }
 

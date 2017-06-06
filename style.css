@@ -406,6 +406,8 @@ header .logo svg {
     min-width: 131px;
     cursor: pointer;
     transition: background .2s ease;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
 }
 
 #factBalanceContainerInner .label {
@@ -414,24 +416,13 @@ header .logo svg {
 }
 
 #factBalanceContainerInner:hover {
-    border-radius: 3px;
     background: rgba(255,255,255,0.1);
 }
 
-#factBalanceContainerInner .show-on-hover {
+#factBalanceContainerInner .label {
     color: #F6AE2D;
-}
-
-#factBalanceContainerInner .show-on-hover,
-#factBalanceContainerInner:hover .label span {
-    display: none;
-}
-
-#factBalanceContainerInner:hover .label .show-on-hover {
     display: inline-block;
 }
-
-
 
 #progressContainer {
     padding-bottom: 16px;

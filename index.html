@@ -2291,8 +2291,7 @@
             <div id="factBalanceContainer" class="fact">
                 <div id="factBalanceContainerInner">
                     <div class="label">
-                        <span>Balance</span>
-                        <span class="show-on-hover">Open Wallet</span>
+                        <span>Open Wallet</span>
                         <img src="images/arrow_right.svg" />
                     </div>
                     <div>
@@ -2320,7 +2319,7 @@
             <div class="wallet-head">
                 <div class="wallet-head-col left" id="wallet-account">
                     <p class="wallet-label small">Account</p>
-                    <p class="small address uppercase"></p>
+                    <p class="small address uppercase wallet-account-data"></p>
                 </div>
                 <div class="wallet-head-col right">
                     <p class="wallet-label small">Balance</p>
@@ -2328,9 +2327,9 @@
                 </div>
             </div>
             <div class="wallet-tabbar">
-                <!--<div class="wallet-tab active">Transfer To</div>-->
+                <div class="wallet-tab active">Transfer To</div>
             </div>
-            <div class="wallet-actions">
+            <form class="wallet-actions">
                 <div id="wallet-transfer">
                     <div id="wallet-account-input">
                         <input type="text" required placeholder="Paste an Account Number" />
@@ -2339,19 +2338,13 @@
                         <input type="text" required placeholder="0.00" pattern="^\d+(.|,)\d{2}$" />
                     </div>
                 </div>
-            </div>
-            <button class="wallet-submit-button" disabled>
-                Send Transaction
-            </button>
+                <button class="wallet-submit-button" disabled>
+                    <span>Send Transaction</span>
+                </button>
+            </form>
         </div>
         <div class="wallet-sidebar-container">
             <div class="wallet-sidebar transaction-pending left">
-                <!--
-                <button class="wallet-sidebar-leave">
-                    <img class="wallet-sidebar-back" src="images/arrow_back.svg" />
-                    <img class="wallet-sidebar-close" src="images/close.svg"/>
-                </button>
-                -->
                 <h2>
                     Your Transaction is on the way.
                 </h2>
@@ -2390,12 +2383,25 @@
             <div class="wallet-sidebar transaction-received left">
                 <button class="wallet-sidebar-leave">
                     <img class="wallet-sidebar-back" src="images/arrow_back.svg" />
-                    <img class="wallet-sidebar-close" src="images/close.svg"/>
+                    <img class="wallet-sidebar-close" src="images/close.svg" />
                 </button>
                 <h2>
                     You received a transaction.
                 </h2>
                 <div class="wallet-sidebar-details">
+                    <div class="wallet-sidebar-confirmation">
+                        <h3>Waiting for confirmation</h3>
+                        <div class="wallet-sidebar-row">
+                            <div class="wallet-sidebar-detail">
+                                <div class="wallet-label">Elapsed</div>
+                                <p id="pendingElapsed">0:00</p>
+                            </div>
+                            <div class="wallet-sidebar-detail">
+                                <div class="wallet-label">Estimated</div>
+                                <p>1:00</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="wallet-sidebar-row">
                         <div class="wallet-sidebar-detail">
                             <div class="wallet-label">Sender</div>
@@ -2423,6 +2429,7 @@
 
 <!-- Wallet End -->
 
+<script src="clipboard.min.js"></script>
 <script src="script.js"></script>
 </body>
 
