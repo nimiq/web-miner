@@ -2329,7 +2329,7 @@
             <div class="wallet-tabbar">
                 <div class="wallet-tab active">Transfer To</div>
             </div>
-            <div class="wallet-actions">
+            <form class="wallet-actions">
                 <div id="wallet-transfer">
                     <div id="wallet-account-input">
                         <input type="text" required placeholder="Paste an Account Number" />
@@ -2338,10 +2338,10 @@
                         <input type="text" required placeholder="0.00" pattern="^\d+(.|,)\d{2}$" />
                     </div>
                 </div>
-            </div>
-            <button class="wallet-submit-button" disabled>
-                <span>Send Transaction</span>
-            </button>
+                <button class="wallet-submit-button" disabled>
+                    <span>Send Transaction</span>
+                </button>
+            </form>
         </div>
         <div class="wallet-sidebar-container">
             <div class="wallet-sidebar transaction-pending left">
