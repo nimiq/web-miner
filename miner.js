@@ -211,7 +211,7 @@ class MapUI {
         this._mapElem = document.querySelector('#map svg');
         this._map = new Map(this._mapElem);
         this.$ = $;
-        this._polled = [];
+        this._polled = Nimiq.PeerAddresses.SEED_PEERS;
         this._connectedPeers = new Nimiq.HashMap();
         this._knownPeers = new Nimiq.HashMap();
         this._cellCount = {};
@@ -240,10 +240,10 @@ class MapUI {
     }
 
     _getPeerHost(peer) {
-        if (peer.netAddress && !peer.netAddress.isPrivate()) {
-            return peer.netAddress;
-        } else if (peer.peerAddress.protocol === Nimiq.Protocol.WS) {
+        if (peer.peerAddress.protocol === Nimiq.Protocol.WS) {
             return peer.peerAddress.host;
+        } else if (peer.netAddress && !peer.netAddress.isPrivate()) {
+            return peer.netAddress.ip;
         } else {
             return null;
         }
@@ -356,20 +356,19 @@ class MapUI {
     _pollPeers() {
         if (this._polled.length === 0) {
             this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.DEFAULT);
-            // choose random subset
-            var index = Math.floor(Math.random() * (this._polled.length + 1));
-            this._polled = this._polled.splice(index, 10);
+            // Limit to 100 addresses.
+            this._polled = this._polled.slice(0, 100);
         }
         if (this._polled.length > 0) {
             var peerAddress = this._polled.shift();
-            var host = peerAddress.netAddress || peerAddress.host;
+            var host = peerAddress.host || peerAddress.netAddress && !peerAddress.netAddress.isPrivate() && peerAddress.netAddress.ip;
             if (host) {
                 GeoIP.retrieve(response => this._highlightKnownPeer(peerAddress.protocol, host, response), host);
             }
         }
     }
 }
-MapUI.KNOWN_PEERS_MAX = 20;
+MapUI.KNOWN_PEERS_MAX = 100;
 MapUI.REFRESH_INTERVAL = 1000;
 
 class Miner {
