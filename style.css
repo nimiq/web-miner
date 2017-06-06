@@ -13,6 +13,10 @@ body > * {
     z-index: 1;
 }
 
+b {
+    font-weight: 600;
+}
+
 
 /* map styling */
 
@@ -33,7 +37,7 @@ body > * {
 }
 
 #map svg {
-    fill: rgba(255, 255, 255, .3);
+    fill: rgba(255, 255, 255, .16);
     /* max-height: 80vh; */
     width: 85vw;
     margin: auto;
@@ -159,10 +163,6 @@ header {
 }
 */
 
-header .logo svg {
-    margin-right: 16px;
-    /* width: 32px; */
-}
 
 .button {
     /*background-image: linear-gradient(110deg, #e2a62f, #d7941a);*/
@@ -180,7 +180,7 @@ header .logo svg {
 
 .button:hover {
     color: #e2a62f;
-    //border-color: white;
+    /*border-color: white;*/
     background: transparent;
 }
 
@@ -304,13 +304,23 @@ header .logo svg {
 #connectBtn {
     display: none;
     animation: 700ms fade-in 700ms both;
+    letter-spacing: 0;
+    font-weight: 600;
+    background: #F6AE2D;
+    border: none;
+    transition: background .2s ease;
+}
+
+#connectBtn:hover {
+    background: #E69E1D;
+    color: white;
 }
 
 #miningSection {
     position: absolute;
-    width: 75%;
+    width: 100%;
     bottom: 32px;
-    left: 12.5%;
+    left: 0;
     display: none;
     transition: opacity 1s;
     opacity: 0;
@@ -341,13 +351,17 @@ header .logo svg {
 .facts {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin: 16px 0;
 }
 
 .fact {
     padding: 8px 0;
-    width: 20%;
+    margin-right: 64px
+}
+
+.fact:last-child {
+    margin-right: 0;
 }
 
 .facts .label {
@@ -361,6 +375,7 @@ header .logo svg {
 
 .facts .number {
     font-size: 33px;
+    font-weight: 600;
 }
 
 .facts .unit {
@@ -375,7 +390,6 @@ header .logo svg {
 
 #rewardInfo {
     font-size: 13px;
-    letter-spacing: 1pt;
     margin-top: 8px;
     opacity: 0;
     color: rgba(255, 255, 255, .6);
@@ -413,15 +427,11 @@ header .logo svg {
 #factBalanceContainerInner .label {
     display: flex;
     justify-content: space-between;
+    color: #F6AE2D;
 }
 
 #factBalanceContainerInner:hover {
     background: rgba(255,255,255,0.1);
-}
-
-#factBalanceContainerInner .label {
-    color: #F6AE2D;
-    display: inline-block;
 }
 
 #progressContainer {
@@ -488,13 +498,14 @@ header .logo svg {
 
 @media screen and (max-width: 920px) {
     .facts {
-        flex-direction: column;
+        /*flex-direction: column;*/
         align-items: center;
+        flex-wrap: wrap;
         margin-bottom: 0;
     }
     .fact {
-        width: 64%;
-        margin-bottom: 2px;
+        /*width: 64%;*/
+        margin: 0 12px 24px;
     }
     .facts .label {
         margin-bottom: 0px;
@@ -510,9 +521,7 @@ header .logo svg {
     header {
         padding: 16px;
     }
-    header .logo svg {
-        margin-right: 12px;
-    }
+
     #progress {
         font-size: 16px;
     }

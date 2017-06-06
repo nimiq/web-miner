@@ -2,6 +2,11 @@
 
 .miner-container {
   transition: filter .3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 body.has-overlay .miner-container {
@@ -351,7 +356,7 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet.transaction-pending .wallet-submit-button:before {
-  content: "Only one transaction at a time..."
+  content: "Please wait for confirmation"
 }
 
 /* sidebar */
@@ -490,6 +495,7 @@ p#wallet-balance.is-currency:before {
 
 .wallet-sidebar-confirmation {
   padding: 20px 32px;
+  position: relative;
 }
 
 #wallet .transaction-pending .wallet-sidebar-confirmation {
@@ -497,7 +503,40 @@ p#wallet-balance.is-currency:before {
 }
 
 #wallet .transaction-received .wallet-sidebar-confirmation {
-  background: rgba(0,0,0,0.1);
+  background: #21B069;
+}
+
+/* Confirmation loader */
+
+.wallet-sidebar-confirmation-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+}
+
+.wallet-sidebar-confirmation-loader:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0%;
+  transform: translate3D(-100%,0,0);
+  height: 100%;
+  width: 50%;
+  background: rgba(255,255,255,1);
+  background: #fff;
+  animation: loading 2s linear 1s infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: translate3D(-100%,0,0);
+  }
+  to {
+    transform: translate3D(200%,0,0);
+  }
 }
 
 .wallet-sidebar-confirmation h3 {

@@ -22,20 +22,31 @@ header {
     margin: 0 auto;
     box-sizing: border-box;
     z-index: 1;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 header .logo {
     display: flex;
     align-items: center;
     color: white;
-    width: 168px;
-    font-size: 15px;
+    /*width: 168px;*/
+    font-size: 18px;
 }
 
-header .logo img {
-    width: 32px;
+
+header .logo svg {
     margin-right: 16px;
+    /* width: 32px; */
+}
+
+/*header .logo img {*/
+    /*width: 32px;*/
+    /*margin-right: 8px;*/
+/*}*/
+
+header .logo .uppercase {
+    font-weight: 700;
+    line-height: 1;
 }
 
 header .menu a {
@@ -174,7 +185,7 @@ footer a {
 
 .uppercase {
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 1px;
 }
 
 .icon {
@@ -211,8 +222,13 @@ footer a {
     header {
         padding: 12px;
     }
-    header .logo img {
-        margin-right: 8px;
+
+    header .logo {
+        font-size: 16px;
+    }
+
+    header .logo svg {
+        margin-right: 12px;
     }
 
     header .menu a{
@@ -221,12 +237,5 @@ footer a {
 
     header .menu .github{
         display: none;
-    }
-}
-
-@media (min-width: 1024px) {
-    header a, header .logo{
-        font-size: 17px;
-        width: 200px;
     }
 }
