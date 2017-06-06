@@ -144,7 +144,7 @@ body.has-overlay #wallet {
 }
 
 #wallet-account {
-  max-width: 232px;
+  max-width: 200px;
   margin-right: 64px;
 }
 
@@ -163,6 +163,17 @@ body.has-overlay #wallet {
 
 #wallet .wallet-head-col .wallet-label {
   margin-bottom: 8px;
+}
+
+#wallet .wallet-account-data {
+  padding: 8px;
+  margin: -8px;
+  transition: background .2s ease;
+  cursor: pointer;
+}
+
+#wallet .wallet-account-data:hover {
+  background: rgba(3,32,71,.05);
 }
 
 p#wallet-balance {
