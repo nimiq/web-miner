@@ -44,6 +44,7 @@ class WalletUI {
 
         $$('#factBalanceContainer').onclick = () => this.show();
         $$('.wallet-close').onclick = () => this.hide();
+        $$('.wallet-overlay-exit-area').onclick = () => this.hide();
 
         $$('.wallet-sidebar-leave').onclick = () => $$('#wallet').classList.remove('transaction-received');
     }

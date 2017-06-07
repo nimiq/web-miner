@@ -131,6 +131,14 @@ body.has-overlay #wallet {
   position: relative;
 }
 
+.wallet-overlay-exit-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .wallet-overlay {
   background: white;
   color: rgba(3,32,71,1);
