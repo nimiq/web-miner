@@ -197,6 +197,62 @@ footer a {
     opacity: 0.8;
 }
 
+/* Overlay Context State */
+
+.miner-container {
+    transition: filter .3s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+}
+
+.overlay p, h1, h2, h3, ul {
+    margin: 0;
+    padding: 0;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.overlay .uppercase {
+    text-transform: uppercase;
+    letter-spacing: initial;
+}
+
+.label {
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(3,32,71,.5);
+}
+
+body.has-overlay .miner-container {
+    filter: blur(10px);
+}
+
+body.has-overlay #wallet {
+    display: flex;
+}
+
 @media (max-width: 800px) {
     .row {
         flex-direction: column;

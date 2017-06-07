@@ -1,39 +1,9 @@
-/* Context State */
 
-.miner-container {
-  transition: filter .3s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-body.has-overlay .miner-container {
-  filter: blur(10px);
-}
-
-body.has-overlay #wallet {
-  display: flex;
-}
 
 /* General */
 
 #wallet {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.3);
-}
 
-#wallet p, h1, h2, h3, ul {
-  margin: 0;
-  padding: 0;
 }
 
 #wallet p {
@@ -43,26 +13,6 @@ body.has-overlay #wallet {
 
 #wallet .small {
   font-size: 19px;
-}
-
-#wallet .uppercase {
-  text-transform: uppercase;
-  letter-spacing: initial;
-}
-
-#wallet .left {
-  text-align: left;
-}
-
-#wallet .right {
-  text-align: right;
-}
-
-.wallet-label {
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(3,32,71,.5);
 }
 
 .is-currency:before {
@@ -171,7 +121,7 @@ body.has-overlay #wallet {
   word-break: break-all;
 }
 
-#wallet-account .wallet-label:after {
+#wallet-account .label:after {
   content: "Copied!";
   font-weight: 500;
   text-transform: none;
@@ -182,7 +132,7 @@ body.has-overlay #wallet {
   opacity: 0;
 }
 
-#wallet-account.copied .wallet-label:after {
+#wallet-account.copied .label:after {
   opacity: 1;
   transition: opacity .2s ease-in;
 }
@@ -196,7 +146,7 @@ body.has-overlay #wallet {
   flex: 1;
 }
 
-#wallet .wallet-head-col .wallet-label {
+#wallet .wallet-head-col .label {
   margin-bottom: 8px;
 }
 
@@ -474,7 +424,7 @@ p#wallet-balance.is-currency:before {
   /*padding-top: 80px;*/
 /*}*/
 
-.wallet-sidebar .wallet-label {
+.wallet-sidebar .label {
   font-size: 16px;
   color: white;
   margin-bottom: 8px;
