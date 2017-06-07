@@ -461,10 +461,13 @@ p#wallet-balance.is-currency:before {
 
 .wallet-sidebar h2 {
   font-size: 30px;
-  padding: 48px 32px;
+  padding: 0 32px;
   opacity: 1;
   letter-spacing: 0;
   font-weight: 600;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 /*.wallet-sidebar.transaction-received h2 {*/
@@ -763,8 +766,20 @@ p#wallet-balance.is-currency:before {
     padding: 24px;
   }
 
+  .wallet-sidebar h2 {
+    padding: 0 24px;
+  }
+
+  .wallet-sidebar-confirmation {
+    padding: 20px 24px;
+  }
+
   .wallet-sidebar-row {
-    margin-top: 20px;
+    margin: 20px 24px 0;
+  }
+
+  .wallet-sidebar {
+    padding: 0 0 20px;
   }
 }
 
