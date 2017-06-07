@@ -23,11 +23,12 @@
     <link href="nimiq.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link href="wallet.css" rel="stylesheet">
+    <link href="blockexplorer.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <title>Nimiq Betanet</title>
 </head>
 
-<body>
+<body overlay="blocks-overview">
 <div class="miner-container">
     <div id="map">
         <div>
@@ -2139,11 +2140,15 @@
                 <polygon points="1078.75,353.5 1074.33,353.5 1072.11,357.33 1074.33,361.17 1078.75,361.17 1080.97,357.33      " />
             </svg>
         </div>
+        <!--<div class="node-label">
+            <h3>192.168.1.116 / Berlin</h3>
+            <p>Available Browser</p>
+        </div>-->
     </div>
-    <header>
+    <header id="header">
         <div class="logo">
             <svg fill="#F6AE2D" xmlns="http://www.w3.org/2000/svg" width="34" height="30">
-                <path d="M25.2 1H8.8l-8 14 8 14h16.4l8-14-8-14zm-6.7 22V26H16v-2.6c-1.5 0-3.3-.8-4.5-2l1.7-2.4c1.3 1 2.4 1.5 3.6 1.5 1.4 0 2-.6 2-1.7 0-2.6-6.7-2.6-6.7-7 0-2.6 1.6-4.3 4-4.8V4.2h2.5v2.6c1.6.2 2.8 1 3.8 2l-2 2.2c-.8-1-1.6-1.3-2.7-1.3-1.2 0-2 .5-2 1.6.2 2.4 7 2.2 7 7 0 2.4-1.5 4.3-4 4.8z"/>
+                <path d="M25.2 1H8.8l-8 14 8 14h16.4l8-14-8-14zm-6.7 22V26H16v-2.6c-1.5 0-3.3-.8-4.5-2l1.7-2.4c1.3 1 2.4 1.5 3.6 1.5 1.4 0 2-.6 2-1.7 0-2.6-6.7-2.6-6.7-7 0-2.6 1.6-4.3 4-4.8V4.2h2.5v2.6c1.6.2 2.8 1 3.8 2l-2 2.2c-.8-1-1.6-1.3-2.7-1.3-1.2 0-2 .5-2 1.6.2 2.4 7 2.2 7 7 0 2.4-1.5 4.3-4 4.8z" />
             </svg>
             <span class="uppercase">Nimiq Betanet</span>
         </div>
@@ -2207,12 +2212,16 @@
                 </style>
                 <defs>
                     <clipPath id="hexClip">
-                        <path clip-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z"/>
+                        <path clip-rule="evenodd"
+                              d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" />
                     </clipPath>
                 </defs>
-                <path fill-rule="evenodd" d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z" fill="white" opacity="0.2"/>
+                <path fill-rule="evenodd"
+                      d="M16 4.29h32l16 27.71l-16 27.71h-32l-16 -27.71zM20.62 12.29h22.76l11.38 19.71l-11.38 19.71h-22.76l-11.38 -19.71z"
+                      fill="white" opacity="0.2" />
                 <g clip-path="url(#hexClip)">
-                    <circle id="circle" cx="32" cy="32" r="16" fill="none" stroke-width="32" stroke="#F6AE2D" stroke-dasharray="16.666 84.666"/>
+                    <circle id="circle" cx="32" cy="32" r="16" fill="none" stroke-width="32" stroke="#F6AE2D"
+                            stroke-dasharray="16.666 84.666" />
                 </g>
             </svg>
             <div class="button" id="connectBtn">
@@ -2265,7 +2274,7 @@
                     <span class="unit">Peers</span>
                 </div>
             </div>
-            <div class="fact">
+            <div class="fact" id="mining-on-block">
                 <div id="factBlockContainer" class="label"><span id="factBlockProcessingState">Fetching</span> Block
                 </div>
                 <div>
@@ -2286,6 +2295,7 @@
                         <span id="factBlockHeight">0</span></span>
                     <span class="unit"></span>
                 </div>
+                <div class="separator"></div>
             </div>
             <div class="fact">
                 <div class="label">Global Hashrate</div>
@@ -2321,15 +2331,112 @@
             <b id="factExpectedHashTime">x hours</b>.
             <a href="#" id="toggleMinerBtn">Pause mining</a>
         </div>
+
+        <!-- Blocks Overview -->
+        <div id="blocks-overview-container">
+            <div id="blocks-overview">
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+                <div class="blocks-overview-block">
+                    <div class="blocks-overview-block-number">#1029</div>
+                    <div>2 min ago</div>
+                    <div>192 transactions (<span class="is-currency">938.30</span>)</div>
+                    <div class="ellipsis">
+                        mined by C27AF2C068E99408586AE4271D12CE903AC9AE30
+                    </div>
+                    <div>1029 Bytes</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<!-- Wallet Start -->
+<!-- Wallet -->
 
-<div id="wallet" class="overlay">
-    <div class="wallet-overlay-exit-area"></div>
-    <div class="wallet-overlay-container">
-        <div class="wallet-overlay">
+<div id="wallet" class="overlay-root">
+    <div class="overlay-exit-area" id="wallet-exit-area"></div>
+    <div class="overlay-container">
+        <div class="overlay">
             <div class="wallet-head">
                 <div class="wallet-head-col left" id="wallet-account">
                     <p class="label small">Account</p>
@@ -2438,12 +2545,36 @@
             </div>
         </div>
     </div>
-    <button class="wallet-close">
+    <button class="overlay-close" id="wallet-close">
         <img src="images/close.svg" />
     </button>
 </div>
 
-<!-- Wallet End -->
+<!-- Block Explorer -->
+
+<!-- Block Detail -->
+
+<div id="block-detail" class="overlay-root">
+    <div class="overlay-exit-area" id="block-detail-exit-area"></div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-head">
+                <div class="overlay-head-col left">
+                    <p class="label small">Block</p>
+                    <p id="block-detail-block-number"></p>
+                </div>
+                <div class="overlay-head-col right">
+                    <p class="label small">Hash</p>
+                    <p id="block-detail-block-hash">00000.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="overlay-close" id="blockexplorer-close">
+        <img src="images/close.svg" />
+    </button>
+</div>
+
 
 <script src="clipboard.min.js"></script>
 <script src="script.js"></script>

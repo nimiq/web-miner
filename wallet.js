@@ -43,8 +43,8 @@ class WalletUI {
         $.mempool.on('transactions-ready', () => this._onTxsProcessed());
 
         $$('#factBalanceContainer').onclick = () => this.show();
-        $$('.wallet-close').onclick = () => this.hide();
-        $$('.wallet-overlay-exit-area').onclick = () => this.hide();
+        $$('#wallet-close').onclick = () => this.hide();
+        $$('#wallet-exit-area').onclick = () => this.hide();
 
         $$('.wallet-sidebar-leave').onclick = () => $$('#wallet').classList.remove('transaction-received');
     }

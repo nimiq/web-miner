@@ -315,7 +315,7 @@ header {
 #miningSection {
     position: absolute;
     width: 100%;
-    bottom: 32px;
+    bottom: 0;
     left: 0;
     display: none;
     transition: opacity 1s;
@@ -385,6 +385,10 @@ header {
 }
 
 #rewardInfo {
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+    left: 0;
     font-size: 13px;
     margin-top: 8px;
     opacity: 0;
@@ -400,6 +404,10 @@ header {
 
 #rewardInfo a:hover {
     color: white;
+}
+
+#mining-on-block {
+    position: relative;
 }
 
 #factBalanceContainer {
@@ -495,6 +503,284 @@ header {
     width: auto;
 }
 
+
+/* Buttons & Inputs */
+
+
+input, button {
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    background: none;
+}
+
+input {
+    padding: 0;
+    line-height: 100%;
+    width: 100%;
+}
+
+input:required {
+    box-shadow:none;
+}
+
+button {
+    margin: 0;
+    line-height: 1;
+}
+
+input:focus, button:focus {
+    outline: none;
+}
+
+input::-webkit-input-placeholder {
+    color: rgba(3,32,71,0.4);
+    line-height: 100%;
+}
+input::-moz-placeholder {
+    color: rgba(3,32,71,0.4);
+    line-height: 100%;
+}
+input:-ms-input-placeholder {
+    color: rgba(3,32,71,0.4);
+    line-height: 100%;
+}
+input:-moz-placeholder {
+    color: rgba(3,32,71,0.4);
+    line-height: 100%;
+}
+
+/* Overlay Context State */
+
+.miner-container {
+    transition: filter .3s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay-root {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.3);
+}
+
+.overlay-exit-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.overlay {
+    background: white;
+    color: rgba(3,32,71,1);
+    border-radius: 3px;
+    box-shadow: 0 2px 44px 0 rgba(0,0,0,0.3);
+    font-size: 22px;
+    overflow: auto;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay-close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    padding: 24px;
+    opacity: .6;
+    transition: opacity .2s ease;
+}
+
+.overlay-close:hover {
+    opacity: 1;
+}
+
+.overlay-container {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    max-height: 650px;
+    box-sizing: border-box;
+    padding: 24px;
+    position: relative;
+}
+
+.overlay p, h1, h2, h3, ul {
+    margin: 0;
+    padding: 0;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.overlay .uppercase {
+    text-transform: uppercase;
+    letter-spacing: initial;
+}
+
+.label {
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(3,32,71,.5);
+}
+
+.overlay-head {
+    padding: 32px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(3,32,71,.03);
+    flex: 1;
+}
+
+.overlay-head-col .label {
+    margin-bottom: 8px;
+}
+
+#mining-on-block:after{
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    width: 15px;
+    height: 15px;
+    left: 50%;
+    transform: translate(-50%, 0) rotate(45deg);
+    border-top: 1px solid #455874;
+    border-left: 1px solid #455874;
+    display: none;
+}
+
+.separator {
+    position: absolute;
+    height: 1px;
+    width: 22px;
+    left: 50%;
+    bottom: -17px;
+    transform: translate(-50%, 0);
+    display: none;
+}
+
+.separator:before, .separator:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100vw;
+    background: #455874;
+}
+
+.separator:before {
+    left: 100%
+}
+.separator:after {
+    right: 100%
+}
+
+/* Overlay State */
+
+body[overlay="blocks-overview"] #mining-on-block:after {
+    display: block;
+}
+
+body[overlay="blocks-overview"] .separator {
+    display: block;
+}
+
+body[overlay="blocks-overview"] #rewardInfo {
+    visibility: hidden;
+}
+
+body[overlay="blocks-overview"] .fact {
+    opacity: .3;
+    pointer-events: none;
+}
+
+body[overlay="blocks-overview"] #mining-on-block {
+    opacity: 1;
+    pointer-events: all;
+}
+
+body[overlay="blocks-overview"] #map,
+body[overlay="blocks-overview"] #header {
+    filter: blur(10px);
+}
+
+body[overlay="wallet"] .miner-container,
+body[overlay="block-detail"] .miner-container {
+    filter: blur(10px);
+}
+
+body[overlay="wallet"] #wallet {
+    display: flex;
+}
+
+body[overlay="blocks-overview"] #blocks-overview {
+    display: block;
+}
+
+body[overlay="block-detail"] #block-detail {
+    display: flex;
+}
+
+/* Node Details Label */
+
+.node-label {
+    position: absolute;
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+    padding: 10px !important;
+    top: 50%;
+    left: 50%;
+}
+
+.node-label h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    line-height: 1;
+}
+
+.node-label p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1;
+    margin: 8px 0 0;
+}
+
+.node-label.to-right h2,
+.node-label.to-right p {
+    text-align: left;
+}
+
+.node-label.to-left {
+    transform: translate(-100%, 0);
+}
+
+.node-label.to-left h2,
+.node-label.to-left p {
+    text-align: right;
+}
+
+
 /* Tablet / Phone */
 
 @media screen and (max-width: 920px) {
@@ -527,8 +813,8 @@ header {
         font-size: 16px;
     }
     #miningSection {
-        width: 90%;
-        left: 5%;
+        /*width: 90%;*/
+        /*left: 5%;*/
         bottom: 16px;
     }
     #rewardInfo {
@@ -592,5 +878,32 @@ header {
         /* padding: 8px; */
         box-sizing: border-box;
         transform: scale(1.75);
+    }
+}
+
+@media (max-width: 470px) {
+    .overlay-container {
+        max-height: none;
+        padding: 80px 8px 8px;
+    }
+
+    .overlay-close {
+        top: 4px;
+        right: 4px;
+    }
+
+    .overlay-head {
+        padding: 24px;
+    }
+}
+
+
+@media (max-width: 360px) {
+    .overlay-head {
+        display: block;
+    }
+
+    .overlay-head-col {
+        text-align: left;
     }
 }
