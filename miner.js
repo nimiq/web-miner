@@ -157,12 +157,12 @@ class MinerUI {
     }
 
     minerStopped() {
-        this._toggleMinerBtn.innerText = 'Resume mining';
+        this._toggleMinerBtn.innerText = 'Resume Mining';
         //this._miningAnimation.pauseAnimations();
     }
 
     minerWorking() {
-        this._toggleMinerBtn.innerText = 'Pause mining';
+        this._toggleMinerBtn.innerText = 'Pause Mining';
         if (!this._miningAnimationStarted) {
             //document.querySelector('#circleanimate').beginElement();
             this._miningAnimationStarted = true;
