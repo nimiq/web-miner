@@ -3,6 +3,7 @@
   overflow: auto;
   transition: height 1s ease;
   padding-top: 32px;
+  position: relative;
 }
 
 #blocks-overview {
@@ -12,12 +13,9 @@
   border-spacing: 0 8px;
   width: 100%;
   box-sizing: border-box;
-  max-width: 1000px;
+  max-width: 1050px;
   margin: 0 auto;
-}
-
-body[overlay="blocks-overview"] #blocks-overview-container {
-  height: 50vh;
+  text-align: left;
 }
 
 .blocks-overview-block {
@@ -45,6 +43,18 @@ body[overlay="blocks-overview"] #blocks-overview-container {
   padding: 16px 40px 16px 0;
 }
 
+.blocks-overview-block > div:first-child {
+  padding-left: 16px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.blocks-overview-block > div:last-child {
+  padding-right: 16px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
 .blocks-overview-block .is-currency {
   margin: 0 2px;
 }
@@ -64,24 +74,40 @@ body[overlay="blocks-overview"] #blocks-overview-container {
   transition: opacity .2s ease;
 }
 
-.blocks-overview-block > div:first-child {
-  padding-left: 16px;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-}
-
-.blocks-overview-block > div:last-child {
-  padding-right: 16px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
-
 .blocks-overview-block .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 1px;
   width: 100%;
 }
+
+.blocks-overview-block .block-size {
+  text-align: right;
+}
+
+/*
+@media (max-width: 750px) {
+
+  .blocks-overview-block > div {
+    padding-right: 24px;
+  }
+
+  .blocks-overview-block > div.mined-by {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .blocks-overview-block > div {
+    padding-right: 16px;
+  }
+
+  .blocks-overview-block > div.block-size {
+    display: none;
+  }
+}
+*/
 
 /* Block Detail Overlay */
 
@@ -93,4 +119,3 @@ body[overlay="blocks-overview"] #blocks-overview-container {
 #block-detail .small {
   font-size: 16px;
 }
-

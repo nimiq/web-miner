@@ -393,6 +393,7 @@ header {
     margin-top: 8px;
     opacity: 0;
     color: rgba(255, 255, 255, .6);
+    z-index: 2;
 }
 
 #rewardInfo a {
@@ -576,7 +577,7 @@ input:-moz-placeholder {
 }
 
 .overlay-exit-area {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -701,39 +702,46 @@ input:-moz-placeholder {
 
 /* Overlay State */
 
-body[overlay="blocks-overview"] #mining-on-block:after {
-    display: block;
-}
+@media (min-width: 850px) {
+    body[overlay="blocks-overview"] #mining-on-block:after {
+        display: block;
+    }
 
-body[overlay="blocks-overview"] #exit-blocks-overview {
-    display: block;
-}
+    body[overlay="blocks-overview"] #exit-blocks-overview {
+        display: block;
+    }
 
-body[overlay="blocks-overview"] .separator {
-    display: block;
-}
+    body[overlay="blocks-overview"] #blocks-overview-container {
+        height: 60vh;
+    }
 
-body[overlay="block-detail"] #block-detail {
-    display: flex;
-}
+    body[overlay="blocks-overview"] .separator {
+        display: block;
+    }
 
-body[overlay="blocks-overview"] #rewardInfo {
-    visibility: hidden;
-}
+    body[overlay="block-detail"] #block-detail {
+        display: flex;
+    }
 
-body[overlay="blocks-overview"] .fact {
-    opacity: .3;
-    pointer-events: none;
-}
+    body[overlay="blocks-overview"] #rewardInfo {
+        visibility: hidden;
+        transition: visibility .1s 1s linear;
+    }
 
-body[overlay="blocks-overview"] #mining-on-block {
-    opacity: 1;
-    pointer-events: all;
-}
+    body[overlay="blocks-overview"] .fact {
+        opacity: .3;
+        pointer-events: none;
+    }
 
-body[overlay="blocks-overview"] #map,
-body[overlay="blocks-overview"] #header {
-    filter: blur(10px);
+    body[overlay="blocks-overview"] #mining-on-block {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    body[overlay="blocks-overview"] #map,
+    body[overlay="blocks-overview"] #header {
+        filter: blur(10px);
+    }
 }
 
 body[overlay="wallet"] .miner-container,
@@ -796,7 +804,8 @@ body[overlay="wallet"] #wallet {
     }
     .fact {
         /*width: 64%;*/
-        margin: 0 12px 24px;
+        margin: 0 12px 16px;
+        overflow: hidden;
     }
     .facts .label {
         margin-bottom: 0px;
@@ -819,14 +828,14 @@ body[overlay="wallet"] #wallet {
     #miningSection {
         /*width: 90%;*/
         /*left: 5%;*/
-        bottom: 16px;
+        /*bottom: 16px;*/
     }
     #rewardInfo {
         padding-top: 0;
     }
     #rewardInfo a {
         /* display: none; */
-        display: block;
+        /*display: block;*/
         padding: 1px;
     }
     #map svg {
