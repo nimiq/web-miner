@@ -118,8 +118,11 @@
 #block-detail .overlay-container {
   height: auto;
   max-height: none;
-  display: block;
+  /*display: block;*/
   margin-top: 64px;
+  display: flex;
+  min-height: calc(100% - 64px);
+  align-items: center;
 }
 
 #block-detail p {
@@ -227,7 +230,7 @@
 #block-detail-no-transactions {
   padding: 32px;
   line-height: 1;
-  color: rgba(3,32,71,0.6);
+  color: rgba(3,32,71,0.3);
   text-align: center;
 }
 
