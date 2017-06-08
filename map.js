@@ -56,7 +56,7 @@ RobinsonProjection.pi = Math.PI;
 RobinsonProjection.radians = RobinsonProjection.pi / 180;
 RobinsonProjection.degrees = 180 / RobinsonProjection.pi;
 
-class Map {
+class HexagonMap {
 	constructor(svgElement) {
         this._svg = svgElement;
         var hexagons = svgElement.querySelectorAll('polygon');
@@ -150,7 +150,7 @@ class Map {
 			}
         }
         // Return best cell only if its distance in terms of cells is not too far.
-        return bestDistance > Map.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
+        return bestDistance > HexagonMap.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
     }
 
     getCellByLocation(latitude, longitude) {
@@ -212,4 +212,4 @@ class Map {
         }
     }
 }
-Map.MAX_CELL_DISTANCE = 20; // in terms of cells
+HexagonMap.MAX_CELL_DISTANCE = 20; // in terms of cells

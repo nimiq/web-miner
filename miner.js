@@ -234,7 +234,7 @@ class CellCounter {
 class MapUI {
     constructor($) {
         this._mapElem = document.querySelector('#map svg');
-        this._map = new Map(this._mapElem);
+        this._map = new HexagonMap(this._mapElem);
         this.$ = $;
         this._polled = Nimiq.PeerAddresses.SEED_PEERS;
         this._connectedPeers = new Nimiq.HashMap();

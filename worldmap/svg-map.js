@@ -1,4 +1,4 @@
-class Map {
+class HexagonMap {
 	constructor(mapObjectElement) {
         if (!mapObjectElement || !mapObjectElement.nodeName || mapObjectElement.nodeName.toLowerCase() !== "object"
             || mapObjectElement.type !== "image/svg+xml" || typeof mapObjectElement.data !== "string"
@@ -39,7 +39,7 @@ class Map {
 			return;
 		}
 		// We highlighted too many cells. Unhighlight the oldest cell.
-        if (this._highlightedCells.length >= Map.MAX_HIGHLIGHT_COUNT) {
+        if (this._highlightedCells.length >= HexagonMap.MAX_HIGHLIGHT_COUNT) {
 			var oldestCell = this._highlightedCells.shift();
 			oldestCell.setAttribute('class', '');
         }
@@ -107,7 +107,7 @@ class Map {
 			}
         }
         // Return best cell only if its distance in terms of cells is not too far.
-        return bestDistance > Map.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
+        return bestDistance > HexagonMap.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
     }
 
     highlightLocation(latitude, longitude, className) {
@@ -118,5 +118,5 @@ class Map {
 		}
 	}
 }
-Map.MAX_HIGHLIGHT_COUNT = 2;
-Map.MAX_CELL_DISTANCE = 3; // in terms of cells
+HexagonMap.MAX_HIGHLIGHT_COUNT = 2;
+HexagonMap.MAX_CELL_DISTANCE = 3; // in terms of cells
