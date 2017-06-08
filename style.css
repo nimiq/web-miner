@@ -409,10 +409,25 @@ header {
 
 #mining-on-block {
     position: relative;
+    padding: 8px;
+    border-radius: 3px;
+    transition: background .2s ease;
+    cursor: pointer;
+}
+
+#mining-on-block:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.info-icon {
+    opacity: .6;
+    position: relative;
+    top: 2px;
+    height: 14px;
+    width: 14px;
 }
 
 #factBalanceContainer {
-    /* such that it can accomodate up to 3 digit balances without changing ui */
     display: flex;
     justify-content: center;
     padding: 0;

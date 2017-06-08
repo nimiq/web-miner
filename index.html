@@ -28,7 +28,7 @@
     <title>Nimiq Betanet</title>
 </head>
 
-<body overlay="block-detail">
+<body>
 <div class="miner-container">
     <div id="map">
         <div>
@@ -2275,9 +2275,11 @@
                 </div>
             </div>
             <div class="fact" id="mining-on-block">
-                <div id="factBlockContainer" class="label"><span id="factBlockProcessingState">Fetching</span> Block
-                </div>
-                <div>
+                <div class="mining-on-block-inner">
+                    <div id="factBlockContainer" class="label"><span id="factBlockProcessingState">Fetching</span> Block
+                    <img class="info-icon" src="images/info-icon.svg" />
+                    </div>
+                    <div>
                     <span class="number">
                     <!--     <svg id="miningAnimation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 55.43">
                     <defs>
@@ -2293,7 +2295,8 @@
                 </svg> -->
                         <img id="block-loader" src="images/hexagon-side-animation.gif" />
                         <span id="factBlockHeight">0</span></span>
-                    <span class="unit"></span>
+                        <span class="unit"></span>
+                    </div>
                 </div>
                 <div class="separator"></div>
             </div>
