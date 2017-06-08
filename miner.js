@@ -409,7 +409,7 @@ class Miner {
         this.ui.enableConnectButton();
 
         this.map = new MapUI($);
-        this.blockExplorer = new BlockExplorerUi($.blockchain);
+        this._blockExplorer = null;
 
         this.syncing = true;
         this.paused = false;
@@ -490,6 +490,10 @@ class Miner {
         this.ui.syncProgress = 1;
 
         this._onGlobalHashrateChanged();
+
+        if (!this._blockExplorer) {
+            this._blockExplorer = new BlockExplorerUi(this.$.blockchain);
+        }
     }
 
     _onConsensusLost() {

@@ -76,18 +76,58 @@ class BlockEntry {
 		this._minerAddressEl = minerAddress;
 		this._sizeEl = size;
 		this._block = null;
+		this._timer = null;
 	}
 
 	get element() {
 		return this._element;
 	}
 
+	_updateTimeString() {
+		let passedTime = Math.max(0, Date.now()/1000 - this._block.timestamp);
+		if (passedTime < 60) {
+			// less then a minute ago
+			this._timeEl.textContent = 'now';
+			return;
+		}
+		let timesteps = [{ unit: 'min', factor: 60 }, { unit: 'hr', factor: 60 }, { unit: 'day', factor: 24 }];
+		let unit = 'sec';
+		for (let i = 0; i < timesteps.length; ++i) {
+		    let timestep = timesteps[i];
+		    if (passedTime / timestep.factor < 1) {
+		        break;
+		    } else {
+		        passedTime /= timestep.factor;
+		        unit = timestep.unit;
+		    }
+		}
+		passedTime = Math.floor(passedTime);
+		if (passedTime > 1) {
+			unit += 's';
+		}
+		this._timeEl.textContent = Math.floor(passedTime) + ' ' + unit + ' ago';
+	}
+
 	set block(block) {
+		this._block = block;
 		this._blockNumberEl.textContent = '#'+block.height;
-		this._timeEl.textContent = block.timestamp; // TODO make more fancy
+		this._updateTimeString();
 		this._transactionCountEl.textContent = block.transactionCount+' transactions (';
-		this._totalAmountEl.textContent = 'TODO)';
-		this._minerAddressEl.textContent = 'mined by '+block.minerAddr;
+		let totalAmount = block.transactions.reduce(function(sum, transaction) {
+			return sum + transaction.value + transaction.fee;
+		}, 0);
+		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
+		this._totalAmountEl.textContent = totalAmount+')';
+		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toHex().toUpperCase();
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
+		window.clearInterval(this._timer);
+		window.clearTimeout(this._timer);
+		var remainingTimeUntilFullMinute = 60000 - (Math.max(0, Date.now() - this._block.timestamp*1000) % 60000);
+		this._timer = window.setTimeout(function() {
+			this._updateTimeString();
+			this._timer = window.setInterval(function() {
+				this._updateTimeString();
+			}.bind(this), 60000); // every minute
+		}.bind(this), remainingTimeUntilFullMinute);
 	}
 }
