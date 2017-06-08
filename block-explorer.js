@@ -37,11 +37,15 @@ class BlockExplorerUi {
     }
 
     show() {
+    	this._blockListEl.style.display = 'block';
         document.body.setAttribute('overlay', 'blocks-overview');
     }
 
     hide() {
         document.body.removeAttribute('overlay');
+        window.setTimeout(function() {
+        	this._blockListEl.style.display = 'none';
+        }.bind(this), 600);
     }
 }
 BlockExplorerUi.MAX_COUNT = 20;
