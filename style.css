@@ -410,21 +410,15 @@ header {
 #mining-on-block {
     position: relative;
     padding: 8px;
-    border-radius: 3px;
-    transition: background .2s ease;
-    cursor: pointer;
 }
 
-#mining-on-block:hover {
-    background: rgba(255,255,255,0.08);
-}
-
-.info-icon {
+#mining-on-block .info-icon {
     opacity: .6;
     position: relative;
     top: 2px;
     height: 14px;
     width: 14px;
+    display: none;
 }
 
 #factBalanceContainer {
@@ -716,6 +710,21 @@ input:-moz-placeholder {
 /* Overlay State */
 
 @media (min-width: 850px) {
+
+    #mining-on-block {
+        border-radius: 3px;
+        transition: background .2s ease;
+        cursor: pointer;
+    }
+
+    #mining-on-block:hover {
+        background: rgba(255,255,255,0.08);
+    }
+
+    #mining-on-block .info-icon {
+        display: inline-block;
+    }
+
     body[overlay="blocks-overview"] #mining-on-block:after,
     body[overlay="block-detail"] #mining-on-block:after {
         display: block;
