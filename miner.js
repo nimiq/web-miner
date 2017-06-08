@@ -409,6 +409,7 @@ class Miner {
         this.ui.enableConnectButton();
 
         this.map = new MapUI($);
+        this.blockExplorer = new BlockExplorerUi($.blockchain);
 
         this.syncing = true;
         this.paused = false;

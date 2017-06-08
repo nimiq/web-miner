@@ -54,7 +54,7 @@ class WalletUI {
     }
 
     hide() {
-        document.body.setAttribute('overlay', '');
+        document.body.removeAttribute('overlay');
     }
 
     _isAccountAddressValid() {

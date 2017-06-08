@@ -12,7 +12,7 @@ function isSupportedBrowser() {
 }
 
 if (isSupportedBrowser()) {
-    var scripts = ['geoip.js', 'map.js', 'wallet.js', 'miner.js'];
+    var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner.js'];
 
     // allow to load staging branch instead
     var nimiq;
