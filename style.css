@@ -27,6 +27,7 @@ b {
     width: 100%;
     height: 100%;
     display: table;
+    transition: filter .3s .8s ease;
 }
 
 #map > div {
@@ -353,7 +354,8 @@ header {
 
 .fact {
     padding: 8px 0;
-    margin-right: 64px
+    margin-right: 64px;
+    transition: opacity .2s .5s ease;
 }
 
 .fact:last-child {
@@ -394,6 +396,7 @@ header {
     opacity: 0;
     color: rgba(255, 255, 255, .6);
     z-index: 2;
+    transition: visibility .1s .8s linear;
 }
 
 #rewardInfo a {
@@ -749,7 +752,7 @@ input:-moz-placeholder {
     body[overlay="blocks-overview"] #rewardInfo,
     body[overlay="block-detail"] #rewardInfo {
         visibility: hidden;
-        transition: visibility .1s 1s linear;
+        transition: visibility .1s linear;
     }
 
     body[overlay="blocks-overview"] .fact,
@@ -766,6 +769,7 @@ input:-moz-placeholder {
 
     body[overlay="blocks-overview"] #map {
         filter: blur(10px);
+        transition: filter .3s ease;
     }
 }
 

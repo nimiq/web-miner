@@ -23,6 +23,7 @@ header {
     box-sizing: border-box;
     z-index: 1;
     font-weight: 600;
+    pointer-events: none;
 }
 
 header .logo {
@@ -53,6 +54,7 @@ header .menu a {
     color: rgba(255, 255, 255, 0.9);
     padding: 8px;
     margin-left: 24px;
+    pointer-events: all;
 }
 
 header .menu a:hover {

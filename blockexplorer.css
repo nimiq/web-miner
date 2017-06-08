@@ -1,7 +1,7 @@
 #blocks-overview-container {
   height: 0vh;
   overflow: hidden;
-  transition: height 1s ease;
+  transition: height .8s ease-in-out;
   padding-top: 32px;
   position: relative;
 }
