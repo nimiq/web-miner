@@ -695,14 +695,26 @@ input:-moz-placeholder {
     right: 100%
 }
 
+#exit-blocks-overview {
+    display: none;
+}
+
 /* Overlay State */
 
 body[overlay="blocks-overview"] #mining-on-block:after {
     display: block;
 }
 
+body[overlay="blocks-overview"] #exit-blocks-overview {
+    display: block;
+}
+
 body[overlay="blocks-overview"] .separator {
     display: block;
+}
+
+body[overlay="block-detail"] #block-detail {
+    display: flex;
 }
 
 body[overlay="blocks-overview"] #rewardInfo {
@@ -730,14 +742,6 @@ body[overlay="block-detail"] .miner-container {
 }
 
 body[overlay="wallet"] #wallet {
-    display: flex;
-}
-
-body[overlay="blocks-overview"] #blocks-overview {
-    display: block;
-}
-
-body[overlay="block-detail"] #block-detail {
     display: flex;
 }
 

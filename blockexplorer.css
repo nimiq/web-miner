@@ -1,7 +1,7 @@
 #blocks-overview-container {
   height: 0vh;
-  overflow: hidden;
-  transition: height .5s ease;
+  overflow: auto;
+  transition: height 1s ease;
   padding-top: 32px;
 }
 
@@ -10,6 +10,10 @@
   display: table;
   border-collapse: separate;
   border-spacing: 0 8px;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 body[overlay="blocks-overview"] #blocks-overview-container {
