@@ -17,6 +17,11 @@ b {
     font-weight: 600;
 }
 
+p, a, h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+
 
 /* map styling */
 
@@ -328,6 +333,9 @@ header {
     opacity: 0;
     font-size: 24px;
     padding: 1vh 0;
+    pointer-events: all;
+    position: relative;
+    z-index: 5;
 }
 
 #warning-miner-stopped a {
@@ -733,15 +741,15 @@ input:-moz-placeholder {
         display: block;
     }
 
-    body[overlay="blocks-overview"] #exit-blocks-overview,
-    body[overlay="block-detail"] #exit-blocks-overview {
-        display: block;
-    }
-
     body[overlay="blocks-overview"] #blocks-overview-container,
     body[overlay="block-detail"] #blocks-overview-container {
         height: 60vh;
         overflow: auto;
+    }
+
+    body[overlay="blocks-overview"] #exit-blocks-overview,
+    body[overlay="block-detail"] #exit-blocks-overview {
+        display: block;
     }
 
     body[overlay="blocks-overview"] .separator,
@@ -769,6 +777,7 @@ input:-moz-placeholder {
 
     body[overlay="blocks-overview"] #map {
         filter: blur(10px);
+        /*opacity: 0;*/
         transition: filter .3s ease;
     }
 }
@@ -949,7 +958,6 @@ body[overlay="block-detail"] #block-detail {
         padding: 24px;
     }
 }
-
 
 @media (max-width: 360px) {
     .overlay-head {
