@@ -50,11 +50,11 @@ class WalletUI {
     }
 
     show() {
-        $$('body').className = 'has-overlay';
+        document.body.setAttribute('overlay', 'wallet');
     }
 
     hide() {
-        $$('body').className = '';
+        document.body.setAttribute('overlay', '');
     }
 
     _isAccountAddressValid() {
