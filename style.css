@@ -32,7 +32,7 @@ p, a, h1, h2, h3 {
     width: 100%;
     height: 100%;
     display: table;
-    transition: filter .3s .8s ease;
+    transition: filter .3s ease;
 }
 
 #map > div {
@@ -324,8 +324,9 @@ header {
     bottom: 0;
     left: 0;
     display: none;
-    transition: opacity 1s;
     opacity: 0;
+    transition: transform .6s ease-out, opacity 1s;
+    transform: translate(0,60vh);
 }
 
 #warning-miner-stopped {
@@ -396,7 +397,7 @@ header {
 
 #rewardInfo {
     position: absolute;
-    bottom: 16px;
+    bottom: calc(60vh + 16px);
     width: 100%;
     left: 0;
     font-size: 13px;
@@ -598,10 +599,10 @@ input:-moz-placeholder {
 
 .overlay-exit-area {
     position: fixed;
-    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    height: 100vh;
 }
 
 .overlay {
@@ -722,18 +723,23 @@ input:-moz-placeholder {
 
 @media (min-width: 850px) {
 
-    #mining-on-block {
+    .synced #mining-on-block {
         border-radius: 3px;
         transition: background .2s ease;
         cursor: pointer;
     }
 
-    #mining-on-block:hover {
+    .synced #mining-on-block:hover {
         background: rgba(255,255,255,0.08);
     }
 
-    #mining-on-block .info-icon {
+    .synced #mining-on-block .info-icon {
         display: inline-block;
+    }
+
+    body[overlay="blocks-overview"] #miningSection,
+    body[overlay="block-detail"] #miningSection {
+        transform: translate(0,0);
     }
 
     body[overlay="blocks-overview"] #mining-on-block:after,
@@ -741,9 +747,12 @@ input:-moz-placeholder {
         display: block;
     }
 
+    /* body[overlay="blocks-overview"] {
+        background: #001531;
+    } */
+
     body[overlay="blocks-overview"] #blocks-overview-container,
     body[overlay="block-detail"] #blocks-overview-container {
-        height: 60vh;
         overflow: auto;
     }
 
