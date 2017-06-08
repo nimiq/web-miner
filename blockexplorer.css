@@ -224,11 +224,15 @@
   border-bottom: none;
 }
 
-.table-row .is-currency:before {
-  width: 15px;
+.table-row .is-currency:before,
+.block-detail-info.is-currency:before {
+  width: 14px;
   height: 14px;
   margin-right: 3px;
-  top: 1px;
+  top: 2px;
+}
+
+.table-row .is-currency:before {
   opacity: .6;
 }
 
