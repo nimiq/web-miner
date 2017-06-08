@@ -1,4 +1,7 @@
 class BlockExplorerUi {
+	// TODO improve performance by disabling the timers when hidden. Or event not update the list at all
+	// and then update on demand
+
     constructor(blockchain) {
         this._blockchain = blockchain;
         this._blockListEl = document.getElementById('blocks-overview');
@@ -62,8 +65,11 @@ class BlockEntry {
 		let transactionCount = document.createElement('span');
 		let totalAmount = document.createElement('span');
 		totalAmount.classList.add('is-currency');
+		let closingParenthesis = document.createElement('span');
+		closingParenthesis.textContent = ')';
 		transactions.appendChild(transactionCount);
 		transactions.appendChild(totalAmount);
+		transactions.appendChild(closingParenthesis);
 		let minerAddress = document.createElement('div');
 		minerAddress.classList.add('ellipsis');
 		let size = document.createElement('div');
@@ -121,7 +127,7 @@ class BlockEntry {
 			return sum + transaction.value + transaction.fee;
 		}, 0);
 		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
-		this._totalAmountEl.textContent = totalAmount+')';
+		this._totalAmountEl.textContent = totalAmount;
 		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toHex().toUpperCase();
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
 		window.clearInterval(this._timer);
