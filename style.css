@@ -325,8 +325,9 @@ header {
     left: 0;
     display: none;
     opacity: 0;
-    transition: transform .6s ease-out, opacity 1s;
-    transform: translate(0,60vh);
+    transition: transform .5s ease-out, opacity 1s;
+    /*transform: translate(0,60vh);*/
+    margin-bottom: -60vh;
 }
 
 #warning-miner-stopped {
@@ -739,7 +740,7 @@ input:-moz-placeholder {
 
     body[overlay="blocks-overview"] #miningSection,
     body[overlay="block-detail"] #miningSection {
-        transform: translate(0,0);
+        transform: translate(0,-60vh);
     }
 
     body[overlay="blocks-overview"] #mining-on-block:after,
@@ -786,8 +787,6 @@ input:-moz-placeholder {
 
     body[overlay="blocks-overview"] #map {
         filter: blur(10px);
-        /*opacity: 0;*/
-        transition: filter .3s ease;
     }
 }
 
