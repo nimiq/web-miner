@@ -116,6 +116,72 @@
   font-size: 19px;
 }
 
+
 #block-detail .small {
   font-size: 16px;
+}
+
+#block-detail .overlay-head-col:first-child {
+  margin-right: 48px;
+}
+
+#block-detail .overlay-head {
+  border-bottom: 1px solid rgba(3,32,71,0.15);
+  height: auto;
+}
+
+#block-detail .overlay-head-col p {
+  color: rgba(3,32,71, 0.6);
+}
+
+#block-detail .overlay-head-col .label {
+  color: rgba(3,32,71, 0.4);
+}
+
+#block-detail #block-detail-block-number {
+  font-size: 50px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+#block-detail-block-hash {
+  max-width: 350px;
+  word-break: break-all;
+}
+
+.block-detail-root {
+  display: flex;
+  border-bottom: 1px solid rgba(3,32,71,0.15);
+}
+
+.block-detail-col {
+  padding: 32px;
+}
+
+.block-detail-col:first-child {
+  border-right: 1px solid rgba(3,32,71,0.15);
+  width: 100%;
+}
+
+.block-detail-col:last-child {
+  flex: 0 0 auto;
+}
+
+.block-detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.block-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.block-detail-row p {
+  line-height: 1;
+}
+
+#block-detail .block-detail-label {
+  color: rgba(3,32,71,0.4);
+  margin-right: 40px;
 }
