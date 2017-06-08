@@ -1,5 +1,5 @@
 #blocks-overview-container {
-  height: 0vh;
+  height: 60vh;
   overflow: hidden;
   transition: height .8s ease-in-out;
   padding-top: 32px;
