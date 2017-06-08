@@ -49,6 +49,9 @@ class BlockExplorerUi {
     show() {
     	this._blockListEl.style.display = 'block';
         document.body.setAttribute('overlay', 'blocks-overview');
+        this._entries.forEach(function(entry) {
+        	entry.visible = true;
+        });
     }
 
     hide() {
@@ -56,6 +59,9 @@ class BlockExplorerUi {
         window.setTimeout(function() {
         	this._blockListEl.style.display = 'none';
         }.bind(this), 600);
+        this._entries.forEach(function(entry) {
+        	entry.visible = false;
+        });
     }
 }
 BlockExplorerUi.MAX_COUNT = 20;
@@ -91,11 +97,13 @@ class BlockEntry {
 		this._timeEl = time;
 		this._transactionCountEl = transactionCount;
 		this._totalAmountEl = totalAmount;
+		this._closingParenthesis = closingParenthesis;
 		this._minerAddressEl = minerAddress;
 		this._sizeEl = size;
 		this._block = null;
 		this._timer = null;
 		this._clickListeners = [];
+		this._visible = false;
 	}
 
 	get element() {
@@ -104,6 +112,16 @@ class BlockEntry {
 
 	get block() {
 		return this._block;
+	}
+
+	set visible(visible) {
+		this._visible = visible;
+		if (!visible) {
+			this._stopTimer();
+		} else {
+			this._updateTimeString();
+			this._startTimer();
+		}
 	}
 
 	addClickListener(clickListener) {
@@ -141,27 +159,44 @@ class BlockEntry {
 		this._timeEl.textContent = Math.floor(passedTime) + ' ' + unit + ' ago';
 	}
 
+	_stopTimer() {
+		window.clearInterval(this._timer);
+		window.clearTimeout(this._timer);
+	}
+
+	_startTimer() {
+		this._stopTimer();
+		var remainingTimeUntilFullMinute = 60000 - (Math.max(0, Date.now() - this._block.timestamp*1000) % 60000);
+		this._timer = window.setTimeout(function() {
+			this._updateTimeString();
+			this._timer = window.setInterval(this._updateTimeString.bind(this), 60000); // every minute
+		}.bind(this), remainingTimeUntilFullMinute);
+	}
+
 	set block(block) {
 		this._block = block;
 		this._blockNumberEl.textContent = '#'+block.height;
 		this._updateTimeString();
-		this._transactionCountEl.textContent = block.transactionCount+' transactions (';
-		let totalAmount = block.transactions.reduce(function(sum, transaction) {
-			return sum + transaction.value + transaction.fee;
-		}, 0);
-		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
-		this._totalAmountEl.textContent = totalAmount;
+		let hasTransactions = !!block.transactionCount;
+		this._transactionCountEl.textContent = block.transactionCount+' transactions'
+			+ (hasTransactions? ' (' : '');
+		if (hasTransactions) {
+			let totalAmount = block.transactions.reduce(function(sum, transaction) {
+				return sum + transaction.value + transaction.fee;
+			}, 0);
+			totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
+			this._totalAmountEl.textContent = totalAmount;
+			this._totalAmountEl.style.display = 'inline';
+			this._closingParenthesis.style.display = 'inline';
+		} else {
+			this._totalAmountEl.style.display = 'none';
+			this._closingParenthesis.style.display = 'none';
+		}
 		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toHex().toUpperCase();
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
-		window.clearInterval(this._timer);
-		window.clearTimeout(this._timer);
-		var remainingTimeUntilFullMinute = 60000 - (Math.max(0, Date.now() - this._block.timestamp*1000) % 60000);
-		this._timer = window.setTimeout(function() {
-			this._updateTimeString();
-			this._timer = window.setInterval(function() {
-				this._updateTimeString();
-			}.bind(this), 60000); // every minute
-		}.bind(this), remainingTimeUntilFullMinute);
+		if (this._visible) {
+			this._startTimer();
+		}
 	}
 }
 
