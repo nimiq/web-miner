@@ -409,10 +409,19 @@ header {
 
 #mining-on-block {
     position: relative;
+    padding: 8px;
+}
+
+#mining-on-block .info-icon {
+    opacity: .6;
+    position: relative;
+    top: 2px;
+    height: 14px;
+    width: 14px;
+    display: none;
 }
 
 #factBalanceContainer {
-    /* such that it can accomodate up to 3 digit balances without changing ui */
     display: flex;
     justify-content: center;
     padding: 0;
@@ -596,7 +605,7 @@ input:-moz-placeholder {
 }
 
 .overlay-close {
-    position: absolute;
+    position: fixed;
     right: 16px;
     top: 16px;
     padding: 24px;
@@ -701,6 +710,21 @@ input:-moz-placeholder {
 /* Overlay State */
 
 @media (min-width: 850px) {
+
+    #mining-on-block {
+        border-radius: 3px;
+        transition: background .2s ease;
+        cursor: pointer;
+    }
+
+    #mining-on-block:hover {
+        background: rgba(255,255,255,0.08);
+    }
+
+    #mining-on-block .info-icon {
+        display: inline-block;
+    }
+
     body[overlay="blocks-overview"] #mining-on-block:after,
     body[overlay="block-detail"] #mining-on-block:after {
         display: block;
@@ -714,6 +738,7 @@ input:-moz-placeholder {
     body[overlay="blocks-overview"] #blocks-overview-container,
     body[overlay="block-detail"] #blocks-overview-container {
         height: 60vh;
+        overflow: auto;
     }
 
     body[overlay="blocks-overview"] .separator,
@@ -796,6 +821,14 @@ body[overlay="block-detail"] #block-detail {
     text-align: right;
 }
 
+.is-currency:before {
+    content: "";
+    background: url('images/logo_blue.svg') no-repeat;
+    display: inline-block;
+    background-size: contain;
+    vertical-align: baseline;
+    position: relative;
+}
 
 /* Tablet / Phone */
 

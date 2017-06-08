@@ -14,15 +14,6 @@
   font-size: 19px;
 }
 
-.is-currency:before {
-  content: "";
-  background: url('images/logo_blue.svg') no-repeat;
-  display: inline-block;
-  background-size: contain;
-  vertical-align: baseline;
-  position: relative;
-}
-
 /* Elements */
 
 #wallet-account {
