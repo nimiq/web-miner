@@ -596,7 +596,7 @@ input:-moz-placeholder {
 }
 
 .overlay-close {
-    position: absolute;
+    position: fixed;
     right: 16px;
     top: 16px;
     padding: 24px;
@@ -796,6 +796,14 @@ body[overlay="block-detail"] #block-detail {
     text-align: right;
 }
 
+.is-currency:before {
+    content: "";
+    background: url('images/logo_blue.svg') no-repeat;
+    display: inline-block;
+    background-size: contain;
+    vertical-align: baseline;
+    position: relative;
+}
 
 /* Tablet / Phone */
 
