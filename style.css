@@ -714,6 +714,7 @@ input:-moz-placeholder {
     body[overlay="blocks-overview"] #blocks-overview-container,
     body[overlay="block-detail"] #blocks-overview-container {
         height: 60vh;
+        overflow: auto;
     }
 
     body[overlay="blocks-overview"] .separator,

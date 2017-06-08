@@ -1,6 +1,6 @@
 #blocks-overview-container {
   height: 0vh;
-  overflow: auto;
+  overflow: hidden;
   transition: height 1s ease;
   padding-top: 32px;
   position: relative;
