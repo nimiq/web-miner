@@ -593,8 +593,6 @@ input:-moz-placeholder {
     overflow: auto;
     position: relative;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
 }
 
 .overlay-close {
@@ -642,7 +640,7 @@ input:-moz-placeholder {
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: rgba(3,32,71,.5);
+    color: rgba(3,32,71,.4);
 }
 
 .overlay-head {
@@ -703,43 +701,45 @@ input:-moz-placeholder {
 /* Overlay State */
 
 @media (min-width: 850px) {
-    body[overlay="blocks-overview"] #mining-on-block:after {
+    body[overlay="blocks-overview"] #mining-on-block:after,
+    body[overlay="block-detail"] #mining-on-block:after {
         display: block;
     }
 
-    body[overlay="blocks-overview"] #exit-blocks-overview {
+    body[overlay="blocks-overview"] #exit-blocks-overview,
+    body[overlay="block-detail"] #exit-blocks-overview {
         display: block;
     }
 
-    body[overlay="blocks-overview"] #blocks-overview-container {
+    body[overlay="blocks-overview"] #blocks-overview-container,
+    body[overlay="block-detail"] #blocks-overview-container {
         height: 60vh;
     }
 
-    body[overlay="blocks-overview"] .separator {
+    body[overlay="blocks-overview"] .separator,
+    body[overlay="block-detail"] .separator {
         display: block;
     }
 
-    body[overlay="block-detail"] #block-detail {
-        display: flex;
-    }
-
-    body[overlay="blocks-overview"] #rewardInfo {
+    body[overlay="blocks-overview"] #rewardInfo,
+    body[overlay="block-detail"] #rewardInfo {
         visibility: hidden;
         transition: visibility .1s 1s linear;
     }
 
-    body[overlay="blocks-overview"] .fact {
+    body[overlay="blocks-overview"] .fact,
+    body[overlay="block-detail"] .fact {
         opacity: .3;
         pointer-events: none;
     }
 
-    body[overlay="blocks-overview"] #mining-on-block {
+    body[overlay="blocks-overview"] #mining-on-block,
+    body[overlay="blocks-detail"] #mining-on-block {
         opacity: 1;
         pointer-events: all;
     }
 
-    body[overlay="blocks-overview"] #map,
-    body[overlay="blocks-overview"] #header {
+    body[overlay="blocks-overview"] #map {
         filter: blur(10px);
     }
 }
@@ -750,6 +750,10 @@ body[overlay="block-detail"] .miner-container {
 }
 
 body[overlay="wallet"] #wallet {
+    display: flex;
+}
+
+body[overlay="block-detail"] #block-detail {
     display: flex;
 }
 
@@ -805,7 +809,6 @@ body[overlay="wallet"] #wallet {
     .fact {
         /*width: 64%;*/
         margin: 0 12px 16px;
-        overflow: hidden;
     }
     .facts .label {
         margin-bottom: 0px;

@@ -1,7 +1,8 @@
 /* General */
 
-#wallet {
-
+#wallet .overlay {
+  display: flex;
+  flex-direction: column;
 }
 
 #wallet p {

@@ -116,6 +116,36 @@
   font-size: 19px;
 }
 
+
 #block-detail .small {
   font-size: 16px;
 }
+
+#block-detail .overlay-head-col:first-child {
+  margin-right: 40px;
+}
+
+#block-detail .overlay-head {
+  border-bottom: 1px solid rgba(3,32,71,0.15);
+  height: auto;
+}
+
+#block-detail .overlay-head-col p {
+  color: rgba(3,32,71, 0.6);
+}
+
+#block-detail .overlay-head-col .label {
+  color: rgba(3,32,71, 0.4);
+}
+
+#block-detail #block-detail-block-number {
+  font-size: 50px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+#block-detail-block-hash {
+  max-width: 350px;
+  word-break: break-all;
+}
+
