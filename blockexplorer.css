@@ -138,6 +138,7 @@
 #block-detail .overlay-head {
   border-bottom: 1px solid rgba(3,32,71,0.15);
   height: auto;
+  justify-content: flex-start;
 }
 
 #block-detail .overlay-head-col p {
@@ -195,6 +196,21 @@
 #block-detail .block-detail-label {
   color: rgba(3,32,71,0.4);
   margin-right: 40px;
+}
+
+#block-detail-hashes .block-detail-label {
+  width: 120px;
+  flex: 0 0 auto;
+}
+
+#block-detail-hashes .block-detail-row {
+  justify-content: flex-start;
+}
+
+#block-detail-hashes .block-detail-row p {
+  word-break: break-all;
+  text-align: left;
+  max-width: 420px;
 }
 
 .block-detail-transactions,
@@ -261,5 +277,24 @@
 @media (max-width: 450px) {
   #blocks-overview-container {
     padding-top: 60px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #block-detail-block-hash {
+    max-width: none;
+  }
+
+  .block-detail-root .block-detail-container {
+    width: 50%;
+    box-sizing: border-box;
+  }
+
+  #block-detail-hashes .block-detail-row p {
+    max-width: none;
+  }
+
+  .table-row p {
+    max-width: none;
   }
 }

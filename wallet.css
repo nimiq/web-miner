@@ -275,6 +275,10 @@ p#wallet-balance.is-currency:before {
   transition: transform .3s ease;
 }
 
+.wallet-sidebar .uppercase {
+  letter-spacing: initial;
+}
+
 .wallet-sidebar.transaction-received {
   background: #24C173;
   opacity: 0;
