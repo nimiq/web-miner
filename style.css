@@ -326,9 +326,7 @@ header {
     left: 0;
     display: none;
     opacity: 0;
-    transition: transform .5s ease-out, opacity 1s;
-    /*transform: translate(0,60vh);*/
-    margin-bottom: -60vh;
+    padding-bottom: 48px;
 }
 
 #warning-miner-stopped {
@@ -399,7 +397,7 @@ header {
 
 #rewardInfo {
     position: absolute;
-    bottom: calc(60vh + 16px);
+    bottom: 16px;
     width: 100%;
     left: 0;
     font-size: 13px;
@@ -721,14 +719,36 @@ input:-moz-placeholder {
     display: none;
 }
 
+
+@media (min-width: 700px) {
+
+    #miningSection {
+        padding-bottom: 32px;
+    }
+}
+
 /* Overlay State */
 
 @media (min-width: 850px) {
+
+    #blocks-overview-container {
+        display: block !important;
+    }
+
+    #miningSection {
+        transition: transform .5s ease-out, opacity 1s;
+        margin-bottom: -60vh;
+        padding-bottom: 0;
+    }
 
     .synced #mining-on-block {
         border-radius: 3px;
         transition: background .2s ease;
         cursor: pointer;
+    }
+
+    #rewardInfo {
+        bottom: calc(60vh + 16px);
     }
 
     .synced #mining-on-block:hover {
@@ -870,9 +890,6 @@ body[overlay="block-detail"] #block-detail {
         min-height: 13px;
         line-height: 12px;
     }
-    #miningSection {
-        /* text-shadow: 2px 1px 3px black; */
-    }
     #rewardInfo a {
         font-size: 12px;
     }
@@ -882,11 +899,6 @@ body[overlay="block-detail"] #block-detail {
 
     #progress {
         font-size: 16px;
-    }
-    #miningSection {
-        /*width: 90%;*/
-        /*left: 5%;*/
-        /*bottom: 16px;*/
     }
     #rewardInfo {
         padding-top: 0;
