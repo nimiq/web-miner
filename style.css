@@ -996,11 +996,10 @@ body[overlay="block-detail"] #block-detail {
     }
 }
 
-@media screen and (max-height: 400px) and (min-aspect-ratio: 1/1) {
-    .hide-mobile-landscape {
-        display: none !important;
-    }
-    #warning-mobile-landscape {
-        display: block;
-    }
+.mobile-landscape .hide-mobile-landscape {
+    display: none !important;
+}
+
+.mobile-landscape #warning-mobile-landscape {
+    display: block;
 }
