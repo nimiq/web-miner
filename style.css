@@ -237,6 +237,12 @@ header {
     font-size: 45px;
 }
 
+#warning-mobile-landscape {
+    display: none;
+    animation: none !important;
+    opacity: 1;
+}
+
 @keyframes scale-in {
     from {
         transform: translateY(-8px);
@@ -987,5 +993,14 @@ body[overlay="block-detail"] #block-detail {
 
     .overlay-head-col {
         text-align: left;
+    }
+}
+
+@media screen and (max-height: 400px) and (min-aspect-ratio: 1/1) {
+    .hide-mobile-landscape {
+        display: none !important;
+    }
+    #warning-mobile-landscape {
+        display: block;
     }
 }

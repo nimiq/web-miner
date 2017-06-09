@@ -2158,7 +2158,7 @@
         </div>
     </header>
     <!-- Warnings -->
-    <noscript id="warning-no-js" class="landing-warning">
+    <noscript id="warning-no-js" class="landing-warning hide-mobile-landscape">
         <style type="text/css">
             #landing-description,
             #initialLoadingSpinner,
@@ -2175,22 +2175,25 @@
             <a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue without JavaScript</a>
         </div>
     </noscript>
-    <div id="warning-general-error" class="landing-warning">
+    <div id="warning-general-error" class="landing-warning hide-mobile-landscape">
         <div>An error occured.</div>
         <div class="warning-advice">Your browser is not supported yet. Download latest Chrome.</div>
         <div class="bottom-center">
             <a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue to the webpage</a>
         </div>
     </div>
-    <div id="warning-old-browser" class="landing-warning bottom-center">
+    <div id="warning-old-browser" class="landing-warning bottom-center hide-mobile-landscape">
         <div>Your browser is not up to date. Update to see the full power of the Nimiq ecosystem in action.</div>
         <a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
     </div>
-    <div id="warning-multiple-tabs" class="landing-warning warning-advice">
+    <div id="warning-multiple-tabs" class="landing-warning warning-advice hide-mobile-landscape">
         The Miner is already running in a different tab.
     </div>
+    <div id="warning-mobile-landscape" class="landing-warning warning-advice">
+        Please rotate the screen.
+    </div>
     <!-- Landing -->
-    <div id="landingSection">
+    <div id="landingSection" class="hide-mobile-landscape">
         <h1>Nimiq is the first Browser-based Blockchain.</h1>
         <!--<div id="landing-description">
         Nimiq empowers you to mine, store and transact at a fraction of the effort of conventional cryptocurrency.
@@ -2242,7 +2245,7 @@
     <div id="loadingSection">
     </div>
     <!-- Peer description -->
-    <div class="peer-desc-container">
+    <div class="peer-desc-container hide-mobile-landscape">
         <div class="peer-desc">
             <div>
                 <img class="browser" src="images/browser.svg">
@@ -2252,7 +2255,7 @@
         </div>
     </div>
     <!-- Mining -->
-    <div id="miningSection" class="syncing">
+    <div id="miningSection" class="syncing hide-mobile-landscape">
 
         <div id="progressContainer">
             <div id="progress">Connecting to peers</div>
@@ -2347,7 +2350,7 @@
 
 <!-- Wallet -->
 
-<div id="wallet" class="overlay-root">
+<div id="wallet" class="overlay-root hide-mobile-landscape">
     <div class="overlay-exit-area" id="wallet-exit-area"></div>
     <div class="overlay-container">
         <div class="overlay">
@@ -2468,7 +2471,7 @@
 
 <!-- Block Detail -->
 
-<div id="block-detail" class="overlay-root">
+<div id="block-detail" class="overlay-root hide-mobile-landscape">
     <div class="overlay-exit-area" id="block-detail-exit-area"></div>
     <div class="overlay-container">
         <div class="overlay">
