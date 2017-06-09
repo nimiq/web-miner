@@ -18,7 +18,7 @@ class FactsUI {
     }
 
     set blockHeight(height) {
-        this._blockHeight.textContent = height;
+        this._blockHeight.textContent = (height+1);
     }
 
     set myHashrate(hashrate) {
