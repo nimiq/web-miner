@@ -243,6 +243,14 @@ header {
     opacity: 1;
 }
 
+.mobile-landscape .hide-mobile-landscape {
+    display: none !important;
+}
+
+.mobile-landscape #warning-mobile-landscape {
+    display: block;
+}
+
 @keyframes scale-in {
     from {
         transform: translateY(-8px);
@@ -822,6 +830,11 @@ body[overlay="block-detail"] .miner-container {
     filter: blur(10px);
 }
 
+body[overlay="wallet"].mobile-landscape .miner-container,
+body[overlay="block-detail"].mobile-landscape .miner-container {
+    filter: none;
+}
+
 body[overlay="wallet"] #wallet {
     display: flex;
 }
@@ -994,12 +1007,4 @@ body[overlay="block-detail"] #block-detail {
     .overlay-head-col {
         text-align: left;
     }
-}
-
-.mobile-landscape .hide-mobile-landscape {
-    display: none !important;
-}
-
-.mobile-landscape #warning-mobile-landscape {
-    display: block;
 }
