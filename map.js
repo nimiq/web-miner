@@ -181,23 +181,12 @@ class HexagonMap {
         }
         // draw the link
         var svgBoundingRect = this.getDimensions();
-        var startBoundingRect = startCell.getBoundingClientRect();
-        var endBoundingRect = endCell.getBoundingClientRect();
-        // positions as relative numbers between 0 and 1:
-        var startCenter = {
-            x: (startBoundingRect.left + startBoundingRect.width/2 - svgBoundingRect.left) / svgBoundingRect.width,
-            y: (startBoundingRect.top + startBoundingRect.height/2 - svgBoundingRect.top) / svgBoundingRect.height
-        };
-        var endCenter = {
-            x: (endBoundingRect.left + endBoundingRect.width/2 - svgBoundingRect.left) / svgBoundingRect.width,
-            y: (endBoundingRect.top + endBoundingRect.height/2 - svgBoundingRect.top) / svgBoundingRect.height
-        };
         var viewBox = this._svg.viewBox;
         var viewBoxWidth = viewBox.baseVal.width;
         var viewBoxHeight = viewBox.baseVal.height;
         var pathEl = document.createElementNS(this._svg.namespaceURI, 'path');  
-        var path = 'M'+(startCenter.x*viewBoxWidth)+' '+(startCenter.y*viewBoxHeight)
-            +'L'+(endCenter.x*viewBoxWidth)+' '+(endCenter.y*viewBoxHeight);
+        var path = 'M'+(startCell.centerX*viewBoxWidth)+' '+(startCell.centerY*viewBoxHeight)
+            +'L'+(endCell.centerX*viewBoxWidth)+' '+(endCell.centerY*viewBoxHeight);
         pathEl.setAttributeNS(null,'d', path);
         pathEl.classList.add('link');
         this._links.push({
