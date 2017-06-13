@@ -44,13 +44,20 @@ p, a, h1, h2, h3 {
 }
 
 #map svg {
-    fill: rgba(255, 255, 255, .16);
+    fill: none;
     /* max-height: 80vh; */
     width: 85vw;
     margin: auto;
     opacity: 0.3;
     transition: 1s opacity;
     max-width: 800px;
+    /* we have the map as background image such that we can display:none the hexagons
+    in the svg which greatly improves performance on firefox */
+    background-image: url(worldmap/map.svg);
+}
+
+#map svg.hide-hexagons polygon {
+    display: none;
 }
 
 .peer-desc {
@@ -93,19 +100,22 @@ p, a, h1, h2, h3 {
 }
 
 .own-peer {
+    display: block !important;
     fill: #ffffff;
     -webkit-animation: connected 1800ms ease 5;
     animation: connected 1800ms ease 8;
 }
 
 .connected-peer {
+    display: block !important;
     fill: #f6ae2d;
     -webkit-animation: connected 1800ms ease 10;
     animation: connected 1800ms ease 3;
 }
 
 .known-peer {
-    fill: rgba(246, 174, 45, .5);
+    display: block !important;
+    fill: #7d6739;
     -webkit-animation: connected 1800ms ease 1;
     animation: connected 1800ms ease 1;
 }

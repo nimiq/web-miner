@@ -59,12 +59,24 @@ RobinsonProjection.degrees = 180 / RobinsonProjection.pi;
 class HexagonMap {
 	constructor(svgElement) {
         this._svg = svgElement;
+        // temporarily unhide all the hexagons to get the bounding rects
+        svgElement.classList.remove('hide-hexagons');
+        var mapDimensions = this.getDimensions(); // also enforces a style update
+        this._hexagonDiameter = 0;
         var hexagons = svgElement.querySelectorAll('polygon');
         for (var i = 0; i < hexagons.length; ++i) {
             hexagons[i].cellId = i;
+            var boundingBox = hexagons[i].getBoundingClientRect();
+            // values relative to map width / height such that they work also when we resize the map
+            hexagons[i].centerX = (boundingBox.left + boundingBox.width/2 - mapDimensions.left) / mapDimensions.width;
+            hexagons[i].centerY = (boundingBox.top + boundingBox.height/2 - mapDimensions.top) / mapDimensions.height;
+            // the hexagons differ very slightly in size, so we take the biggest
+            this._hexagonDiameter = Math.max(this._hexagonDiameter, boundingBox.width / mapDimensions.width);
         }
         this._cells = hexagons;
         this._links = [];
+        // after we got the hexagon bounding rects, we can hide them again
+        svgElement.classList.add('hide-hexagons');
 	}
 
     getDimensions() {
@@ -104,8 +116,8 @@ class HexagonMap {
         point.x = fullMapWidth/2 + point.x;
         point.y = fullMapHeight/2 - point.y;
         // the map that we have is robinson projected and then cropped out and scaled
-        point.x = mapDimensions.left + Math.max(0, point.x - 0.07045675413022352*fullMapWidth);
-        point.y = mapDimensions.top + Math.max(0, point.y - 0.012380952380952381*fullMapHeight);
+        point.x = Math.max(0, point.x - 0.07045675413022352*fullMapWidth);
+        point.y = Math.max(0, point.y - 0.012380952380952381*fullMapHeight);
         return point;
     }
 
@@ -127,21 +139,17 @@ class HexagonMap {
     }
 
     _getClosestCell(x, y) {
-        var hexagonSize = 0; // we use this to estimate the distance in terms of cells
+        var mapDimensions = this.getDimensions();
         var bestDistance = 0;
         var bestCell = null;
         for (var i = 0; i < this._cells.length; ++i) {
         	// Calculate position from bounding box.
         	var cell = this._cells[i];
-        	var box = cell.getBoundingClientRect();
-            var centerX = box.left + box.width / 2;
-            var centerY = box.top + box.height / 2;
+            var centerX = cell.centerX * mapDimensions.width;
+            var centerY = cell.centerY * mapDimensions.height;
             var xDist = centerX - x;
             var yDist = centerY - y;
             var distance = xDist*xDist + yDist*yDist;
-
-            // Find maximal size;
-            hexagonSize = Math.max(hexagonSize, box.width, box.height);
 
             // Update best cell accordingly.
             if (!bestCell || distance < bestDistance) {
@@ -150,7 +158,8 @@ class HexagonMap {
 			}
         }
         // Return best cell only if its distance in terms of cells is not too far.
-        return bestDistance > HexagonMap.MAX_CELL_DISTANCE * hexagonSize ? null : bestCell;
+        var hexagonDiameter = this._hexagonDiameter * mapDimensions.width;
+        return bestDistance > HexagonMap.MAX_CELL_DISTANCE * hexagonDiameter ? null : bestCell;
     }
 
     getCellByLocation(latitude, longitude) {
@@ -212,4 +221,4 @@ class HexagonMap {
         }
     }
 }
-HexagonMap.MAX_CELL_DISTANCE = 20; // in terms of cells
+HexagonMap.MAX_CELL_DISTANCE = 12; // in terms of cells
