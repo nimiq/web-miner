@@ -58,7 +58,7 @@ class WalletUI {
     }
 
     _isAccountAddressValid() {
-        return /[0-9a-f]{40}/i.test(this._accountInput.value);
+        return /^[0-9a-f]{40}$/i.test(this._accountInput.value);
     }
 
     _validateAddress() {
@@ -109,7 +109,7 @@ class WalletUI {
             $$('#receivingElapsed').innerText = minutes + ':' + seconds;
         }, 1000);
 
-        $$('body').className = 'has-overlay';
+        this.show();
         $$('#wallet').classList.add('transaction-received');
         this._receivingTx = tx;
     }
@@ -137,6 +137,11 @@ class WalletUI {
 
         const recipient = this._accountInput.value;
         const address = Nimiq.Address.fromHex(recipient);
+
+        if (address.equals(this.$.wallet.address)) {
+            alert('You cannot send transactions to yourself.');
+            return;
+        }
 
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
