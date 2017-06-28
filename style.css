@@ -53,7 +53,7 @@ p, a, h1, h2, h3 {
     max-width: 800px;
     /* we have the map as background image such that we can display:none the hexagons
     in the svg which greatly improves performance on firefox */
-    background-image: url(worldmap/map.svg);
+    background-image: url(images/map.svg);
 }
 
 #map svg.hide-hexagons polygon {
