@@ -744,8 +744,13 @@ input:-moz-placeholder {
 }
 
 
-@media (min-width: 700px) {
+@media (max-width: 340px) {
+    #miningSection {
+        padding-bottom: 64px;
+    }
+}
 
+@media (min-width: 700px) {
     #miningSection {
         padding-bottom: 32px;
     }
