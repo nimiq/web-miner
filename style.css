@@ -958,6 +958,15 @@ body[overlay="block-detail"] #block-detail {
     #map {
         opacity: 0.3;
     }
+    #map svg {
+        opacity: 1;
+    }
+    /* disable map animations when map is in background */
+    .own-peer, .connected-peer, .known-peer {
+        -webkit-animation: none;
+        animation: none;
+        will-change: initial;
+    }
 }
 
 
