@@ -11,7 +11,41 @@ function isSupportedBrowser() {
     return true;
 }
 
-if (isSupportedBrowser()) {
+function hasLocalStorage() {
+    // taken from MDN
+    try {
+        var storage = window['localStorage'],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    } catch(e) {
+        // return false if the error is a QuotaExceededError and the storage length is 0.
+        // If the length is > 0 then we really just exceed the storage limit.
+        // If another exception is thrown then probably localStorage is undefined.
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            storage.length !== 0;
+    }
+}
+
+if (!isSupportedBrowser()) {
+    document.getElementById('landingSection').classList.add('warning');
+    document.getElementById('warning-old-browser').style.display = 'block';
+} else if (!hasLocalStorage()) {
+    // no local storage. This is for example the case in private browsing in Safari and Android Browser
+    document.getElementById('landingSection').classList.add('warning');
+    document.getElementById('warning-no-localstorage').style.display = 'block';
+} else {
     var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner.js'];
 
     // allow to load staging branch instead
@@ -44,7 +78,4 @@ if (isSupportedBrowser()) {
     script.type = 'text/javascript';
     script.src = nimiq;
     head.appendChild(script);
-} else {
-    document.getElementById('landingSection').classList.add('warning');
-    document.getElementById('warning-old-browser').style.display = 'block';
 }
