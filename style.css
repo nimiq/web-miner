@@ -287,6 +287,10 @@ header {
     animation: 700ms scale-in ease-in;
 }
 
+#landingSection h1 small {
+    opacity: 0.6;
+}
+
 #landingSection > div {
     position: absolute;
     bottom: 0;
