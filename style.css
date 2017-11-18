@@ -126,19 +126,6 @@ p, a, h1, h2, h3 {
     will-change: opacity;
 }
 
-@-webkit-keyframes connected {
-    0% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.5;
-    }
-}
-
 @keyframes connected {
     0% {
         opacity: 0.5;
@@ -494,6 +481,62 @@ header {
     background: rgba(255,255,255,0.1);
 }
 
+.ellipsis>*:first-child {
+    animation: 1.5s ellipsis-first 0s infinite;
+}
+.ellipsis>*:nth-child(2) {
+    animation: 1.5s ellipsis-second 0s infinite;
+}
+.ellipsis>*:nth-child(3) {
+    animation: 1.5s ellipsis-third 0s infinite;
+}
+
+@keyframes ellipsis-first {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes ellipsis-second {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes ellipsis-third {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 #progressContainer {
     padding-bottom: 16px;
     pointer-events: none;
@@ -505,48 +548,21 @@ header {
     line-height: 32px;
 }
 
-#progressBarContainer {
-    background-color: rgba(255, 255, 255, 0.7);
-    height: 3px;
-    width: 160px;
-    margin-top: 8px;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 3px;
+#progress[state="connecting"]:before {
+    content: "Connecting";
 }
-
-#progressBar {
-    background-color: #ffc107;
-    height: 100%;
-    width: 100%;
-    /* set the value of the progress bar via transform instead of width. that way, we get subpixel
-    precision and thus a smoother animation */
-    transform: scaleX(0) translateZ(0);
-    -webkit-transform: scaleX(0) translateZ(0);
-    -moz-transform: scaleX(0) translateZ(0);
-    -ms-transform: scaleX(0) translateZ(0);
-    transform-origin: left;
-    transition: transform 0.5s;
+#progress[state="syncing"]:before {
+    content: "Synchronizing";
 }
-
-.syncing #progress {
-    animation: 1s fade-in 0s normal forwards;
-    /* using animation instead of opacity such that it works well
-        with .synched #progress */
+#progress[state="synced"]:before {
+    content: "Consensus established";
+}
+#progress[state="synced"]>.ellipsis {
+    display: none;
 }
 
 .synced #progress {
     animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
-}
-
-.syncing #progressBarContainer {
-    animation: 1s fade-in 0s normal forwards;
-    /* using animation instead of opacity such that it works well
-        with .synched #progressBarContainer */
-}
-
-.synced #progressBarContainer {
-    animation: 1s fade-in 4s reverse forwards;
 }
 
 .synced #rewardInfo {
@@ -959,9 +975,6 @@ body[overlay="block-detail"] #block-detail {
     }
     #initialLoadingSpinner {
         width: 48px;
-    }
-    #progressBarContainer {
-        margin-top: 2px;
     }
 
     #progressContainer{

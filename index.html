@@ -2196,6 +2196,10 @@
             <a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue in Private Mode</a>
         </div>
     </div>
+    <div id="warning-database-access" class="landing-warning hide-mobile-landscape">
+        <div>Failed to access the database.</div>
+        <div class="warning-advice">Please reload.</div>
+    </div>
     <div id="warning-mobile-landscape" class="landing-warning warning-advice">
         Please rotate the screen.
     </div>
@@ -2259,13 +2263,10 @@
         </div>
     </div>
     <!-- Mining -->
-    <div id="miningSection" class="syncing hide-mobile-landscape">
+    <div id="miningSection" class="hide-mobile-landscape">
 
         <div id="progressContainer">
-            <div id="progress">Connecting to peers</div>
-            <div id="progressBarContainer">
-                <div id="progressBar"></div>
-            </div>
+            <div id="progress" state="connecting"><span class="ellipsis"><span>.</span><span>.</span><span>.</span></span></div>
         </div>
         <div id="warning-miner-stopped" style="display: none;">
             Mining is paused. <a href="#" id="resumeMinerBtn">Resume</a>
@@ -2284,7 +2285,7 @@
             </div>
             <div class="fact" id="mining-on-block">
                 <div class="mining-on-block-inner">
-                    <div id="factBlockContainer" class="label"><span id="factBlockProcessingState">Fetching</span> Block
+                    <div id="factBlockContainer" class="label"><span id="factBlockProcessingState">Synchronize</span> Block
                     <img class="info-icon" src="images/info-icon.svg" />
                     </div>
                     <div>
@@ -2338,7 +2339,7 @@
             </div>
         </div>
         <div id="rewardInfo">
-            The block mining reward is <b>50 Nimiq</b>. At your current hashrate you can expect to mine a block every
+            The block mining reward is <b>5 Nimiq</b>. At your current hashrate you can expect to mine a block every
             <b id="factExpectedHashTime">x hours</b>.
             <a href="#" id="toggleMinerBtn">Pause Mining</a>
         </div>

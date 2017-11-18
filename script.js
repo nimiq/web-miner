@@ -50,7 +50,9 @@ if (!isSupportedBrowser()) {
 
     // allow to load staging branch instead
     var nimiq;
-    if (window.location.hash === '#staging') {
+    if (window.location.hash === '#local') {
+        nimiq = '/core/dist/nimiq.js';
+    } else if (window.location.hash === '#staging') {
         nimiq = 'https://cdn.nimiq-network.com/staging/nimiq.js';
     } else {
         nimiq = 'https://cdn.nimiq.com/core/nimiq.js';

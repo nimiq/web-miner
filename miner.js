@@ -18,7 +18,7 @@ class FactsUI {
     }
 
     set blockHeight(height) {
-        this._blockHeight.textContent = (height+1);
+        this._blockHeight.textContent = height;
     }
 
     set myHashrate(hashrate) {
@@ -57,22 +57,20 @@ class FactsUI {
         this._myBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
     }
 
-    set syncing(isSyncing) {
-        if (isSyncing) {
-            this._blockProcessingState.textContent = "Fetching";
-            this._consensusProgress.textContent = "Synchronizing";
-            this._miningSection.classList.remove('synced');
-            this._miningSection.offsetWidth; // enforce an update
-            this._miningSection.classList.add('syncing');
-        } else {
+    set synced(isSynced) {
+        if (isSynced) {
             this._blockProcessingState.textContent = "Mining on";
-            this._miningSection.classList.remove('syncing');
             this._miningSection.offsetWidth; // enforce an update
             this._miningSection.classList.add('synced');
             setTimeout(function() {
                 // change the text when the _consensusProgress is faded out by the synced class
-                this._consensusProgress.textContent = "Consensus established";
+                this._consensusProgress.setAttribute('state', 'synced');
             }.bind(this), 1500);
+        } else {
+            this._blockProcessingState.textContent = "Synchronize";
+            this._consensusProgress.setAttribute('state', 'syncing');;
+            this._miningSection.classList.remove('synced');
+            this._miningSection.offsetWidth; // enforce an update
         }
     }
 
@@ -116,7 +114,6 @@ class MinerUI {
         this._miningAnimation = document.querySelector('#miningAnimation');
         this._miningAnimationStarted = false;
 
-        this._progressBar = document.querySelector('#progressBar');
         this.facts = new FactsUI();
 
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
@@ -143,10 +140,6 @@ class MinerUI {
                 }, 1000);
             }
         }, this);
-    }
-
-    set syncProgress(progress) {
-        this._progressBar.style.transform = 'scaleX(' + Math.min(1, progress) + ') translateZ(0)';
     }
 
     enableConnectButton() {
@@ -411,7 +404,6 @@ class Miner {
         this.map = new MapUI($);
         this._blockExplorer = null;
 
-        this.syncing = true;
         this.paused = false;
 
         this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
@@ -428,10 +420,11 @@ class Miner {
     connect() {
         this.$.consensus.on('established', () => this._onConsensusEstablished());
         this.$.consensus.on('lost', () => this._onConsensusLost());
-        this.$.consensus.on('syncing', _targetHeight => this._onSyncing(_targetHeight));
+        this.$.consensus.on('syncing', () => this._onConsensusSyncing());
 
         this.$.blockchain.on('head-changed', _ => this._onHeadChanged());
         this.$.network.on('peers-changed', () => this._onPeersChanged());
+        this.$.network.on('peer-joined', peer => this._onPeerJoined(peer));
 
         this.$.miner.on('hashrate-changed', () => this._onHashrateChanged());
         this.$.miner.on('start', () => this._onMinerChanged());
@@ -473,21 +466,16 @@ class Miner {
     }
 
     _onConsensusEstablished() {
-        // TODO the core can switch between syncing and consensus multiple times, so this method
-        // can be called multiple times
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
         this.$.accounts.on(this.$.wallet.address, account => this._onBalanceChanged(account.balance));
 
+        this.ui.facts.synced = true;
         this._warningConsensusLost.style.display = 'none';
 
         if (!this.paused) {
             this.$.miner.startWork();
         }
-
-        this.ui.facts.syncing = false;
-        this.syncing = false;
-        this.ui.syncProgress = 1;
 
         this._onGlobalHashrateChanged();
 
@@ -498,12 +486,34 @@ class Miner {
 
     _onConsensusLost() {
         this.$.miner.stopWork();
+        this.ui.facts.synced = false;
     }
 
-    _onSyncing(targetHeight) {
-        this._targetHeight = targetHeight;
-        this.ui.facts.syncing = true;
-        this.syncing = true;
+    _onConsensusSyncing() {
+        console.log('called');
+        this.ui.facts.synced = false;
+    }
+
+    _updateTargetHeight(delay = 0) {
+        if (this.$.consensus.established) {
+            return;
+        }
+        // can update with a delay to give the blockchain time to update
+        clearTimeout(this._targetHeightUpdateTimer);
+        this._targetHeightUpdateTimer = setTimeout(() => {
+            const targetHeight = this.$.consensus._agents.values()
+                .map(agent => Math.max(agent._blockchain.height, agent._partialChain? agent._partialChain.height : 0))
+                .reduce((max, current) => Math.max(max, current), 0);
+            if (targetHeight && !this.$.consensus.established) {
+                this.ui.facts.blockHeight = targetHeight;
+            }
+        }, delay);
+    }
+
+    _onPeerJoined(peer) {
+        this._updateTargetHeight(150);
+        this.$.consensus._agents.get(peer.id)._chain.on('head-changed', () => this._updateTargetHeight());
+        //peer.channel.on('block', () => this._updateTargetHeight(150)); // TODO needed ?
     }
 
     _onPeersChanged() {
@@ -533,9 +543,7 @@ class Miner {
     _onHeadChanged() {
         const height = this.$.blockchain.height;
         this.ui.facts.blockHeight = height;
-        if (this.syncing) {
-            this.ui.syncProgress = height / this._targetHeight;
-        } else {
+        if (this.$.consensus.established) {
             this._onGlobalHashrateChanged();
         }
     }
@@ -570,24 +578,79 @@ class Miner {
     }
 }
 
-// Initialize Nimiq Core.
-Nimiq.init($ => {
-    document.getElementById('landingSection').classList.remove('warning');
-    document.getElementById('warning-multiple-tabs').style.display = 'none';
-    window.$ = $;
-    window.Miner = new Miner($);
-    window.Wallet = new WalletUI($);
-}, function(error) {
-    document.getElementById('landingSection').classList.add('warning');
-    if (error === Nimiq.ERR_WAIT) {
-        document.getElementById('warning-multiple-tabs').style.display = 'block';
-    } else if (error === Nimiq.ERR_UNSUPPORTED) {
-        document.getElementById('warning-old-browser').style.display = 'block';
-    } else {
-        document.getElementById('warning-general-error').style.display = 'block';
+(() => {
+    let triedDatabaseReset = false;
+    async function tryResetDatabaseAndInit() {
+        if (triedDatabaseReset) {
+            // it didn't work out, the error reappears
+            document.getElementById('landingSection').classList.add('warning');
+            document.getElementById('warning-general-error').style.display = 'block';
+        } else {
+            try {
+                console.warn('Resetting the database.');
+                triedDatabaseReset = true;
+                await new Promise(function (resolve, reject) {
+                    Nimiq.BaseTypedDB.db.then(function (db) {
+                        const transaction = db.transaction(['accounts', 'blocks'], 'readwrite');
+                        transaction.oncomplete = resolve;
+                        transaction.onerror = reject;
+                        transaction.objectStore('accounts').clear();
+                        transaction.objectStore('blocks').clear();
+                    });
+                });
+                const jdb = await Nimiq.ConsensusDB.get();
+                const accounts = jdb.getObjectStore('Accounts');
+                const chain = jdb.getObjectStore('FullChain');
+                await accounts.truncate();
+                await chain.truncate();
+                initNimiq();
+            } catch(e) {
+                document.getElementById('landingSection').classList.add('warning');
+                document.getElementById('warning-database-access').style.display = 'block';
+            }
+        }
     }
-});
 
+    // Initialize Nimiq Core.
+    function initNimiq() {
+        Nimiq.init(async () => {
+            try {
+                document.getElementById('landingSection').classList.remove('warning');
+                document.getElementById('warning-multiple-tabs').style.display = 'none';
+                const $ = {};
+                $.consensus = await Nimiq.Consensus.light();
+
+                // XXX Legacy API
+                $.blockchain = $.consensus.blockchain;
+                $.accounts = $.blockchain.accounts;
+                $.mempool = $.consensus.mempool;
+                $.network = $.consensus.network;
+
+                // XXX Legacy components
+                $.wallet = await Nimiq.Wallet.getPersistent();
+                $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
+
+                window.$ = $;
+                window.Miner = new Miner($);
+                window.Wallet = new WalletUI($);
+            } catch(e) {
+                console.error(e);
+                tryResetDatabaseAndInit();
+            }
+        }, function(error) {
+            document.getElementById('landingSection').classList.add('warning');
+            if (error === Nimiq.ERR_WAIT) {
+                document.getElementById('warning-multiple-tabs').style.display = 'block';
+            } else if (error === Nimiq.ERR_UNSUPPORTED) {
+                document.getElementById('warning-old-browser').style.display = 'block';
+            } else {
+                tryResetDatabaseAndInit();
+            }
+        });
+    }
+
+    initNimiq();
+})();
 
 function checkScreenOrientation() {
     // we check the screen dimensions instead of innerWidth/innerHeight for correct behaviour when the keyboard

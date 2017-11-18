@@ -69,7 +69,7 @@ class WalletUI {
     _isAmountValid() {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
-        return satoshis >= 1 / 1e8 && satoshis <= this._balance.value;
+        return satoshis >= 1 && satoshis <= this._balance.value;
     }
 
     _validateAmount() {
