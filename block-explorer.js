@@ -216,6 +216,8 @@ class BlockDetailUi {
 		this._minerAddressEl = document.getElementById('block-detail-info-mined-by');
 		this._bodyHashEl = document.getElementById('block-detail-info-body-hash');
 		this._accountsHashEl = document.getElementById('block-detail-info-accounts-hash');
+		this._extraDataEl = document.getElementById('block-detail-info-extra-data');
+		this._extraDataContainer = document.getElementById('block-detail-container-extra-data');
 		this._transactionsContainer = document.getElementById('block-detail-transactions');
 		this._noTransactionsInfo = document.getElementById('block-detail-no-transactions');
 		document.getElementById('block-detail-exit-area').addEventListener('click', this.hide.bind(this));
@@ -243,6 +245,14 @@ class BlockDetailUi {
 		this._minerAddressEl.textContent = block.minerAddr.toUserFriendlyAddress();
 		this._bodyHashEl.textContent = block.bodyHash.toHex();
 		this._accountsHashEl.textContent = block.accountsHash.toHex();
+		if (block.body.extraData.length > 0) {
+		    const isPrintable = block.body.extraData.every(charCode => charCode >= 32 && charCode <= 126);
+		    this._extraDataEl.textContent = isPrintable? Nimiq.BufferUtils.toAscii(block.body.extraData)
+                : Nimiq.BufferUtils.toBase64(block.body.extraData);
+            this._extraDataContainer.style.display = 'flex';
+        } else {
+		    this._extraDataContainer.style.display = 'none';
+        }
 		if (block.transactionCount === 0) {
 			this._noTransactionsInfo.style.display = 'table';
 			this._transactionsContainer.style.display = 'none';

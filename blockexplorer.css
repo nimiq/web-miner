@@ -192,11 +192,11 @@
 .block-detail-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-top: 16px;
 }
 
-.block-detail-row:last-child {
-  margin-bottom: 0;
+.block-detail-row:first-child {
+  margin-top: 0;
 }
 
 .block-detail-row p {
