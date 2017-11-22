@@ -26,18 +26,22 @@ class WalletUI {
         this._sendTxBtn.onclick = () => this._sendTx();
 
         const accountAddr = $$('#wallet-account .address');
-        accountAddr.innerText = $.wallet.address.toHex();
+        accountAddr.innerText = $.wallet.address.toUserFriendlyAddress();
 
         const wa = $$('#wallet-account');
-        wa.setAttribute('data-clipboard-text', $.wallet.address.toHex().toUpperCase());
+        wa.setAttribute('data-clipboard-text', $.wallet.address.toUserFriendlyAddress().toUpperCase());
         const clipboard = new Clipboard('#wallet-account');
         clipboard.on('success', () => {
             wa.classList.add('copied');
             setTimeout(() => wa.classList.remove('copied'), 3000);
         });
 
-        $.accounts.getBalance($.wallet.address).then(balance => this._onBalanceChanged(balance));
-        $.accounts.on($.wallet.address, account => this._onBalanceChanged(account.balance));
+        this._updateBalance();
+        $.blockchain.on('head-changed', (head, branching) => {
+            if (!branching) {
+                this._updateBalance();
+            }
+        });
 
         $.mempool.on('transaction-added', tx => this._onTxReceived(tx));
         $.mempool.on('transactions-ready', () => this._onTxsProcessed());
@@ -58,18 +62,24 @@ class WalletUI {
     }
 
     _isAccountAddressValid() {
-        return /^[0-9a-f]{40}$/i.test(this._accountInput.value);
+        try {
+            Nimiq.Address.fromUserFriendlyAddress(this._accountInput.value);
+            return true;
+        } catch(e) {
+            return false;
+        }
     }
 
     _validateAddress() {
-        this._accountContainer.className = this._isAccountAddressValid() || !this._accountInput.value ? '' : 'invalid';
+        this._accountContainer.className = !this._accountInput.value || this._isAccountAddressValid() ? '' : 'invalid';
         this._checkEnableSendTxBtn();
     }
 
     _isAmountValid() {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
-        return satoshis >= 1 && satoshis <= this._balance.value;
+        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey);
+        return satoshis >=1 && this._balance.value >= satoshis + waitingTransactions.map(t => t.value + t.fee).reduce((a, b) => a + b, 0);
     }
 
     _validateAmount() {
@@ -81,9 +91,14 @@ class WalletUI {
         this._sendTxBtn.disabled = !this._isAccountAddressValid() || !this._isAmountValid();
     }
 
+    _updateBalance() {
+        $.accounts.getBalance($.wallet.address).then(balance => this._onBalanceChanged(balance));
+    }
+
     _onBalanceChanged(balance) {
         this._balance = balance;
         $$('#wallet-balance').innerText = Nimiq.Policy.satoshisToCoins(balance.value).toFixed(2);
+        this._validateAmount();
     }
 
     _onTxReceived(tx) {
@@ -98,8 +113,9 @@ class WalletUI {
             $$('#receivingElapsed').innerText = '0:00';
         }
 
-        tx.getSenderAddr().then(sender => $$('#receivingSender').innerText = sender.toHex());
+        tx.getSenderAddr().then(sender => $$('#receivingSender').innerText = sender.toUserFriendlyAddress());
         $$('#receivingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
+        $$('#receivingFee').innerText = Nimiq.Policy.satoshisToCoins(tx.fee).toFixed(2);
 
         this._receivingInterval = setInterval(() => {
             this._receivingElapsed++;
@@ -133,10 +149,14 @@ class WalletUI {
     }
 
     _sendTx() {
-        if (!this._isAccountAddressValid() || !this._isAmountValid()) return;
+        if (!this._isAmountValid()) return;
 
-        const recipient = this._accountInput.value;
-        const address = Nimiq.Address.fromHex(recipient);
+        let address;
+        try {
+            address = Nimiq.Address.fromUserFriendlyAddress(this._accountInput.value);
+        } catch(e) {
+            return;
+        }
 
         if (address.equals(this.$.wallet.address)) {
             alert('You cannot send transactions to yourself.');
@@ -146,11 +166,15 @@ class WalletUI {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
 
-        this.$.wallet.createTransaction(address, satoshis, 0, this._balance.nonce)
+        this.$.accounts.getBalance(this.$.wallet.address)
+            .then(balance => {
+                const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey);
+                return this.$.wallet.createTransaction(address, satoshis, 0, balance.nonce + waitingTransactions.length)
+            })
             .then(tx => {
                 this.$.mempool.pushTransaction(tx).then(result => {
                     if (!result) {
-                        alert('Sending the transaction failed. You might have an unconfirmed transaction pending. Please try again in a few seconds.');
+                        alert('Sending the transaction failed. Please try again later.');
                     } else {
                         this._transactionPending(tx);
                     }
@@ -161,11 +185,18 @@ class WalletUI {
     _transactionPending(tx) {
         this._accountInput.value = '';
         this._amountInput.value = '';
-        this._accountInput.disabled = true;
-        this._amountInput.disabled = true;
         this._sendTxBtn.disabled = true;
 
-        $$('#pendingReceiver').innerText = tx.recipientAddr.toHex();
+        if (this._pendingTx) {
+            if (this._pendingInterval) {
+                clearInterval(this._pendingInterval);
+            }
+
+            this._pendingElapsed = 0;
+            $$('#pendingElapsed').innerText = '0:00';
+        }
+
+        $$('#pendingReceiver').innerText = tx.recipientAddr.toUserFriendlyAddress();
         $$('#pendingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         this._pendingInterval = setInterval(() => {
@@ -181,9 +212,6 @@ class WalletUI {
     }
 
     _pendingTransactionConfirmed() {
-        this._accountInput.disabled = false;
-        this._amountInput.disabled = false;
-
         this._pendingTx = null;
         this._pendingElapsed = 0;
 

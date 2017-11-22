@@ -1,5 +1,5 @@
 class BlockExplorerUi {
-	// TODO improve performance by disabling the timers when hidden. Or event not update the list at all
+	// TODO improve performance by disabling the timers when hidden. Or even not update the list at all
 	// and then update on demand
 
     constructor(blockchain) {
@@ -192,7 +192,7 @@ class BlockEntry {
 			this._totalAmountEl.style.display = 'none';
 			this._closingParenthesis.style.display = 'none';
 		}
-		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toHex().toUpperCase();
+		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toUserFriendlyAddress().toUpperCase();
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
 		if (this._visible) {
 			this._startTimer();
@@ -240,7 +240,7 @@ class BlockDetailUi {
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
 		this._nonceEl.textContent = block.nonce;
 		this._bitsEl.textContent = block.nBits.toString(16);
-		this._minerAddressEl.textContent = block.minerAddr.toHex();
+		this._minerAddressEl.textContent = block.minerAddr.toUserFriendlyAddress();
 		this._bodyHashEl.textContent = block.bodyHash.toHex();
 		this._accountsHashEl.textContent = block.accountsHash.toHex();
 		if (block.transactionCount === 0) {
@@ -267,8 +267,8 @@ class BlockDetailUi {
 				let recipient = document.createElement('p');
 				let value = document.createElement('p');
 				value.classList.add('is-currency');
-				transaction.getSenderAddr().then(address => sender.textContent=address.toHex().toUpperCase());
-				recipient.textContent = transaction.recipientAddr.toHex().toUpperCase();
+				transaction.getSenderAddr().then(address => sender.textContent=address.toUserFriendlyAddress().toUpperCase());
+				recipient.textContent = transaction.recipientAddr.toUserFriendlyAddress().toUpperCase();
 				value.textContent = Nimiq.Policy.satoshisToCoins(transaction.value).toFixed(2);
 				entry.appendChild(sender);
 				entry.appendChild(recipient);

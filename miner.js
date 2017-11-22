@@ -234,7 +234,7 @@ class MapUI {
         this._knownPeers = new Nimiq.HashMap();
         this._cellCountKnown = new CellCounter();
         this._cellCountConnected = new CellCounter();
-        this._peerDescUI = new PeerDescUI()
+        this._peerDescUI = new PeerDescUI();
 
         $.network.on('peer-joined', peer => this._onPeerJoined(peer));
         $.network.on('peer-left', peer => this._onPeerLeft(peer));
@@ -422,7 +422,7 @@ class Miner {
         this.$.consensus.on('lost', () => this._onConsensusLost());
         this.$.consensus.on('syncing', () => this._onConsensusSyncing());
 
-        this.$.blockchain.on('head-changed', _ => this._onHeadChanged());
+        this.$.blockchain.on('head-changed', this._onHeadChanged.bind(this));
         this.$.network.on('peers-changed', () => this._onPeersChanged());
         this.$.network.on('peer-joined', peer => this._onPeerJoined(peer));
 
@@ -468,7 +468,6 @@ class Miner {
     _onConsensusEstablished() {
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
-        this.$.accounts.on(this.$.wallet.address, account => this._onBalanceChanged(account.balance));
 
         this.ui.facts.synced = true;
         this._warningConsensusLost.style.display = 'none';
@@ -490,7 +489,6 @@ class Miner {
     }
 
     _onConsensusSyncing() {
-        console.log('called');
         this.ui.facts.synced = false;
     }
 
@@ -513,7 +511,6 @@ class Miner {
     _onPeerJoined(peer) {
         this._updateTargetHeight(150);
         this.$.consensus._agents.get(peer.id)._chain.on('head-changed', () => this._updateTargetHeight());
-        //peer.channel.on('block', () => this._updateTargetHeight(150)); // TODO needed ?
     }
 
     _onPeersChanged() {
@@ -540,11 +537,13 @@ class Miner {
         }
     }
 
-    _onHeadChanged() {
+    _onHeadChanged(_, branching) {
         const height = this.$.blockchain.height;
         this.ui.facts.blockHeight = height;
-        if (this.$.consensus.established) {
+        if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
+            this.$.accounts.getBalance(this.$.wallet.address)
+                .then(balance => this._onBalanceChanged(balance));
         }
     }
 
@@ -589,22 +588,14 @@ class Miner {
             try {
                 console.warn('Resetting the database.');
                 triedDatabaseReset = true;
-                await new Promise(function (resolve, reject) {
-                    Nimiq.BaseTypedDB.db.then(function (db) {
-                        const transaction = db.transaction(['accounts', 'blocks'], 'readwrite');
-                        transaction.oncomplete = resolve;
-                        transaction.onerror = reject;
-                        transaction.objectStore('accounts').clear();
-                        transaction.objectStore('blocks').clear();
-                    });
-                });
-                const jdb = await Nimiq.ConsensusDB.get();
+                const jdb = await Nimiq.ConsensusDB.getLight();
                 const accounts = jdb.getObjectStore('Accounts');
-                const chain = jdb.getObjectStore('FullChain');
+                const chain = jdb.getObjectStore('ChainData');
                 await accounts.truncate();
                 await chain.truncate();
                 initNimiq();
             } catch(e) {
+                console.error(e);
                 document.getElementById('landingSection').classList.add('warning');
                 document.getElementById('warning-database-access').style.display = 'block';
             }
