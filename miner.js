@@ -67,11 +67,15 @@ class FactsUI {
                 this._consensusProgress.setAttribute('state', 'synced');
             }.bind(this), 1500);
         } else {
-            this._blockProcessingState.textContent = "Synchronize";
-            this._consensusProgress.setAttribute('state', 'syncing');;
+            this._blockProcessingState.textContent = "Current";
+            this._consensusProgress.setAttribute('state', 'syncing');
             this._miningSection.classList.remove('synced');
             this._miningSection.offsetWidth; // enforce an update
         }
+    }
+
+    set syncProgress(state) {
+        this._consensusProgress.setAttribute('state', state);
     }
 
     _setHashrate(hashrate, type) {
@@ -422,6 +426,12 @@ class Miner {
         this.$.consensus.on('lost', () => this._onConsensusLost());
         this.$.consensus.on('syncing', () => this._onConsensusSyncing());
 
+        this.$.consensus.on('sync-chain-proof', () => this._updateSyncProgress('sync-chain-proof'));
+        this.$.consensus.on('verify-chain-proof', () => this._updateSyncProgress('verify-chain-proof'));
+        this.$.consensus.on('sync-accounts-tree', () => this._updateSyncProgress('sync-accounts-tree'));
+        this.$.consensus.on('verify-accounts-tree', () => this._updateSyncProgress('verify-accounts-tree'));
+        this.$.consensus.on('sync-finalize', () => this._updateSyncProgress('sync-finalize'));
+
         this.$.blockchain.on('head-changed', this._onHeadChanged.bind(this));
         this.$.network.on('peers-changed', () => this._onPeersChanged());
         this.$.network.on('peer-joined', peer => this._onPeerJoined(peer));
@@ -492,6 +502,12 @@ class Miner {
 
     _onConsensusSyncing() {
         this.ui.facts.synced = false;
+    }
+
+    _updateSyncProgress(state) {
+        if (!this.$.consensus.established) {
+            this.ui.facts.syncProgress = state;
+        }
     }
 
     _updateTargetHeight(delay = 0) {

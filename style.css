@@ -562,6 +562,21 @@ header #label-luna {
 #progress[state="syncing"]:before {
     content: "Synchronizing";
 }
+#progress[state="sync-chain-proof"]:before {
+    content: "Downloading chain";
+}
+#progress[state="verify-chain-proof"]:before {
+    content: "Verifying chain";
+}
+#progress[state="sync-accounts-tree"]:before {
+    content: "Downloading accounts";
+}
+#progress[state="verify-accounts-tree"]:before {
+    content: "Verifying accounts";
+}
+#progress[state="sync-finalize"]:before {
+    content: "Storing data";
+}
 #progress[state="synced"]:before {
     content: "Consensus established";
 }
