@@ -1,4 +1,5 @@
 'use strict';
+var _paq = _paq || [];
 
 function isSupportedBrowser() {
     if (typeof Symbol === "undefined") return false;
@@ -41,10 +42,12 @@ function hasLocalStorage() {
 if (!isSupportedBrowser()) {
     document.getElementById('landingSection').classList.add('warning');
     document.getElementById('warning-old-browser').style.display = 'block';
+    _paq.push(['trackEvent', 'Loading', 'old-browser']);
 } else if (!hasLocalStorage()) {
     // no local storage. This is for example the case in private browsing in Safari and Android Browser
     document.getElementById('landingSection').classList.add('warning');
     document.getElementById('warning-no-localstorage').style.display = 'block';
+    _paq.push(['trackEvent', 'Loading', 'no-localstorage']);
 } else {
     var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner.js'];
 
@@ -65,6 +68,7 @@ if (!isSupportedBrowser()) {
         // Load main script.
         if (!window.nimiq_loaded) {
             window.nimiq_loaded = true;
+            _paq.push(['trackEvent', 'Loading', 'success']);
             for (var i = 0; i < scripts.length; ++i) {
                 var script = document.createElement('script');
                 script.type = 'text/javascript';

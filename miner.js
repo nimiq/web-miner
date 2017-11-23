@@ -466,6 +466,7 @@ class Miner {
     }
 
     _onConsensusEstablished() {
+        _paq.push(['trackEvent', 'Consensus', 'established']);
         this.$.accounts.getBalance(this.$.wallet.address)
             .then(balance => this._onBalanceChanged(balance));
 
@@ -484,6 +485,7 @@ class Miner {
     }
 
     _onConsensusLost() {
+        _paq.push(['trackEvent', 'Consensus', 'lost']);
         this.$.miner.stopWork();
         this.ui.facts.synced = false;
     }
@@ -620,6 +622,7 @@ class Miner {
                 // XXX Legacy components
                 $.wallet = await Nimiq.Wallet.getPersistent();
                 $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
+                $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
 
                 window.$ = $;
                 window.Miner = new Miner($);
