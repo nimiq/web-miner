@@ -37,13 +37,8 @@ header .logo {
 
 header .logo svg {
     margin-right: 16px;
-    /* width: 32px; */
+    min-width: 34px;
 }
-
-/*header .logo img {*/
-    /*width: 32px;*/
-    /*margin-right: 8px;*/
-/*}*/
 
 header .logo .uppercase {
     font-weight: 700;
