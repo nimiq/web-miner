@@ -382,7 +382,7 @@ class MapUI {
 
     _pollPeers() {
         if (this._polled.length === 0) {
-            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.DEFAULT);
+            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL);
             // Limit to 100 addresses.
             this._polled = this._polled.slice(0, 100);
         }
