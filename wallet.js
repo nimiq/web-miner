@@ -118,12 +118,9 @@ class WalletUI {
         $$('#receivingFee').innerText = Nimiq.Policy.satoshisToCoins(tx.fee).toFixed(2);
 
         this._receivingInterval = setInterval(() => {
-            this._receivingElapsed++;
-            const minutes = Math.floor(this._receivingElapsed / 60);
-            let seconds = this._receivingElapsed % 60;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-            $$('#receivingElapsed').innerText = minutes + ':' + seconds;
+            $$('#receivingElapsed').innerText = this._formatTime(++this._receivingElapsed);
         }, 1000);
+        this._setEstimatedTime();
 
         this.show();
         $$('#wallet').classList.add('transaction-received');
@@ -200,12 +197,9 @@ class WalletUI {
         $$('#pendingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         this._pendingInterval = setInterval(() => {
-            this._pendingElapsed++;
-            const minutes = Math.floor(this._pendingElapsed / 60);
-            let seconds = this._pendingElapsed % 60;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-            $$('#pendingElapsed').innerText = minutes + ':' + seconds;
+            $$('#pendingElapsed').innerText = this._formatTime(++this._pendingElapsed);
         }, 1000);
+        this._setEstimatedTime();
 
         $$('#wallet').classList.add('transaction-pending');
         this._pendingTx = tx;
@@ -237,6 +231,23 @@ class WalletUI {
         }
     }
 
+    _formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        seconds = seconds % 60;
+        return minutes + ':' + (seconds < 10? '0' : '') + seconds;
+    }
 
+    _setEstimatedTime() {
+        const blockCount = 5;
+        const headBlock = this.$.blockchain.head;
+        const tailHeight = Math.max(headBlock.height - blockCount, 1);
+
+        this.$.blockchain.getBlockAt(tailHeight).then(tailBlock => {
+            let averageBlockTime = (headBlock.timestamp - tailBlock.timestamp) / (Math.max(headBlock.height - tailBlock.height, 1));
+            averageBlockTime = Math.round(averageBlockTime / 5) * 5; // round to 5 seconds
+            const timeString = this._formatTime(averageBlockTime);
+            Array.prototype.forEach.call(document.querySelectorAll('[estimated-time]'), el => el.textContent = timeString);
+        });
+    }
 }
 
