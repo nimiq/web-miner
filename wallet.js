@@ -54,11 +54,16 @@ class WalletUI {
     }
 
     show() {
+        this._previousOverlay = document.body.getAttribute('overlay');
         document.body.setAttribute('overlay', 'wallet');
     }
 
     hide() {
-        document.body.removeAttribute('overlay');
+        if (this._previousOverlay) {
+            document.body.setAttribute('overlay', this._previousOverlay);
+        } else {
+            document.body.removeAttribute('overlay');
+        }
     }
 
     _isAccountAddressValid() {

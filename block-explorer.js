@@ -1,14 +1,14 @@
-class BlockExplorerUi {
+class BlockExplorerUi extends Panel {
 	// TODO improve performance by disabling the timers when hidden. Or even not update the list at all
 	// and then update on demand
 
-    constructor(blockchain) {
+    constructor(el, blockchain) {
+    	super(BlockExplorerUi.ID, el);
+    	this._el = el;
         this._blockchain = blockchain;
         this._blockDetailUi = new BlockDetailUi();
-        this._blockListEl = document.getElementById('blocks-overview');
+        this._blockListEl = this._el.querySelector('#blocks-overview');
         this._entries = [];
-        document.getElementById('mining-on-block').addEventListener('click', this.show.bind(this));
-        document.getElementById('exit-blocks-overview').addEventListener('click', this.hide.bind(this));
         blockchain.on('head-changed', this._onHeadChanged.bind(this));
         this._fillList(blockchain.head);
     }
@@ -46,25 +46,23 @@ class BlockExplorerUi {
     	this._blockListEl.insertBefore(entry.element, this._blockListEl.firstChild);
     }
 
-    show() {
-    	this._blockListEl.style.display = 'block';
-        document.body.setAttribute('overlay', 'blocks-overview');
+    show(fade = true) {
         this._entries.forEach(function(entry) {
         	entry.visible = true;
         });
+        super.show(fade);
     }
 
-    hide() {
-        document.body.removeAttribute('overlay');
-        window.setTimeout(function() {
-        	this._blockListEl.style.display = 'none';
-        }.bind(this), 600);
+    hide(fade = true) {
         this._entries.forEach(function(entry) {
         	entry.visible = false;
         });
+        super.hide(fade);
     }
 }
-BlockExplorerUi.MAX_COUNT = 20;
+BlockExplorerUi.ID = 'block-explorer';
+BlockExplorerUi.MAX_COUNT = 60;
+BlockExplorerUi.MIN_WIDTH = 850;
 
 
 class BlockEntry {

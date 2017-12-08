@@ -1,14 +1,11 @@
-#blocks-overview-container {
-  height: 60vh;
-  overflow: hidden;
-  transition: height .8s ease-in-out;
-  padding-top: 32px;
-  position: relative;
+#block-explorer {
+  overflow: auto;
   display: none;
+    height: 60vh;
 }
 
 #blocks-overview {
-  padding: 0 32px 32px;
+  padding: 0 32px;
   display: table;
   border-collapse: separate;
   border-spacing: 0 8px;
@@ -281,13 +278,6 @@
 
 #block-detail .block-detail-transactions-header .label {
   font-size: 16px;
-}
-
-
-@media (max-width: 450px) {
-  #blocks-overview-container {
-    padding-top: 60px;
-  }
 }
 
 @media (min-width: 1200px) {

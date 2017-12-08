@@ -115,10 +115,11 @@ class MinerUI {
         this._toggleMinerBtn = document.querySelector('#toggleMinerBtn');
         this._toggleMinerBtn.onclick = () => miner.toggleMining();
 
-        this._miningAnimation = document.querySelector('#miningAnimation');
+        // this._miningAnimation = document.querySelector('#miningAnimation');
         this._miningAnimationStarted = false;
 
         this.facts = new FactsUI();
+        this._bottomPanels = new BottomPanels(document.querySelector('#bottom-panels'));
 
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
         resumeMinerBtn.onclick = () => miner.toggleMining();
@@ -167,236 +168,33 @@ class MinerUI {
             //this._miningAnimation.unpauseAnimations();
         }
     }
-}
 
+    createBottomPanels(blockchain, miner) {
+        const blockExplorerTrigger = document.getElementById('mining-on-block');
+        const blockExplorer = new BlockExplorerUi(document.getElementById('block-explorer'), blockchain);
+        blockExplorerTrigger.addEventListener('click', () => {
+            if (window.innerWidth >= BlockExplorerUi.MIN_WIDTH) {
+                // on larger screens show the block explorer
+                this._bottomPanels.show(blockExplorer.id);
+            }
+        });
+        this._bottomPanels.addPanel(blockExplorer, blockExplorerTrigger);
+        window.addEventListener('resize', () => {
+            const currentPanel = this._bottomPanels.currentPanel;
+            if (currentPanel && currentPanel.id === BlockExplorerUi.ID
+                && window.innerWidth < BlockExplorerUi.MIN_WIDTH) {
+                // resized the window to a smaller size. Hide the block explorer.
+                this._bottomPanels.hide();
+            }
+        });
 
-class PeerDescUI {
-    constructor() {
-        this._container = document.querySelector('.peer-desc');
-        this._iconBrowser = document.querySelector('.peer-desc .browser');
-        this._iconBackbone = document.querySelector('.peer-desc .backbone');
-        this._text = document.querySelector('.peer-desc .peer-desc-text');
-    }
-
-    _setNodeType(isBrowser) {
-        if (isBrowser) {
-            this._iconBrowser.style.display = 'inline-block';
-            this._iconBackbone.style.display = 'none';
-        } else {
-            this._iconBrowser.style.display = 'none';
-            this._iconBackbone.style.display = 'inline-block';
-        }
-    }
-
-    show(desc) {
-        const isBrowser = desc.protocol === Nimiq.Protocol.RTC;
-        this._setNodeType(isBrowser);
-        const nodeType = isBrowser ? 'Browser' : 'Backbone';
-        this._text.innerHTML = `<b>${desc.status} ${nodeType}</b><br>${desc.country} ${desc.city}<br><small>${desc.addr || '&nbsp;'}</small>`;
-        this._container.style.opacity = 1;
-    }
-
-    hide() {
-        this._container.style.opacity = 0;
+        const minerSettingsTrigger = document.getElementById('my-hashrate');
+        const minerSettings = new MinerSettingsUi(document.getElementById('miner-settings'), miner);
+        minerSettingsTrigger.addEventListener('click', () => this._bottomPanels.show(minerSettings.id));
+        this._bottomPanels.addPanel(minerSettings, minerSettingsTrigger);
     }
 }
 
-class CellCounter {
-    constructor() {
-        this._cellCount = {};
-    }
-
-    incCellCount(cell) {
-        if (!this._cellCount[cell.cellId]) {
-            this._cellCount[cell.cellId] = 0;
-        }
-        this._cellCount[cell.cellId]++;
-    }
-
-    decCellCount(cell) {
-        if (!this._cellCount[cell.cellId]) {
-            this._cellCount[cell.cellId] = 0;
-        }
-        if (this._cellCount[cell.cellId] > 0) {
-            return --this._cellCount[cell.cellId];
-        }
-        return 0;
-    }
-
-    getCellCount(cell) {
-        return this._cellCount[cell.cellId] || 0;
-    }
-}
-
-class MapUI {
-    constructor($) {
-        this._mapElem = document.querySelector('#map svg');
-        this._map = new HexagonMap(this._mapElem);
-        this.$ = $;
-        this._polled = Nimiq.PeerAddresses.SEED_PEERS;
-        this._connectedPeers = new Nimiq.HashMap();
-        this._knownPeers = new Nimiq.HashMap();
-        this._cellCountKnown = new CellCounter();
-        this._cellCountConnected = new CellCounter();
-        this._peerDescUI = new PeerDescUI();
-
-        $.network.on('peer-joined', peer => this._onPeerJoined(peer));
-        $.network.on('peer-left', peer => this._onPeerLeft(peer));
-
-        GeoIP.retrieveOwn(response => this._highlightOwnPeer(response));
-
-        this._mapElem.onmousemove = e => this._mapHighlight(e);
-    }
-
-    fadeIn() {
-        this._mapElem.style.opacity = 1;
-        setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
-    }
-
-    _mapHighlight(e) {
-        if (e.target.data) {
-            const data = e.target.data;
-            this._peerDescUI.show(data);
-        } else {
-            this._peerDescUI.hide();
-        }
-    }
-
-    _getPeerHost(peer) {
-        if (peer.peerAddress.protocol === Nimiq.Protocol.WS) {
-            return peer.peerAddress.host;
-        } else if (peer.netAddress && !peer.netAddress.isPrivate()) {
-            return peer.netAddress.ip;
-        } else {
-            return null;
-        }
-    }
-
-    _onPeerJoined(peer) {
-        var host = this._getPeerHost(peer);
-        if (host && !this._connectedPeers.contains(host)) {
-            GeoIP.retrieve(response => this._highlightConnectedPeer(peer.peerAddress.protocol, host, response), host);
-        }
-    }
-
-    _onPeerLeft(peer) {
-        var host = this._getPeerHost(peer);
-        if (!host) return;
-
-        var cell = this._connectedPeers.get(host);
-        if (cell) {
-            // Only remove highlight if there are no more peers on this cell.
-            if (this._cellCountConnected.decCellCount(cell) === 0) {
-                // Either change class if there are still known peers there.
-                if (this._cellCountKnown.getCellCount(cell) > 0) {
-                    this._map.highlightCell(cell, 'known-peer', undefined);
-                }
-                // Or remove class at all.
-                else {
-                    this._map.unhighlightCell(cell);
-                }
-                this._map.removeLink(this._ownCell, cell);
-            }
-            this._connectedPeers.remove(host);
-        }
-    }
-
-    _noise() {
-        return 0; //(1 - Math.random() * 2) * 0.9;
-    }
-
-    _highlightOwnPeer(response) {
-        if (response && response.location && response.location.latitude) {
-            var loc = response.location;
-            var locDesc = this._responseToDesc(response, Nimiq.Protocol.RTC, null, 'My');
-            var cell = this._map.getCellByLocation(loc.latitude, loc.longitude);
-            if (cell) {
-                this._ownCell = cell;
-                this._map.highlightCell(cell, 'own-peer', locDesc);
-                this._cellCountConnected.incCellCount(cell);
-                var connectedPeersCells = this._connectedPeers.values();
-                for (var i = 0, peerCell; peerCell = connectedPeersCells[i]; ++i) {
-                    this._map.addLink(cell, peerCell);
-                }
-            }
-        }
-    }
-
-    _highlightConnectedPeer(protocol, addr, response) {
-        if (response && response.location && response.location.latitude) {
-            var loc = response.location;
-            var locDesc = this._responseToDesc(response, protocol, addr, 'Connected');
-            var cell = this._map.getCellByLocation(loc.latitude + this._noise(), loc.longitude + this._noise());
-            if (cell) {
-                if (this._ownCell !== cell) {
-                    // do not highlight own cell
-                    this._map.highlightCell(cell, 'connected-peer', locDesc);
-                }
-                this._connectedPeers.put(addr, cell);
-                this._cellCountConnected.incCellCount(cell);
-                this._map.addLink(this._ownCell, cell);
-            }
-        }
-    }
-
-    _responseToDesc(response, protocol, addr, status) {
-        return {
-            status: status,
-            city: response.city ? response.city : '',
-            country: response.country ? isoCountries[response.country] : '',
-            protocol: protocol,
-            addr: addr
-        }
-    }
-
-    _highlightKnownPeer(protocol, addr, response) {
-        if (response && response.location && response.location.latitude) {
-            var loc = response.location;
-            var locDesc = this._responseToDesc(response, protocol, addr, 'Available');
-            var cell = this._map.getCellByLocation(loc.latitude + this._noise(), loc.longitude + this._noise());
-            if (cell) {
-                var numKnown = this._knownPeers.length;
-                this._knownPeers.put(addr, cell);
-                this._cellCountKnown.incCellCount(cell);
-                // Highlight only if necessary.
-                if (this._cellCountConnected.getCellCount(cell) === 0) {
-                    this._map.highlightCell(cell, 'known-peer', locDesc);
-                }
-                // If too many are already highlighted, remove a random one.
-                if (numKnown >= MapUI.KNOWN_PEERS_MAX) {
-                    var i = Math.floor(Math.random() * numKnown);
-                    var addr = this._knownPeers.keys()[i];
-                    var cell = this._knownPeers.get(addr);
-                    this._knownPeers.remove(addr);
-                    this._cellCountKnown.decCellCount(cell);
-                    // If we now have neither connected nor known peers, remove highlight.
-                    if (this._cellCountKnown.getCellCount(cell) === 0 && this._cellCountConnected.getCellCount(cell) === 0) {
-                        this._map.unhighlightCell(cell);
-                    }
-                    // Otherwise, we either have a connected peer -> do not change the class.
-                    // Or we still have known peers -> do not change the class.
-                }
-            }
-        }
-    }
-
-    _pollPeers() {
-        if (this._polled.length === 0) {
-            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL);
-            // Limit to 100 addresses.
-            this._polled = this._polled.slice(0, 100);
-        }
-        if (this._polled.length > 0) {
-            var peerAddress = this._polled.shift();
-            var host = peerAddress.host || peerAddress.netAddress && !peerAddress.netAddress.isPrivate() && peerAddress.netAddress.ip;
-            if (host) {
-                GeoIP.retrieve(response => this._highlightKnownPeer(peerAddress.protocol, host, response), host);
-            }
-        }
-    }
-}
-MapUI.KNOWN_PEERS_MAX = 500;
-MapUI.REFRESH_INTERVAL = 1000;
 
 class Miner {
     constructor($) {
@@ -404,9 +202,9 @@ class Miner {
 
         this.ui = new MinerUI(this);
         this.ui.enableConnectButton();
+        this._hadConsensusBefore = false;
 
         this.map = new MapUI($);
-        this._blockExplorer = null;
 
         this.paused = false;
 
@@ -489,9 +287,10 @@ class Miner {
 
         this._onGlobalHashrateChanged();
 
-        if (!this._blockExplorer) {
-            this._blockExplorer = new BlockExplorerUi(this.$.blockchain);
+        if (!this._hadConsensusBefore) {
+            this.ui.createBottomPanels(this.$.blockchain, this.$.miner);
         }
+        this._hadConsensusBefore = true;
     }
 
     _onConsensusLost() {
@@ -666,7 +465,7 @@ function checkScreenOrientation() {
     // we check the screen dimensions instead of innerWidth/innerHeight for correct behaviour when the keyboard
     // is shown on mobile
     var isLandscape = window.screen.width >= window.screen.height;
-    if (isLandscape && window.innerHeight < 400) {
+    if (isLandscape && window.innerHeight < 540) {
         document.body.classList.add('mobile-landscape');
     } else {
         document.body.classList.remove('mobile-landscape');
@@ -675,263 +474,3 @@ function checkScreenOrientation() {
 window.addEventListener('resize', checkScreenOrientation);
 checkScreenOrientation();
 
-
-
-/*************************** Country Codes *************************************************************/
-
-
-var isoCountries = {
-    'AF': 'Afghanistan',
-    'AX': 'Aland Islands',
-    'AL': 'Albania',
-    'DZ': 'Algeria',
-    'AS': 'American Samoa',
-    'AD': 'Andorra',
-    'AO': 'Angola',
-    'AI': 'Anguilla',
-    'AQ': 'Antarctica',
-    'AG': 'Antigua And Barbuda',
-    'AR': 'Argentina',
-    'AM': 'Armenia',
-    'AW': 'Aruba',
-    'AU': 'Australia',
-    'AT': 'Austria',
-    'AZ': 'Azerbaijan',
-    'BS': 'Bahamas',
-    'BH': 'Bahrain',
-    'BD': 'Bangladesh',
-    'BB': 'Barbados',
-    'BY': 'Belarus',
-    'BE': 'Belgium',
-    'BZ': 'Belize',
-    'BJ': 'Benin',
-    'BM': 'Bermuda',
-    'BT': 'Bhutan',
-    'BO': 'Bolivia',
-    'BA': 'Bosnia And Herzegovina',
-    'BW': 'Botswana',
-    'BV': 'Bouvet Island',
-    'BR': 'Brazil',
-    'IO': 'British Indian Ocean Territory',
-    'BN': 'Brunei Darussalam',
-    'BG': 'Bulgaria',
-    'BF': 'Burkina Faso',
-    'BI': 'Burundi',
-    'KH': 'Cambodia',
-    'CM': 'Cameroon',
-    'CA': 'Canada',
-    'CV': 'Cape Verde',
-    'KY': 'Cayman Islands',
-    'CF': 'Central African Republic',
-    'TD': 'Chad',
-    'CL': 'Chile',
-    'CN': 'China',
-    'CX': 'Christmas Island',
-    'CC': 'Cocos (Keeling) Islands',
-    'CO': 'Colombia',
-    'KM': 'Comoros',
-    'CG': 'Congo',
-    'CD': 'Congo, Democratic Republic',
-    'CK': 'Cook Islands',
-    'CR': 'Costa Rica',
-    'CI': 'Cote D\'Ivoire',
-    'HR': 'Croatia',
-    'CU': 'Cuba',
-    'CY': 'Cyprus',
-    'CZ': 'Czech Republic',
-    'DK': 'Denmark',
-    'DJ': 'Djibouti',
-    'DM': 'Dominica',
-    'DO': 'Dominican Republic',
-    'EC': 'Ecuador',
-    'EG': 'Egypt',
-    'SV': 'El Salvador',
-    'GQ': 'Equatorial Guinea',
-    'ER': 'Eritrea',
-    'EE': 'Estonia',
-    'ET': 'Ethiopia',
-    'FK': 'Falkland Islands (Malvinas)',
-    'FO': 'Faroe Islands',
-    'FJ': 'Fiji',
-    'FI': 'Finland',
-    'FR': 'France',
-    'GF': 'French Guiana',
-    'PF': 'French Polynesia',
-    'TF': 'French Southern Territories',
-    'GA': 'Gabon',
-    'GM': 'Gambia',
-    'GE': 'Georgia',
-    'DE': 'Germany',
-    'GH': 'Ghana',
-    'GI': 'Gibraltar',
-    'GR': 'Greece',
-    'GL': 'Greenland',
-    'GD': 'Grenada',
-    'GP': 'Guadeloupe',
-    'GU': 'Guam',
-    'GT': 'Guatemala',
-    'GG': 'Guernsey',
-    'GN': 'Guinea',
-    'GW': 'Guinea-Bissau',
-    'GY': 'Guyana',
-    'HT': 'Haiti',
-    'HM': 'Heard Island & Mcdonald Islands',
-    'VA': 'Holy See (Vatican City State)',
-    'HN': 'Honduras',
-    'HK': 'Hong Kong',
-    'HU': 'Hungary',
-    'IS': 'Iceland',
-    'IN': 'India',
-    'ID': 'Indonesia',
-    'IR': 'Iran, Islamic Republic Of',
-    'IQ': 'Iraq',
-    'IE': 'Ireland',
-    'IM': 'Isle Of Man',
-    'IL': 'Israel',
-    'IT': 'Italy',
-    'JM': 'Jamaica',
-    'JP': 'Japan',
-    'JE': 'Jersey',
-    'JO': 'Jordan',
-    'KZ': 'Kazakhstan',
-    'KE': 'Kenya',
-    'KI': 'Kiribati',
-    'KR': 'Korea',
-    'KW': 'Kuwait',
-    'KG': 'Kyrgyzstan',
-    'LA': 'Lao People\'s Democratic Republic',
-    'LV': 'Latvia',
-    'LB': 'Lebanon',
-    'LS': 'Lesotho',
-    'LR': 'Liberia',
-    'LY': 'Libyan Arab Jamahiriya',
-    'LI': 'Liechtenstein',
-    'LT': 'Lithuania',
-    'LU': 'Luxembourg',
-    'MO': 'Macao',
-    'MK': 'Macedonia',
-    'MG': 'Madagascar',
-    'MW': 'Malawi',
-    'MY': 'Malaysia',
-    'MV': 'Maldives',
-    'ML': 'Mali',
-    'MT': 'Malta',
-    'MH': 'Marshall Islands',
-    'MQ': 'Martinique',
-    'MR': 'Mauritania',
-    'MU': 'Mauritius',
-    'YT': 'Mayotte',
-    'MX': 'Mexico',
-    'FM': 'Micronesia, Federated States Of',
-    'MD': 'Moldova',
-    'MC': 'Monaco',
-    'MN': 'Mongolia',
-    'ME': 'Montenegro',
-    'MS': 'Montserrat',
-    'MA': 'Morocco',
-    'MZ': 'Mozambique',
-    'MM': 'Myanmar',
-    'NA': 'Namibia',
-    'NR': 'Nauru',
-    'NP': 'Nepal',
-    'NL': 'Netherlands',
-    'AN': 'Netherlands Antilles',
-    'NC': 'New Caledonia',
-    'NZ': 'New Zealand',
-    'NI': 'Nicaragua',
-    'NE': 'Niger',
-    'NG': 'Nigeria',
-    'NU': 'Niue',
-    'NF': 'Norfolk Island',
-    'MP': 'Northern Mariana Islands',
-    'NO': 'Norway',
-    'OM': 'Oman',
-    'PK': 'Pakistan',
-    'PW': 'Palau',
-    'PS': 'Palestinian Territory, Occupied',
-    'PA': 'Panama',
-    'PG': 'Papua New Guinea',
-    'PY': 'Paraguay',
-    'PE': 'Peru',
-    'PH': 'Philippines',
-    'PN': 'Pitcairn',
-    'PL': 'Poland',
-    'PT': 'Portugal',
-    'PR': 'Puerto Rico',
-    'QA': 'Qatar',
-    'RE': 'Reunion',
-    'RO': 'Romania',
-    'RU': 'Russian Federation',
-    'RW': 'Rwanda',
-    'BL': 'Saint Barthelemy',
-    'SH': 'Saint Helena',
-    'KN': 'Saint Kitts And Nevis',
-    'LC': 'Saint Lucia',
-    'MF': 'Saint Martin',
-    'PM': 'Saint Pierre And Miquelon',
-    'VC': 'Saint Vincent And Grenadines',
-    'WS': 'Samoa',
-    'SM': 'San Marino',
-    'ST': 'Sao Tome And Principe',
-    'SA': 'Saudi Arabia',
-    'SN': 'Senegal',
-    'RS': 'Serbia',
-    'SC': 'Seychelles',
-    'SL': 'Sierra Leone',
-    'SG': 'Singapore',
-    'SK': 'Slovakia',
-    'SI': 'Slovenia',
-    'SB': 'Solomon Islands',
-    'SO': 'Somalia',
-    'ZA': 'South Africa',
-    'GS': 'South Georgia And Sandwich Isl.',
-    'ES': 'Spain',
-    'LK': 'Sri Lanka',
-    'SD': 'Sudan',
-    'SR': 'Suriname',
-    'SJ': 'Svalbard And Jan Mayen',
-    'SZ': 'Swaziland',
-    'SE': 'Sweden',
-    'CH': 'Switzerland',
-    'SY': 'Syrian Arab Republic',
-    'TW': 'Taiwan',
-    'TJ': 'Tajikistan',
-    'TZ': 'Tanzania',
-    'TH': 'Thailand',
-    'TL': 'Timor-Leste',
-    'TG': 'Togo',
-    'TK': 'Tokelau',
-    'TO': 'Tonga',
-    'TT': 'Trinidad And Tobago',
-    'TN': 'Tunisia',
-    'TR': 'Turkey',
-    'TM': 'Turkmenistan',
-    'TC': 'Turks And Caicos Islands',
-    'TV': 'Tuvalu',
-    'UG': 'Uganda',
-    'UA': 'Ukraine',
-    'AE': 'United Arab Emirates',
-    'GB': 'United Kingdom',
-    'US': 'United States',
-    'UM': 'United States Outlying Islands',
-    'UY': 'Uruguay',
-    'UZ': 'Uzbekistan',
-    'VU': 'Vanuatu',
-    'VE': 'Venezuela',
-    'VN': 'Viet Nam',
-    'VG': 'Virgin Islands, British',
-    'VI': 'Virgin Islands, U.S.',
-    'WF': 'Wallis And Futuna',
-    'EH': 'Western Sahara',
-    'YE': 'Yemen',
-    'ZM': 'Zambia',
-    'ZW': 'Zimbabwe'
-};
-
-function getCountryName(countryCode) {
-    if (isoCountries.hasOwnProperty(countryCode)) {
-        return isoCountries[countryCode];
-    } else {
-        return countryCode;
-    }
-}
