@@ -6,7 +6,7 @@ class BlockExplorerUi extends Panel {
     	super(BlockExplorerUi.ID, el);
     	this._el = el;
         this._blockchain = blockchain;
-        this._blockDetailUi = new BlockDetailUi();
+        this._blockDetailUi = new BlockDetailUi(document.getElementById('block-detail'));
         this._blockListEl = this._el.querySelector('#blocks-overview');
         this._entries = [];
         blockchain.on('head-changed', this._onHeadChanged.bind(this));
@@ -200,26 +200,32 @@ class BlockEntry {
 
 
 class BlockDetailUi {
-	constructor() {
-		this._blockNumberEl = document.getElementById('block-detail-block-number');
-		this._blockHashEl = document.getElementById('block-detail-block-hash');
-		this._transactionCountEl = document.getElementById('block-detail-info-transactions');
-		this._totalAmountEl = document.getElementById('block-detail-info-overall-value');
-		this._blockRewardEl = document.getElementById('block-detail-info-block-reward');
-		this._difficultyEl = document.getElementById('block-detail-info-difficulty');
-		this._timestampEl = document.getElementById('block-detail-info-timestamp');
-		this._sizeEl = document.getElementById('block-detail-info-size');
-		this._nonceEl = document.getElementById('block-detail-info-nonce');
-		this._bitsEl = document.getElementById('block-detail-info-bits');
-		this._minerAddressEl = document.getElementById('block-detail-info-mined-by');
-		this._bodyHashEl = document.getElementById('block-detail-info-body-hash');
-		this._accountsHashEl = document.getElementById('block-detail-info-accounts-hash');
-		this._extraDataEl = document.getElementById('block-detail-info-extra-data');
-		this._extraDataContainer = document.getElementById('block-detail-container-extra-data');
-		this._transactionsContainer = document.getElementById('block-detail-transactions');
-		this._noTransactionsInfo = document.getElementById('block-detail-no-transactions');
-		document.getElementById('block-detail-exit-area').addEventListener('click', this.hide.bind(this));
-		document.getElementById('blockexplorer-close').addEventListener('click', this.hide.bind(this));
+	constructor(el) {
+		this._el = el;
+		this._blockNumberEl = el.querySelector('#block-detail-block-number');
+		this._blockHashEl = el.querySelector('#block-detail-block-hash');
+		this._transactionCountEl = el.querySelector('#block-detail-info-transactions');
+		this._totalAmountEl = el.querySelector('#block-detail-info-overall-value');
+		this._blockRewardEl = el.querySelector('#block-detail-info-block-reward');
+		this._difficultyEl = el.querySelector('#block-detail-info-difficulty');
+		this._timestampEl = el.querySelector('#block-detail-info-timestamp');
+		this._sizeEl = el.querySelector('#block-detail-info-size');
+		this._nonceEl = el.querySelector('#block-detail-info-nonce');
+		this._bitsEl = el.querySelector('#block-detail-info-bits');
+		this._minerAddressEl = el.querySelector('#block-detail-info-mined-by');
+		this._bodyHashEl = el.querySelector('#block-detail-info-body-hash');
+		this._accountsHashEl = el.querySelector('#block-detail-info-accounts-hash');
+		this._extraDataEl = el.querySelector('#block-detail-info-extra-data');
+		this._extraDataContainer = el.querySelector('#block-detail-container-extra-data');
+		this._transactionsContainer = el.querySelector('#block-detail-transactions');
+		this._noTransactionsInfo = el.querySelector('#block-detail-no-transactions');
+		el.querySelector('#blockexplorer-close').addEventListener('click', this.hide.bind(this));
+		el.addEventListener('click', event => {
+			if (event.srcElement === el) {
+				// clicked on the background container
+				this.hide();
+			}
+		});
 	}
 
 	set block(block) {

@@ -723,7 +723,7 @@ input:-moz-placeholder {
 }
 
 .overlay-root {
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     top: 0;
@@ -734,16 +734,13 @@ input:-moz-placeholder {
     background: rgba(0,0,0,0.3);
 }
 
-.overlay-exit-area {
-    position: fixed;
+#bottom-panels-exit {
+    display: none;
+    position: absolute;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 100vh;
-}
-
-#bottom-panels-exit {
-    display: none;
 }
 
 .overlay {
@@ -758,7 +755,7 @@ input:-moz-placeholder {
 }
 
 .overlay-close {
-    position: fixed;
+    position: absolute;
     right: 16px;
     top: 16px;
     padding: 24px;

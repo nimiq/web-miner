@@ -5,6 +5,7 @@ function $$(selector) {
 class WalletUI {
     constructor($) {
         this.$ = $;
+        this._el = $$('#wallet');
 
         this._pendingTx = null;
         this._pendingElapsed = 0;
@@ -48,9 +49,14 @@ class WalletUI {
 
         $$('#factBalanceContainer').onclick = () => this.show();
         $$('#wallet-close').onclick = () => this.hide();
-        $$('#wallet-exit-area').onclick = () => this.hide();
+        this._el.onclick = event => {
+            if (event.srcElement === this._el) {
+                // clicked on the background container
+                this.hide();
+            }
+        };
 
-        $$('.wallet-sidebar-leave').onclick = () => $$('#wallet').classList.remove('transaction-received');
+        $$('.wallet-sidebar-leave').onclick = () => this._el.classList.remove('transaction-received');
     }
 
     show() {
@@ -128,7 +134,7 @@ class WalletUI {
         this._setEstimatedTime();
 
         this.show();
-        $$('#wallet').classList.add('transaction-received');
+        this._el.classList.add('transaction-received');
         this._receivingTx = tx;
     }
 
@@ -206,7 +212,7 @@ class WalletUI {
         }, 1000);
         this._setEstimatedTime();
 
-        $$('#wallet').classList.add('transaction-pending');
+        this._el.classList.add('transaction-pending');
         this._pendingTx = tx;
     }
 
@@ -214,7 +220,7 @@ class WalletUI {
         this._pendingTx = null;
         this._pendingElapsed = 0;
 
-        $$('#wallet').classList.remove('transaction-pending');
+        this._el.classList.remove('transaction-pending');
 
         $$('#pendingElapsed').innerText = '0:00';
         if (this._pendingInterval) {
@@ -227,7 +233,7 @@ class WalletUI {
         this._receivingTx = null;
         this._receivingElapsed = 0;
 
-        $$('#wallet').classList.remove('transaction-received');
+        this._el.classList.remove('transaction-received');
 
         $$('#receivingElapsed').innerText = '0:00';
         if (this._receivingInterval) {
