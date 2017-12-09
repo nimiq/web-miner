@@ -464,6 +464,14 @@ header #label-luna {
     color: rgba(255, 255, 255, .6);
     z-index: 2;
     pointer-events: all;
+    box-sizing: border-box;
+    padding: 0 12px;
+}
+
+@media (max-width: 359px) {
+    #rewardInfoAmount {
+        display: none;
+    }
 }
 
 #rewardInfo a {
