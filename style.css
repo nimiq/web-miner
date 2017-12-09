@@ -207,6 +207,7 @@ header #label-luna {
 
 .continue-anyways-button {
     color: white;
+    margin-top: 20px;
 }
 
 .landing-warning {
@@ -219,6 +220,8 @@ header #label-luna {
     opacity: 0;
     display: none;
     font-size: 24px;
+    box-sizing: border-box;
+    padding: 8px;
 }
 
 .bottom-center {
@@ -241,6 +244,18 @@ header #label-luna {
 
 #enable-javascript {
     font-size: 45px;
+}
+
+@media (max-width: 360px) {
+    .landing-warning, .warning-advice {
+        font-size: 22px;
+    }
+    .landing-warning {
+        top: 60%;
+    }
+    #warning-no-localstorage {
+        top: 55%;
+    }
 }
 
 #warning-mobile-landscape {
@@ -725,6 +740,10 @@ input:-moz-placeholder {
     right: 0;
     bottom: 0;
     height: 100vh;
+}
+
+#bottom-panels-exit {
+    display: none;
 }
 
 .overlay {
