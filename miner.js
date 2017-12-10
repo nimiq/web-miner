@@ -397,37 +397,34 @@ class Miner {
 
 (() => {
     let triedDatabaseReset = false;
-    async function tryResetDatabaseAndInit() {
+    function tryResetDatabaseAndInit() {
         if (triedDatabaseReset) {
             // it didn't work out, the error reappears
             document.getElementById('landingSection').classList.add('warning');
             document.getElementById('warning-general-error').style.display = 'block';
         } else {
-            try {
-                console.warn('Resetting the database.');
-                triedDatabaseReset = true;
-                const jdb = await Nimiq.ConsensusDB.getLight();
+            console.warn('Resetting the database.');
+            triedDatabaseReset = true;
+            Nimiq.ConsensusDB.getLight().then(jdb => {
                 const accounts = jdb.getObjectStore('Accounts');
                 const chain = jdb.getObjectStore('ChainData');
-                await accounts.truncate();
-                await chain.truncate();
-                initNimiq();
-            } catch(e) {
+                return Promise.all([accounts.truncate(), chain.truncate()]);
+            }).then(initNimiq, e => {
                 console.error(e);
                 document.getElementById('landingSection').classList.add('warning');
                 document.getElementById('warning-database-access').style.display = 'block';
-            }
+            });
         }
     }
 
     // Initialize Nimiq Core.
     function initNimiq() {
-        Nimiq.init(async () => {
-            try {
-                document.getElementById('landingSection').classList.remove('warning');
-                document.getElementById('warning-multiple-tabs').style.display = 'none';
-                const $ = {};
-                $.consensus = await Nimiq.Consensus.light();
+        Nimiq.init(() => {
+            document.getElementById('landingSection').classList.remove('warning');
+            document.getElementById('warning-multiple-tabs').style.display = 'none';
+            const $ = {};
+            Promise.all([Nimiq.Consensus.light(), Nimiq.Wallet.getPersistent()]).then(promiseResults => {
+                $.consensus = promiseResults[0];
 
                 // XXX Legacy API
                 $.blockchain = $.consensus.blockchain;
@@ -436,17 +433,17 @@ class Miner {
                 $.network = $.consensus.network;
 
                 // XXX Legacy components
-                $.wallet = await Nimiq.Wallet.getPersistent();
+                $.wallet = promiseResults[1];
                 $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
                 $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
 
                 window.$ = $;
                 window.Miner = new Miner($);
                 window.Wallet = new WalletUI($);
-            } catch(e) {
+            }).catch(e => {
                 console.error(e);
                 tryResetDatabaseAndInit();
-            }
+            });
         }, function(error) {
             document.getElementById('landingSection').classList.add('warning');
             if (error === Nimiq.ERR_WAIT) {
