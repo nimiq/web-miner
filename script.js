@@ -49,7 +49,8 @@ if (!isSupportedBrowser()) {
     document.getElementById('warning-no-localstorage').style.display = 'block';
     _paq.push(['trackEvent', 'Loading', 'no-localstorage']);
 } else {
-    var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner-settings.js', 'miner.js'];
+    var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner-settings.js', 'update-check.js',
+        'miner.js'];
 
     // allow to load staging branch instead
     var nimiq;

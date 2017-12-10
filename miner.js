@@ -124,6 +124,7 @@ class MinerUI {
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
         resumeMinerBtn.onclick = () => miner.toggleMining();
 
+        new UpdateChecker(miner.$.miner);
     }
 
     setState(newState) {

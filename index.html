@@ -2267,12 +2267,14 @@
         <div id="progressContainer">
             <div id="progress" state="connecting"><span class="ellipsis"><span>.</span><span>.</span><span>.</span></span></div>
         </div>
-        <div id="warning-miner-stopped" style="display: none;">
+        <div id="warning-miner-stopped" class="miner-warning">
             Mining is paused. <a href="#" id="resumeMinerBtn">Resume</a>
         </div>
-        <div id="warning-consensus-lost" style="display: none;">
-            You are disconnected from the network. Try to <a href="#" id="reconnectBtn">reconnect</a> or refresh your
-            browser window.
+        <div id="warning-consensus-lost" class="miner-warning">
+            You are disconnected from the network. Try to <a href="#" id="reconnectBtn">reconnect</a> or reload.
+        </div>
+        <div id="warning-update" class="miner-warning">
+            A new version is available. <a href="#" id="warning-update-reload">Reload</a>
         </div>
         <div class="facts">
             <div class="fact">

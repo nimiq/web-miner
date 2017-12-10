@@ -376,33 +376,22 @@ header #label-luna {
     pointer-events: none; /* make the map behind hoverable */
 }
 
-#warning-miner-stopped {
+.miner-warning {
     transition: opacity 1s;
     opacity: 0;
-    font-size: 24px;
+    font-size: 26px;
     padding: 1vh 0;
+    display: none;
+}
+
+.miner-warning a {
+    font-size: inherit;
     pointer-events: all;
-    position: relative;
-    z-index: 5;
 }
 
-#warning-miner-stopped a {
-    font-size: 24px;
-}
-
-#miningSection:not(.synced) #warning-miner-stopped {
+#miningSection:not(.synced) #warning-miner-stopped,
+.update-available .miner-warning:not(#warning-update) {
     display: none !important;
-}
-
-#warning-consensus-lost {
-    transition: opacity 1s;
-    opacity: 0;
-    font-size: 24px;
-    padding: 1vh 0;
-}
-
-#warning-consensus-lost a {
-    font-size: 24px;
 }
 
 .facts {
@@ -619,7 +608,6 @@ header #label-luna {
 
 #progressContainer {
     padding-bottom: 16px;
-    pointer-events: none;
 }
 
 #progress {
@@ -990,9 +978,6 @@ body[overlay="block-detail"] #block-detail {
         padding: 16px;
     }
 
-    #progress {
-        font-size: 20px;
-    }
     #map svg {
         width: 102%;
         /* padding: 8px; */
