@@ -50,7 +50,7 @@ if (!isSupportedBrowser()) {
     _paq.push(['trackEvent', 'Loading', 'no-localstorage']);
 } else {
     var scripts = ['geoip.js', 'map.js', 'wallet.js', 'block-explorer.js', 'miner-settings.js', 'update-check.js',
-        'miner.js'];
+        'miner-main.js'];
 
     // allow to load staging branch instead
     var nimiq;
