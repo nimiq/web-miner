@@ -7,8 +7,7 @@ class MinerSettingsUi extends Panel {
         this._threadSlider = this._el.querySelector('#miner-thread-slider');
         // estimate the maximum number of threads that is useful. We divide navigator.hardwareConcurrency by 2 as this
         // count includes hyperthreads that are not very beneficial for the hashrate.
-        this._threadMax = Math.round(1.5 * (navigator.hardwareConcurrency / 2 || 4));
-        this._threadSlider.setAttribute('max', this._threadMax);
+        this._threadSlider.setAttribute('max', navigator.hardwareConcurrency || 4);
         this._threadSlider.addEventListener('input', // triggered while dragging
             () => this._threadCountLabel.textContent = this._threadSlider.value);
         this._threadSlider.addEventListener('change', // triggered after releasing the slider
