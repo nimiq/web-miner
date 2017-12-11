@@ -237,7 +237,7 @@ class BlockDetailUi {
 		}, 0);
 		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
 		this._totalAmountEl.textContent = totalAmount;
-		this._blockRewardEl.textContent = Nimiq.Policy.satoshisToCoins(Nimiq.Policy.BLOCK_REWARD);
+		this._blockRewardEl.textContent = Nimiq.Policy.satoshisToCoins(Nimiq.Policy.blockRewardAt(block.height)).toFixed(2);
 		this._difficultyEl.textContent = block.difficulty.toFixed(2);
 		let date = new Date(block.timestamp * 1000);
 		this._timestampEl.textContent = this._padNumber(date.getMonth()+1, 2) + '/'

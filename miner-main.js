@@ -8,6 +8,7 @@ class FactsUI {
         this._globalHashrateUnit = document.getElementById('factGlobalHashrateUnit');
         this._myBalance = document.getElementById('factBalance');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
+        this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
         this._miningSection = document.getElementById('miningSection');
@@ -76,6 +77,10 @@ class FactsUI {
 
     set syncProgress(state) {
         this._consensusProgress.setAttribute('state', state);
+    }
+
+    set blockReward(satoshis) {
+        this._blockReward.textContent = Nimiq.Policy.satoshisToCoins(satoshis).toFixed(2);
     }
 
     _setHashrate(hashrate, type) {
@@ -359,6 +364,7 @@ class Miner {
         this.ui.facts.blockHeight = this.$.blockchain.height;
         if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
+            this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
             this.$.accounts.get(this.$.wallet.address)
                 .then(account => this._onBalanceChanged(account));
         }

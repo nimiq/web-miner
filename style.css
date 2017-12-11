@@ -1064,4 +1064,8 @@ body[overlay="block-detail"] #block-detail {
     .overlay-head-col {
         text-align: left;
     }
+
+    .hide-mobile {
+        display: none;
+    }
 }
