@@ -276,8 +276,8 @@ class Miner {
 
     _onConsensusEstablished() {
         _paq.push(['trackEvent', 'Consensus', 'established']);
-        this.$.accounts.getBalance(this.$.wallet.address)
-            .then(balance => this._onBalanceChanged(balance));
+        this.$.accounts.get(this.$.wallet.address)
+            .then(account => this._onBalanceChanged(account));
 
         this.ui.facts.synced = true;
         this._warningConsensusLost.style.display = 'none';
@@ -356,12 +356,11 @@ class Miner {
     }
 
     _onHeadChanged(_, branching) {
-        const height = this.$.blockchain.height;
-        this.ui.facts.blockHeight = height;
+        this.ui.facts.blockHeight = this.$.blockchain.height;
         if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
-            this.$.accounts.getBalance(this.$.wallet.address)
-                .then(balance => this._onBalanceChanged(balance));
+            this.$.accounts.get(this.$.wallet.address)
+                .then(account => this._onBalanceChanged(account));
         }
     }
 
@@ -390,8 +389,9 @@ class Miner {
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
-    _onBalanceChanged(balance) {
-        this.ui.facts.myBalance = balance.value;
+    _onBalanceChanged(account) {
+        account = account || Nimiq.BasicAccount.INITIAL;
+        this.ui.facts.myBalance = account.balance;
     }
 }
 
@@ -423,17 +423,19 @@ class Miner {
             document.getElementById('landingSection').classList.remove('warning');
             document.getElementById('warning-multiple-tabs').style.display = 'none';
             const $ = {};
-            Promise.all([Nimiq.Consensus.light(), Nimiq.Wallet.getPersistent()]).then(promiseResults => {
-                $.consensus = promiseResults[0];
 
+            Nimiq.Consensus.light().then(consensus => {
+                $.consensus = consensus;
                 // XXX Legacy API
                 $.blockchain = $.consensus.blockchain;
                 $.accounts = $.blockchain.accounts;
                 $.mempool = $.consensus.mempool;
                 $.network = $.consensus.network;
 
+                return Nimiq.Wallet.getPersistent();
+            }).then(wallet => {
                 // XXX Legacy components
-                $.wallet = promiseResults[1];
+                $.wallet = wallet;
                 $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
                 $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
 

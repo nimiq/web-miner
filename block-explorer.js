@@ -281,8 +281,8 @@ class BlockDetailUi {
 				let recipient = document.createElement('p');
 				let value = document.createElement('p');
 				value.classList.add('is-currency');
-				transaction.getSenderAddr().then(address => sender.textContent=address.toUserFriendlyAddress().toUpperCase());
-				recipient.textContent = transaction.recipientAddr.toUserFriendlyAddress().toUpperCase();
+				sender.textContent=transaction.sender.toUserFriendlyAddress().toUpperCase();
+				recipient.textContent = transaction.recipient.toUserFriendlyAddress().toUpperCase();
 				value.textContent = Nimiq.Policy.satoshisToCoins(transaction.value).toFixed(2);
 				entry.appendChild(sender);
 				entry.appendChild(recipient);
