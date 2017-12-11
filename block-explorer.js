@@ -304,7 +304,10 @@ class BlockDetailUi {
 		if (block) {
 			this.block = block;
 		}
-		this._previousOverlay = document.body.getAttribute('overlay');
+		const previousOverlay = document.body.getAttribute('overlay');
+		if (previousOverlay !== 'block-detail') {
+            this._previousOverlay = previousOverlay;
+		}
 		document.body.setAttribute('overlay', 'block-detail');
 	}
 

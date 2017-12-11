@@ -60,7 +60,10 @@ class WalletUI {
     }
 
     show() {
-        this._previousOverlay = document.body.getAttribute('overlay');
+        const previousOverlay = document.body.getAttribute('overlay');
+        if (previousOverlay !== 'wallet') {
+            this._previousOverlay = previousOverlay;
+        }
         document.body.setAttribute('overlay', 'wallet');
     }
 
