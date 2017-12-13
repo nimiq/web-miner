@@ -285,6 +285,7 @@ class Miner {
             .then(account => this._onBalanceChanged(account));
 
         this.ui.facts.synced = true;
+        this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
         this._warningConsensusLost.style.display = 'none';
 
         if (!this.paused) {
