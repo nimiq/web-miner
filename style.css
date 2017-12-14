@@ -9,6 +9,7 @@ body {
     font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: fixed; /* avoid scrolling on iPhone */
 }
 
 body > * {
@@ -246,15 +247,15 @@ header #label-luna {
     font-size: 45px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 375px) {
     .landing-warning, .warning-advice {
         font-size: 22px;
     }
     .landing-warning {
-        top: 60%;
+        top: 57%;
     }
     #warning-no-localstorage {
-        top: 55%;
+        top: 52%;
     }
 }
 
@@ -711,11 +712,12 @@ input:-moz-placeholder {
 
 .miner-container {
     transition: filter .3s ease;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .overlay-root {
