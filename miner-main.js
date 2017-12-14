@@ -8,6 +8,7 @@ class FactsUI {
         this._globalHashrateUnit = document.getElementById('factGlobalHashrateUnit');
         this._myBalance = document.getElementById('factBalance');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
+        this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
         this._miningSection = document.getElementById('miningSection');
@@ -76,6 +77,10 @@ class FactsUI {
 
     set syncProgress(state) {
         this._consensusProgress.setAttribute('state', state);
+    }
+
+    set blockReward(satoshis) {
+        this._blockReward.textContent = Nimiq.Policy.satoshisToCoins(satoshis).toFixed(2);
     }
 
     _setHashrate(hashrate, type) {
@@ -276,10 +281,11 @@ class Miner {
 
     _onConsensusEstablished() {
         _paq.push(['trackEvent', 'Consensus', 'established']);
-        this.$.accounts.getBalance(this.$.wallet.address)
-            .then(balance => this._onBalanceChanged(balance));
+        this.$.accounts.get(this.$.wallet.address)
+            .then(account => this._onBalanceChanged(account));
 
         this.ui.facts.synced = true;
+        this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
         this._warningConsensusLost.style.display = 'none';
 
         if (!this.paused) {
@@ -356,12 +362,12 @@ class Miner {
     }
 
     _onHeadChanged(_, branching) {
-        const height = this.$.blockchain.height;
-        this.ui.facts.blockHeight = height;
+        this.ui.facts.blockHeight = this.$.blockchain.height;
         if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
-            this.$.accounts.getBalance(this.$.wallet.address)
-                .then(balance => this._onBalanceChanged(balance));
+            this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
+            this.$.accounts.get(this.$.wallet.address)
+                .then(account => this._onBalanceChanged(account));
         }
     }
 
@@ -390,8 +396,9 @@ class Miner {
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
-    _onBalanceChanged(balance) {
-        this.ui.facts.myBalance = balance.value;
+    _onBalanceChanged(account) {
+        account = account || Nimiq.BasicAccount.INITIAL;
+        this.ui.facts.myBalance = account.balance;
     }
 }
 
@@ -423,17 +430,19 @@ class Miner {
             document.getElementById('landingSection').classList.remove('warning');
             document.getElementById('warning-multiple-tabs').style.display = 'none';
             const $ = {};
-            Promise.all([Nimiq.Consensus.light(), Nimiq.Wallet.getPersistent()]).then(promiseResults => {
-                $.consensus = promiseResults[0];
 
+            Nimiq.Consensus.light().then(consensus => {
+                $.consensus = consensus;
                 // XXX Legacy API
                 $.blockchain = $.consensus.blockchain;
                 $.accounts = $.blockchain.accounts;
                 $.mempool = $.consensus.mempool;
                 $.network = $.consensus.network;
 
+                return Nimiq.Wallet.getPersistent();
+            }).then(wallet => {
                 // XXX Legacy components
-                $.wallet = promiseResults[1];
+                $.wallet = wallet;
                 $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
                 $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
 

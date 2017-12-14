@@ -38,8 +38,11 @@ class WalletUI {
         });
 
         this._updateBalance();
+        $.consensus.on('established', () => {
+            this._updateBalance();
+        });
         $.blockchain.on('head-changed', (head, branching) => {
-            if (!branching) {
+            if (this.$.consensus.established && !branching) {
                 this._updateBalance();
             }
         });
@@ -92,8 +95,8 @@ class WalletUI {
     _isAmountValid() {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
-        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey);
-        return satoshis >=1 && this._balance.value >= satoshis + waitingTransactions.map(t => t.value + t.fee).reduce((a, b) => a + b, 0);
+        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey.toAddressSync());
+        return satoshis >=1 && this._account.balance >= satoshis + waitingTransactions.map(t => t.value + t.fee).reduce((a, b) => a + b, 0);
     }
 
     _validateAmount() {
@@ -102,21 +105,21 @@ class WalletUI {
     }
 
     _checkEnableSendTxBtn() {
-        this._sendTxBtn.disabled = !this._isAccountAddressValid() || !this._isAmountValid();
+        this._sendTxBtn.disabled = !this._isAccountAddressValid() || !this._isAmountValid() || !this.$.consensus.established;
     }
 
     _updateBalance() {
-        $.accounts.getBalance($.wallet.address).then(balance => this._onBalanceChanged(balance));
+        this.$.accounts.get(this.$.wallet.address).then(account => this._onBalanceChanged(account));
     }
 
-    _onBalanceChanged(balance) {
-        this._balance = balance;
-        $$('#wallet-balance').innerText = Nimiq.Policy.satoshisToCoins(balance.value).toFixed(2);
+    _onBalanceChanged(account) {
+        this._account = account || Nimiq.BasicAccount.INITIAL;
+        $$('#wallet-balance').innerText = Nimiq.Policy.satoshisToCoins(this._account.balance).toFixed(2);
         this._validateAmount();
     }
 
     _onTxReceived(tx) {
-        if (!this.$.wallet.address.equals(tx.recipientAddr)) return;
+        if (!this.$.wallet.address.equals(tx.recipient)) return;
 
         if (this._receivingTx) {
             if (this._receivingInterval) {
@@ -127,7 +130,7 @@ class WalletUI {
             $$('#receivingElapsed').innerText = '0:00';
         }
 
-        tx.getSenderAddr().then(sender => $$('#receivingSender').innerText = sender.toUserFriendlyAddress());
+        $$('#receivingSender').innerText = tx.sender.toUserFriendlyAddress();
         $$('#receivingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
         $$('#receivingFee').innerText = Nimiq.Policy.satoshisToCoins(tx.fee).toFixed(2);
 
@@ -177,11 +180,8 @@ class WalletUI {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
 
-        this.$.accounts.getBalance(this.$.wallet.address)
-            .then(balance => {
-                const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey);
-                return this.$.wallet.createTransaction(address, satoshis, 0, balance.nonce + waitingTransactions.length)
-            })
+        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey.toAddressSync());
+        this.$.wallet.createTransaction(address, satoshis, 0, this._account.nonce + waitingTransactions.length)
             .then(tx => {
                 this.$.mempool.pushTransaction(tx).then(result => {
                     if (!result) {
@@ -207,7 +207,7 @@ class WalletUI {
             $$('#pendingElapsed').innerText = '0:00';
         }
 
-        $$('#pendingReceiver').innerText = tx.recipientAddr.toUserFriendlyAddress();
+        $$('#pendingReceiver').innerText = tx.recipient.toUserFriendlyAddress();
         $$('#pendingAmount').innerText = Nimiq.Policy.satoshisToCoins(tx.value).toFixed(2);
 
         this._pendingInterval = setInterval(() => {
