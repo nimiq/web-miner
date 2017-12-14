@@ -1,7 +1,8 @@
 #block-explorer {
   overflow: auto;
   display: none;
-    height: 60vh;
+  height: 60vh;
+  -webkit-overflow-scrolling: touch;
 }
 
 #blocks-overview {
@@ -111,6 +112,7 @@
 #block-detail {
   overflow: auto;
   align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
 }
 
 #block-detail .overlay-container {
