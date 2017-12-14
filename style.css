@@ -9,7 +9,12 @@ body {
     font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    position: fixed; /* avoid scrolling on iPhone */
+}
+
+_::-webkit-full-page-media, _:future, :root .safari-position-fixed {
+    /* style hack that only applies on safari */
+    position: fixed; /* avoid scrolling on iPhone. On Android we don't want this to keep the "swipe down to reload"
+    gesture functional. */
 }
 
 body > * {
