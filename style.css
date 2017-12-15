@@ -262,6 +262,12 @@ header #label-luna {
     #warning-no-localstorage {
         top: 52%;
     }
+    #progress {
+        font-size: 24px;
+    }
+    .miner-warning {
+        font-size: 22px;
+    }
 }
 
 #warning-mobile-landscape {
@@ -467,6 +473,11 @@ header #label-luna {
 @media (max-width: 359px) {
     #rewardInfoAmount {
         display: none;
+    }
+}
+@media (max-width: 700px) {
+    #rewardInfo {
+        top: -8px;
     }
 }
 
@@ -779,6 +790,11 @@ input:-moz-placeholder {
     box-sizing: border-box;
     padding: 24px;
     position: relative;
+    pointer-events: none;
+}
+
+.overlay-container > * {
+    pointer-events: all;
 }
 
 .overlay p, h1, h2, h3, ul {
