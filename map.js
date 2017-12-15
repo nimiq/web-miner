@@ -276,7 +276,9 @@ class MapUI {
         this._mapElem = document.querySelector('#map svg');
         this._map = new HexagonMap(this._mapElem);
         this.$ = $;
-        this._polled = Nimiq.PeerAddresses.SEED_PEERS;
+        this._polledPeers = new Nimiq.HashSet(peer => this._getPeerHost(peer));
+        this._polledPeersToDisplay = [];
+        this._polledPeerDisplayIntervall = null;
         this._connectedPeers = new Nimiq.HashMap();
         this._knownPeers = new Nimiq.HashMap();
         this._cellCountKnown = new CellCounter();
@@ -293,7 +295,22 @@ class MapUI {
 
     fadeIn() {
         this._mapElem.style.opacity = 1;
-        setInterval(this._pollPeers.bind(this), MapUI.REFRESH_INTERVAL);
+        this._polledPeers.addAll(Nimiq.PeerAddresses.SEED_PEERS
+            .concat(this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC,
+                Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL))
+            .filter(peerAddress => !!this._getPeerHost(peerAddress)));
+        this._polledPeersToDisplay = this._polledPeers.values();
+        this.$.network._addresses.on('added', peers => {
+            for (const peer of peers) {
+                const hostOrIp = this._getPeerHost(peer);
+                if (hostOrIp && !this._polledPeers.contains(peer)) {
+                    this._polledPeers.add(peer);
+                    this._polledPeersToDisplay.push(peer);
+                }
+            }
+            this._displayPolledPeers();
+        });
+        this._displayPolledPeers();
     }
 
     _mapHighlight(e) {
@@ -306,10 +323,11 @@ class MapUI {
     }
 
     _getPeerHost(peer) {
-        if (peer.peerAddress.protocol === Nimiq.Protocol.WS) {
-            return peer.peerAddress.host;
-        } else if (peer.netAddress && !peer.netAddress.isPrivate()) {
-            return peer.netAddress.ip;
+        const peerAddress = peer.peerAddress || peer;
+        if (peerAddress.protocol === Nimiq.Protocol.WS) {
+            return peerAddress.host;
+        } else if (peerAddress.netAddress && !peerAddress.netAddress.isPrivate()) {
+            return peerAddress.netAddress.ip;
         } else {
             return null;
         }
@@ -423,18 +441,19 @@ class MapUI {
         }
     }
 
-    _pollPeers() {
-        if (this._polled.length === 0) {
-            this._polled = this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC, Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL);
-            // Limit to 100 addresses.
-            this._polled = this._polled.slice(0, 100);
+    _displayPolledPeers() {
+        if (this._polledPeersToDisplay.length === 0) {
+            window.clearInterval(this._polledPeerDisplayIntervall);
+            this._polledPeerDisplayIntervall = null;
+            return;
         }
-        if (this._polled.length > 0) {
-            var peerAddress = this._polled.shift();
-            var host = peerAddress.host || peerAddress.netAddress && !peerAddress.netAddress.isPrivate() && peerAddress.netAddress.ip;
-            if (host) {
-                GeoIP.retrieve(response => this._highlightKnownPeer(peerAddress.protocol, host, response), host);
-            }
+        const peer = this._polledPeersToDisplay.shift(); // remove the entry from the _polledPeersToDisplay list but not
+        // from the HashSet _polledPeers to avoid that a new draw gets triggered when added again
+        const hostOrIp = this._getPeerHost(peer);
+        GeoIP.retrieve(response => this._highlightKnownPeer(peer.protocol, hostOrIp, response), hostOrIp);
+        if (this._polledPeerDisplayIntervall === null) {
+            this._polledPeerDisplayIntervall = window.setInterval(() => this._displayPolledPeers(),
+                MapUI.REFRESH_INTERVAL);
         }
     }
 }
