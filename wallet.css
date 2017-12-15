@@ -71,6 +71,12 @@ p#wallet-balance.is-currency:before {
   border-bottom: 1px solid #CDD2DA;
 }
 
+@media (max-height: 535px) {
+  .wallet-tabbar {
+    display: none;
+  }
+}
+
 .wallet-tab {
   position: relative;
   color: rgba(3,32,71,.3);
