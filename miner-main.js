@@ -83,6 +83,14 @@ class FactsUI {
         this._blockReward.textContent = Nimiq.Policy.satoshisToCoins(satoshis).toFixed(2);
     }
 
+    set disconnected(disconnected) {
+        if (disconnected) {
+            this._miningSection.classList.add('disconnected');
+        } else {
+            this._miningSection.classList.remove('disconnected');
+        }
+    }
+
     _setHashrate(hashrate, type) {
         let steps = ['k', 'M', 'G', 'T', 'P', 'E']; // kilo, mega, giga, tera, peta, exa
         let prefix = '';
@@ -352,12 +360,15 @@ class Miner {
                     this._warningMinerStopped.offsetWidth; // enforce style update
                     this._warningMinerStopped.style.opacity = 1;
                 }
+
+                this.ui.facts.disconnected = false;
             }
         } else {
             this._warningMinerStopped.style.display = 'none';
             this._warningConsensusLost.style.display = 'block';
             this._warningConsensusLost.offsetWidth; // enforce style update
             this._warningConsensusLost.style.opacity = 1;
+            this.ui.facts.disconnected = true;
         }
     }
 

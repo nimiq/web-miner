@@ -11,7 +11,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-_::-webkit-full-page-media, _:future, :root .safari-position-fixed {
+_::-webkit-full-page-media, _:future, :root.safari-position-fixed, :root .safari-position-fixed {
     /* style hack that only applies on safari */
     position: fixed; /* avoid scrolling on iPhone. On Android we don't want this to keep the "swipe down to reload"
     gesture functional. */
@@ -396,6 +396,7 @@ header #label-luna {
 }
 
 #miningSection:not(.synced) #warning-miner-stopped,
+.disconnected #progressContainer,
 .update-available .miner-warning:not(#warning-update) {
     display: none !important;
 }
