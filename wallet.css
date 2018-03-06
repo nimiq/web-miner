@@ -407,15 +407,13 @@ p#wallet-balance.is-currency:before {
   }
 }
 
-@media (max-width: 850px) and (min-width: 751px) {
+@media (max-width: 900px) and (min-width: 811px) {
   #wallet-account {
     margin-right: 32px;
   }
 
-  #wallet.transaction-pending .wallet-sidebar-container {
-    width: 250px;
-  }
-
+  #wallet.transaction-pending .wallet-sidebar-container,
+  #wallet.transaction-received .wallet-sidebar-container,
   .wallet-sidebar {
     width: 250px;
   }
@@ -437,7 +435,7 @@ p#wallet-balance.is-currency:before {
   }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 810px) {
 
   .wallet-sidebar-container {
     display: none;
