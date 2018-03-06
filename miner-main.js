@@ -423,11 +423,7 @@ class Miner {
         } else {
             console.warn('Resetting the database.');
             triedDatabaseReset = true;
-            Nimiq.ConsensusDB.getLight().then(jdb => {
-                const accounts = jdb.getObjectStore('Accounts');
-                const chain = jdb.getObjectStore('ChainData');
-                return Promise.all([accounts.truncate(), chain.truncate()]);
-            }).then(initNimiq, e => {
+            deleteDb('light-consensus').then(initNimiq, e => {
                 console.error(e);
                 document.getElementById('landingSection').classList.add('warning');
                 document.getElementById('warning-database-access').style.display = 'block';

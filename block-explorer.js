@@ -1,8 +1,5 @@
 class BlockExplorerUi extends Panel {
-	// TODO improve performance by disabling the timers when hidden. Or even not update the list at all
-	// and then update on demand
-
-    constructor(el, blockchain) {
+	constructor(el, blockchain) {
     	super(BlockExplorerUi.ID, el);
     	this._el = el;
         this._blockchain = blockchain;
@@ -33,6 +30,7 @@ class BlockExplorerUi extends Panel {
     }
 
     _onHeadChanged(head) {
+		this._removeForkEntries(head);
     	// add an entry at the beginning of the list
     	let entry;
     	if (this._entries.length < BlockExplorerUi.MAX_COUNT) {
@@ -44,6 +42,19 @@ class BlockExplorerUi extends Panel {
     	}
     	this._entries.splice(0, 0, entry);
     	this._blockListEl.insertBefore(entry.element, this._blockListEl.firstChild);
+    }
+
+    _removeForkEntries(head) {
+        // remove all block entries with block.height >= head.height for the case that we switched to a fork
+        for (let i = 0; i<this._entries.length; ++i) {
+			const entry = this._entries[i];
+			if (entry.block.height < head.height) break;
+			// remove the old fork entry
+			this._entries.splice(i, 1);
+			this._blockListEl.removeChild(entry.element);
+			i--;
+        }
+
     }
 
     show(fade = true) {
