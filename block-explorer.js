@@ -230,7 +230,8 @@ class BlockDetailUi {
 
 	set block(block) {
 		this._blockNumberEl.textContent = '#' + block.height;
-		block.hash().then(hash => this._blockHashEl.textContent = hash.toHex());
+		const hash = block.hash();
+		this._blockHashEl.textContent = hash.toHex();
 		this._transactionCountEl.textContent = block.transactionCount;
 		let totalAmount = block.transactions.reduce(function(sum, transaction) {
 			return sum + transaction.value + transaction.fee;

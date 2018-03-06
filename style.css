@@ -641,13 +641,13 @@ header #label-luna {
     content: "Synchronizing";
 }
 #progress[state="sync-chain-proof"]:before {
-    content: "Downloading chain";
+    content: "Fetching chain";
 }
 #progress[state="verify-chain-proof"]:before {
     content: "Verifying chain";
 }
 #progress[state="sync-accounts-tree"]:before {
-    content: "Downloading accounts";
+    content: "Fetching accounts";
 }
 #progress[state="verify-accounts-tree"]:before {
     content: "Verifying accounts";
@@ -1080,6 +1080,12 @@ body[overlay="block-detail"] #block-detail {
     }
 }
 
+@media (max-width: 380px) {
+    .hide-mobile {
+        display: none;
+    }
+}
+
 @media (max-width: 360px) {
     .overlay-head {
         display: block;
@@ -1087,9 +1093,5 @@ body[overlay="block-detail"] #block-detail {
 
     .overlay-head-col {
         text-align: left;
-    }
-
-    .hide-mobile {
-        display: none;
     }
 }

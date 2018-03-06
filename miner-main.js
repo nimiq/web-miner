@@ -80,7 +80,7 @@ class FactsUI {
     }
 
     set blockReward(satoshis) {
-        this._blockReward.textContent = Nimiq.Policy.satoshisToCoins(satoshis).toFixed(2);
+        this._blockReward.textContent = Math.floor(Nimiq.Policy.satoshisToCoins(satoshis));
     }
 
     set disconnected(disconnected) {
@@ -435,6 +435,95 @@ class Miner {
         }
     }
 
+    function openDb(dbName) {
+        return new Promise(resolve => {
+            const request = indexedDB.open(dbName);
+            request.onsuccess = () => {
+                // database exists
+                resolve(request.result);
+            };
+            request.onerror = () => {
+                resolve(null);
+            };
+            request.onupgradeneeded = e => {
+                // the database doesn't exist
+                e.target.transaction.abort(); // abort to prevent creation of the database
+                resolve(null);
+            };
+        });
+    }
+
+    function deleteDb(dbName) {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.deleteDatabase(dbName);
+            request.onerror = reject;
+            request.onsuccess = resolve;
+        });
+    }
+
+    function getOldLunaWallet(db) {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction('keys');
+            const objectStore = transaction.objectStore('keys');
+            const request = objectStore.get('keys');
+            request.onerror = reject;
+            request.onsuccess = () => {
+                const keyPairBytes = request.result;
+                const wallet = Nimiq.Wallet.loadPlain(keyPairBytes);
+                resolve(wallet);
+            };
+        });
+    }
+
+    function createWalletStore(wallet) {
+        let walletStore;
+        return new Nimiq.WalletStore()
+            .then(wS => walletStore = wS)
+            .then(() => walletStore.put(wallet))
+            .then(() => walletStore.hasDefault())
+            .then(hasDefault => {
+                if (hasDefault) return;
+                return walletStore.setDefault(wallet.address);
+            })
+            .then(() => walletStore.close());
+    }
+
+    function upgradeLunaWalletDb() {
+        // upgrade the old wallet store that only holds one keypair to the new one that holds multiple keypairs
+        const dbName = 'wallet';
+        return openDb(dbName).then(db => {
+            // check whether we have the object stores 'wallets' and 'multisig-wallets' of the new wallet store format
+            const requiresUpgrade = db !== null && (!db.objectStoreNames.contains('wallets')
+                || !db.objectStoreNames.contains('multisig-wallets'));
+            if (!requiresUpgrade) {
+                if (db !== null) db.close();
+                return;
+            }
+            // move wallet from old database
+            let wallet;
+            return getOldLunaWallet(db)
+                .then(wlt => wallet = wlt)
+                .then(() => {
+                    db.close();
+                    // delete old database to be able to replace it with the new one
+                    return deleteDb(dbName);
+                })
+                .then(() => createWalletStore(wallet)); // create new database
+        });
+    }
+
+    function getWallet() {
+        // TODO remove before mainnet as only relevant for Luna update
+        let wallet, walletStore;
+        return upgradeLunaWalletDb()
+            .then(() => new Nimiq.WalletStore())
+            .then(ws => walletStore = ws)
+            .then(() => walletStore.getDefault())
+            .then(wlt => wallet = wlt)
+            .then(() => walletStore.close())
+            .then(() => wallet);
+    }
+
     // Initialize Nimiq Core.
     function initNimiq() {
         Nimiq.init(() => {
@@ -450,11 +539,11 @@ class Miner {
                 $.mempool = $.consensus.mempool;
                 $.network = $.consensus.network;
 
-                return Nimiq.Wallet.getPersistent();
+                return getWallet();
             }).then(wallet => {
                 // XXX Legacy components
                 $.wallet = wallet;
-                $.miner = new Nimiq.Miner($.blockchain, $.mempool, $.wallet.address);
+                $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address);
                 $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
 
                 window.$ = $;

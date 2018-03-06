@@ -95,8 +95,8 @@ class WalletUI {
     _isAmountValid() {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
-        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey.toAddressSync());
-        return satoshis >=1 && this._account.balance >= satoshis + waitingTransactions.map(t => t.value + t.fee).reduce((a, b) => a + b, 0);
+        const pendingTransactions = $.mempool.getPendingTransactions(this.$.wallet.publicKey.toAddress());
+        return satoshis >=1 && this._account.balance >= satoshis + pendingTransactions.map(t => t.value + t.fee).reduce((a, b) => a + b, 0);
     }
 
     _validateAmount() {
@@ -146,19 +146,17 @@ class WalletUI {
 
     _onTxsProcessed() {
         if (this._pendingTx) {
-            this._pendingTx.hash().then(hash => {
-                if (!this.$.mempool.getTransaction(hash)) {
-                    this._pendingTransactionConfirmed();
-                }
-            });
+            const hash = this._pendingTx.hash();
+            if (!this.$.mempool.getTransaction(hash)) {
+                this._pendingTransactionConfirmed();
+            }
         }
 
         if (this._receivingTx) {
-            this._receivingTx.hash().then(hash => {
-                if (!this.$.mempool.getTransaction(hash)) {
-                    this._receivingTransactionConfirmed();
-                }
-            });
+            const hash = this._receivingTx.hash();
+            if (!this.$.mempool.getTransaction(hash)) {
+                this._receivingTransactionConfirmed();
+            }
         }
     }
 
@@ -180,17 +178,14 @@ class WalletUI {
         const amount = parseFloat(this._amountInput.value);
         const satoshis = Nimiq.Policy.coinsToSatoshis(amount);
 
-        const waitingTransactions = $.mempool.getWaitingTransactions(this.$.wallet.publicKey.toAddressSync());
-        this.$.wallet.createTransaction(address, satoshis, 0, this._account.nonce + waitingTransactions.length)
-            .then(tx => {
-                this.$.mempool.pushTransaction(tx).then(result => {
-                    if (!result) {
-                        alert('Sending the transaction failed. Please try again later.');
-                    } else {
-                        this._transactionPending(tx);
-                    }
-                });
-            });
+        const tx = this.$.wallet.createTransaction(address, satoshis, 0, this.$.blockchain.height);
+        this.$.mempool.pushTransaction(tx).then(returnCode => {
+            if (returnCode < 0) {
+                alert('Sending the transaction failed. Please try again later.');
+            } else {
+                this._transactionPending(tx);
+            }
+        });
     }
 
     _transactionPending(tx) {

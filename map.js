@@ -295,7 +295,7 @@ class MapUI {
 
     fadeIn() {
         this._mapElem.style.opacity = 1;
-        this._polledPeers.addAll(Nimiq.PeerAddresses.SEED_PEERS
+        this._polledPeers.addAll(Nimiq.PeerAddressBook.SEED_PEERS
             .concat(this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC,
                 Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL))
             .filter(peerAddress => !!this._getPeerHost(peerAddress)));
