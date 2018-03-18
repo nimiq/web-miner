@@ -414,6 +414,7 @@ class Miner {
 }
 
 (() => {
+    // TODO client side database resetting will not be needed anymore in main net, remove
     let triedDatabaseReset = false;
     function tryResetDatabaseAndInit() {
         if (triedDatabaseReset) {
@@ -421,9 +422,9 @@ class Miner {
             document.getElementById('landingSection').classList.add('warning');
             document.getElementById('warning-general-error').style.display = 'block';
         } else {
-            console.warn('Resetting the database.');
+            console.log('Resetting the database.');
             triedDatabaseReset = true;
-            deleteDb('light-consensus').then(initNimiq, e => {
+            deleteDb('test-light-consensus').then(initNimiq, e => { // todo change to main
                 console.error(e);
                 document.getElementById('landingSection').classList.add('warning');
                 document.getElementById('warning-database-access').style.display = 'block';
@@ -527,6 +528,12 @@ class Miner {
             document.getElementById('warning-multiple-tabs').style.display = 'none';
             const $ = {};
 
+            try {
+                Nimiq.GenesisConfig.test(); // TODO change to main net
+            } catch(e) {
+                // If throwed because of double initialization after database reset, ignore
+                if (!triedDatabaseReset) throw e;
+            }
             Nimiq.Consensus.light().then(consensus => {
                 $.consensus = consensus;
                 // XXX Legacy API
