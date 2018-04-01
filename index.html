@@ -2358,124 +2358,6 @@
     </div>
 </div>
 
-<!-- Wallet -->
-
-<div id="wallet" class="overlay-root hide-mobile-landscape safari-position-fixed">
-    <div class="overlay-container">
-        <div class="overlay">
-            <div class="overlay-head">
-                <div class="overlay-head-col left" id="wallet-account">
-                    <p class="label small">Account</p>
-                    <p class="small address uppercase wallet-account-data"></p>
-                </div>
-                <div class="overlay-head-col right">
-                    <p class="label small">Balance</p>
-                    <p id="wallet-balance" class="is-currency">00000.00</p>
-                </div>
-            </div>
-            <div class="wallet-tabbar">
-                <div class="wallet-tab active">Transfer To</div>
-            </div>
-            <div class="wallet-actions">
-                <div id="wallet-transfer">
-                    <div id="wallet-account-input">
-                        <input required placeholder="Paste an Account Number" />
-                    </div>
-                    <div id="wallet-amount-input">
-                        <input required placeholder="0.00" />
-                    </div>
-                </div>
-                <button class="wallet-submit-button" disabled>
-                    <span>Send Transaction</span>
-                </button>
-            </div>
-        </div>
-        <div class="wallet-sidebar-container">
-            <div class="wallet-sidebar transaction-pending left">
-                <h2>
-                    Your Transaction is on the way.
-                </h2>
-                <div class="wallet-sidebar-details">
-                    <div class="wallet-sidebar-confirmation">
-                        <div class="wallet-sidebar-confirmation-loader"></div>
-                        <h3>Waiting for confirmation</h3>
-                        <div class="wallet-sidebar-row">
-                            <div class="wallet-sidebar-detail">
-                                <div class="label">Elapsed</div>
-                                <p id="pendingElapsed">0:00</p>
-                            </div>
-                            <div class="wallet-sidebar-detail">
-                                <div class="label">Estimated</div>
-                                <p estimated-time>1:00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="wallet-sidebar-row">
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Receiver</div>
-                            <p id="pendingReceiver" class="uppercase"></p>
-                        </div>
-                    </div>
-                    <div class="wallet-sidebar-row">
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Value</div>
-                            <p class="is-currency" id="pendingAmount">0.00</p>
-                        </div>
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Fee</div>
-                            <p class="is-currency">0.00</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="wallet-sidebar transaction-received left">
-                <button class="wallet-sidebar-leave">
-                    <img class="wallet-sidebar-back" src="images/arrow_back.svg" />
-                    <img class="wallet-sidebar-close" src="images/close.svg" />
-                </button>
-                <h2>
-                    You received a transaction.
-                </h2>
-                <div class="wallet-sidebar-details">
-                    <div class="wallet-sidebar-confirmation">
-                        <div class="wallet-sidebar-confirmation-loader"></div>
-                        <h3>Waiting for confirmation</h3>
-                        <div class="wallet-sidebar-row">
-                            <div class="wallet-sidebar-detail">
-                                <div class="label">Elapsed</div>
-                                <p id="receivingElapsed">0:00</p>
-                            </div>
-                            <div class="wallet-sidebar-detail">
-                                <div class="label">Estimated</div>
-                                <p estimated-time>1:00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="wallet-sidebar-row">
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Sender</div>
-                            <p id="receivingSender" class="uppercase"></p>
-                        </div>
-                    </div>
-                    <div class="wallet-sidebar-row">
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Value</div>
-                            <p class="is-currency" id="receivingAmount">0.00</p>
-                        </div>
-                        <div class="wallet-sidebar-detail">
-                            <div class="label">Fee</div>
-                            <p class="is-currency" id="receivingFee">0.00</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button class="overlay-close" id="wallet-close">
-        <img src="images/close.svg" />
-    </button>
-</div>
-
 <!-- Block Detail -->
 
 <div id="block-detail" class="overlay-root hide-mobile-landscape">
@@ -2569,7 +2451,6 @@
 <script src="nimik.js"></script>
 <script src="script.js"></script>
 <script src="bottom-panels.js"></script>
-<link href="wallet.css" rel="stylesheet">
 <link href="blockexplorer.css" rel="stylesheet">
 <link href="miner-settings.css" rel="stylesheet">
 </body>

@@ -529,7 +529,7 @@ class Miner {
             const $ = {};
 
             try {
-                Nimiq.GenesisConfig.test(); // TODO change to main net
+                Nimiq.GenesisConfig.bounty(); // TODO change to main net
             } catch(e) {
                 // If throwed because of double initialization after database reset, ignore
                 if (!triedDatabaseReset) throw e;
@@ -551,7 +551,6 @@ class Miner {
 
                 window.$ = $;
                 window.Miner = new Miner($);
-                window.Wallet = new WalletUI($);
             }).catch(e => {
                 console.error(e);
                 tryResetDatabaseAndInit();

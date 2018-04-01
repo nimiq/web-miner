@@ -911,18 +911,12 @@ body[overlay="bottom-panels"] #map {
     filter: blur(10px);
 }
 
-body[overlay="wallet"] .miner-container,
 body[overlay="block-detail"] .miner-container {
     filter: blur(10px);
 }
 
-body[overlay="wallet"].mobile-landscape .miner-container,
 body[overlay="block-detail"].mobile-landscape .miner-container {
     filter: none;
-}
-
-body[overlay="wallet"] #wallet {
-    display: flex;
 }
 
 body[overlay="block-detail"] #block-detail {
