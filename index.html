@@ -2138,10 +2138,6 @@
                 <polygon points="1078.75,353.5 1074.33,353.5 1072.11,357.33 1074.33,361.17 1078.75,361.17 1080.97,357.33      " />
             </svg>
         </div>
-        <!--<div class="node-label">
-            <h3>192.168.1.116 / Berlin</h3>
-            <p>Available Browser</p>
-        </div>-->
     </div>
     <header id="header">
         <div class="logo">
@@ -2233,6 +2229,12 @@
                             stroke-dasharray="16.666 84.666" />
                 </g>
             </svg>
+            <div id="create-wallet-prompt">
+                <h2>Generate an account to start mining.</h2>
+                <div class="button" id="createAccountButton">
+                    Generate
+                </div>
+            </div>
             <div class="button" id="connectBtn">
                 Connect to Network
             </div>
@@ -2317,7 +2319,7 @@
                 </div>
                 <div class="separator"></div>
             </div>
-            <div id="factBalanceContainer" class="fact">
+            <a href="#" target="_blank" id="factBalanceContainer" class="fact">
                 <div id="factBalanceContainerInner">
                     <div class="label">
                         <span>Open Wallet</span>
@@ -2330,7 +2332,7 @@
                     </span>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div id="bottom-panels">
@@ -2446,9 +2448,8 @@
     </button>
 </div>
 
-
-<script src="clipboard.min.js"></script>
-<script src="nimik.js"></script>
+<script src="browser-warning.js"></script>
+<script src="keyguard-client.js"></script>
 <script src="script.js"></script>
 <script src="bottom-panels.js"></script>
 <link href="blockexplorer.css" rel="stylesheet">

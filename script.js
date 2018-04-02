@@ -1,88 +1,203 @@
-'use strict';
-var _paq = _paq || [];
-
-function isSupportedBrowser() {
-    if (typeof Symbol === "undefined") return false;
-    try {
-        eval("class Foo {}");
-        eval("var bar = (x) => x+1");
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
-
-function hasLocalStorage() {
-    // taken from MDN
-    try {
-        var storage = window['localStorage'],
-            x = '__storage_test__';
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    } catch(e) {
-        // return false if the error is a QuotaExceededError and the storage length is 0.
-        // If the length is > 0 then we really just exceed the storage limit.
-        // If another exception is thrown then probably localStorage is undefined.
-        return e instanceof DOMException && (
-            // everything except Firefox
-            e.code === 22 ||
-            // Firefox
-            e.code === 1014 ||
-            // test name field too, because code might not be present
-            // everything except Firefox
-            e.name === 'QuotaExceededError' ||
-            // Firefox
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            // acknowledge QuotaExceededError only if there's something already stored
-            storage.length !== 0;
-    }
-}
-
-if (!isSupportedBrowser()) {
-    document.getElementById('landingSection').classList.add('warning');
-    document.getElementById('warning-old-browser').style.display = 'block';
-    _paq.push(['trackEvent', 'Loading', 'old-browser']);
-} else if (!hasLocalStorage()) {
-    // no local storage. This is for example the case in private browsing in Safari and Android Browser
-    document.getElementById('landingSection').classList.add('warning');
-    document.getElementById('warning-no-localstorage').style.display = 'block';
-    _paq.push(['trackEvent', 'Loading', 'no-localstorage']);
-} else {
-    var scripts = ['geoip.js', 'map.js', 'block-explorer.js', 'miner-settings.js', 'update-check.js',
-        'miner-main.js'];
-
-    // allow to load staging branch instead
-    var nimiq;
-    if (window.location.hash === '#local') {
-        nimiq = '/core/dist/nimiq.js';
-    } else if (window.location.hash === '#staging') {
-        nimiq = 'https://cdn.nimiq-network.com/staging/nimiq.js';
-    } else {
-        nimiq = 'https://cdn.nimiq.com/core/nimiq.js';
+class MinerPolicy {
+    constructor() {
+        this.name = 'SafePolicy'; // TODO when serving from localhost use 'SafePolicy'
     }
 
-    window.nimiq_loaded = false;
-    var head = document.getElementsByTagName('head')[0];
+    equals(otherPolicy) {
+        return otherPolicy && this.name === otherPolicy.name;
+    }
 
-    var ret = function() {
-        // Load main script.
-        if (!window.nimiq_loaded) {
-            window.nimiq_loaded = true;
-            _paq.push(['trackEvent', 'Loading', 'success']);
-            for (var i = 0; i < scripts.length; ++i) {
-                var script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = scripts[i];
-                head.appendChild(script);
-            }
+    serialize() {
+        const serialized = {};
+
+        for (const prop in this)
+            if (!(this[prop] instanceof Function)) serialized[prop] = this[prop];
+
+        return serialized;
+    }
+
+    allows(method, args, state) {
+        switch (method) {
+            case 'list':
+            case 'createWallet':
+            case 'getDefaultAccount':
+                return true;
+            default:
+                throw new Error(`Unhandled method: ${method}`);
         }
     }
 
-    var script = document.createElement('script');
-    script.onreadystatechange = ret;
-    script.onload = ret;
-    script.type = 'text/javascript';
-    script.src = nimiq;
-    head.appendChild(script);
+    needsUi(method, args, state) {
+        switch (method) {
+            case 'list':
+            case 'getDefaultAccount':
+                return false;
+            case 'createWallet':
+                return true;
+            default:
+                throw new Error(`Unhandled method: ${method}`);
+        }
+    }
 }
+
+
+
+class App {
+    constructor() {
+        this.$loadingSpinner = document.querySelector('#initialLoadingSpinner');
+        this.$walletPromptUi = document.querySelector('#create-wallet-prompt');
+        this.$createAccountButton = document.querySelector('#createAccountButton');
+        this.$createAccountButton.addEventListener('click', () => this._createWallet());
+
+        return this._launch();
+    }
+
+    async getDefaultAccount() {
+        return this._keyGuardClient.getDefaultAccount();
+    }
+
+    async _launch() {
+        this._keyGuardClient = await KeyguardClient.create(App.SECURE_ORIGIN,
+            new MinerPolicy(), () => {});
+        const defaultAccount = await this.getDefaultAccount();
+        if (defaultAccount) {
+            await this._launchMiner();
+        } else {
+            this._promptWalletCreation();
+        }
+    }
+
+    _promptWalletCreation() {
+        this.$loadingSpinner.style.display = 'none';
+        this.$walletPromptUi.style.display = 'block';
+    }
+
+    async _createWallet() {
+        // needs to be called by a user interaction to open keyguard popup window
+        await this._keyGuardClient.createWallet();
+        const defaultAccount = await this.getDefaultAccount();
+        if (!defaultAccount) return; // User cancelled wallet creation. Keep the prompt open.
+        this.$walletPromptUi.style.display = 'none';
+        await this._launchMiner();
+    }
+
+    async _loadScript(src) {
+        return new Promise(resolve => {
+            const script = document.createElement('script');
+            script.onload = () => {
+                script.onload = null;
+                resolve();
+            };
+            script.type = 'text/javascript';
+            script.src = src;
+            document.body.appendChild(script);
+        });
+    }
+
+    async _resetDatabase() {
+        console.log('Resetting the database.');
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.deleteDatabase(`${App.NETWORK}-light-consensus`);
+            request.onerror = () => reject(App.ERROR_DATABASE_ACCESS);
+            request.onsuccess = resolve;
+        });
+    }
+
+    async _initNimiqInstance(tryDatabaseReset = true) {
+        return new Promise((resolve, reject) => {
+            Nimiq.init(async () => {
+                try {
+                    document.getElementById('landingSection').classList.remove('warning');
+                    document.getElementById('warning-multiple-tabs').style.display = 'none';
+
+                    let genesisInitialized;
+                    try {
+                        genesisInitialized = !!Nimiq.GenesisConfig.NETWORK_NAME;
+                    } catch(e) {
+                        genesisInitialized = false;
+                    }
+                    if (!genesisInitialized) {
+                        Nimiq.GenesisConfig[App.NETWORK]();
+                    }
+
+                    const $ = {};
+                    $.consensus = await Nimiq.Consensus.light();
+                    // XXX Legacy API
+                    $.blockchain = $.consensus.blockchain;
+                    $.accounts = $.blockchain.accounts;
+                    $.mempool = $.consensus.mempool;
+                    $.network = $.consensus.network;
+                    $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getDefaultAccount()).address);
+                    $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.address);
+                    $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
+                    window.$ = $;
+                    resolve($);
+                } catch(e) {
+                    reject(e);
+                }
+            }, function (error) {
+                document.getElementById('landingSection').classList.add('warning');
+                if (error === Nimiq.ERR_WAIT) {
+                    document.getElementById('warning-multiple-tabs').style.display = 'block';
+                } else if (error === Nimiq.ERR_UNSUPPORTED) {
+                    reject(App.ERROR_OLD_BROWSER);
+                } else {
+                    reject(App.ERROR_UNKNOWN_INITIALIZATION_ERROR);
+                }
+            });
+        }).catch(async e => {
+            console.error(e);
+            if (tryDatabaseReset) {
+                await this._resetDatabase();
+                return this._initNimiqInstance(false);
+            } else {
+                throw e;
+            }
+        });
+    }
+
+    async _launchMiner() {
+        this.$loadingSpinner.style.display = 'block';
+        await this._loadScript(App.NIMIQ_PATH);
+        _paq.push(['trackEvent', 'Loading', 'success']);
+        let $;
+        try {
+            $ = (await Promise.all([
+                this._initNimiqInstance(),
+                // load scripts that depend on Nimiq script
+                this._loadScript('geoip.js'),
+                this._loadScript('map.js'),
+                this._loadScript('block-explorer.js'),
+                this._loadScript('miner-settings.js'),
+                this._loadScript('update-check.js'),
+                this._loadScript('miner-main.js')
+            ]))[0];
+        } catch(e) {
+            console.error(e);
+            document.getElementById('landingSection').classList.add('warning');
+            if (e === App.ERROR_OLD_BROWSER) {
+                document.getElementById('warning-old-browser').style.display = 'block';
+            } else if (e === App.ERROR_DATABASE_ACCESS) {
+                document.getElementById('warning-database-access').style.display = 'block';
+            } else {
+                document.getElementById('warning-general-error').style.display = 'block';
+            }
+            return;
+        }
+        window.miner = new Miner($);
+    }
+}
+App.SECURE_ORIGIN = window.location.origin === 'https://miner.nimiq.com'? 'https://secure.nimiq.com/index-list-only.html'
+    : window.location.origin === 'https://miner.nimiq-testnet.com'? 'https://secure.nimiq-testnet.com/index-list-only.html'
+        : `${location.origin}/libraries/keyguard/src/index-list-only.html`;
+App.NIMIQ_PATH = window.location.hash === '#local'? '/dist/nimiq.js'
+    : (window.location.hash === '#staging'? 'https://cdn.nimiq-network.com/staging/nimiq.js'
+        : 'https://cdn.nimiq.com/core/nimiq.js');
+App.NETWORK = window.location.origin === 'https://miner.nimiq-testnet.com'? 'test'
+    : window.location.origin.indexOf('localhost') !== -1 ? 'dev'
+        : 'main';
+App.ERROR_OLD_BROWSER = 'old browser';
+App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';
+App.ERROR_DATABASE_ACCESS = 'error database reset failed';
+
+window.app = new App();

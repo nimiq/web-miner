@@ -30,6 +30,9 @@ p, a, h1, h2, h3 {
     padding: 0;
 }
 
+iframe[name="keyguard"] {
+    display: none;
+}
 
 /* map styling */
 
@@ -300,7 +303,7 @@ header #label-luna {
     position: absolute;
     left: 16px;
     right: 16px;
-    height: 166px;
+    height: 185px;
     top: 50%;
     transition: opacity 1s;
     margin-top: -124px;
@@ -361,9 +364,13 @@ header #label-luna {
     display: none;
 }
 
-#connectBtn {
+#create-wallet-prompt {
     display: none;
     animation: 700ms fade-in 700ms both;
+}
+
+#connectBtn,
+#createAccountButton {
     letter-spacing: 0;
     font-weight: 600;
     background: #F6AE2D;
@@ -371,9 +378,20 @@ header #label-luna {
     transition: background .2s ease;
 }
 
-#connectBtn:hover {
+#connectBtn:hover,
+#createAccountButton:hover {
     background: #E69E1D;
     color: white;
+}
+
+#createAccountButton {
+    margin-bottom: 0;
+    margin-top: 16px;
+}
+
+#connectBtn {
+    display: none;
+    animation: 700ms fade-in 700ms both;
 }
 
 #miningSection {

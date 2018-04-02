@@ -7,6 +7,7 @@ class FactsUI {
         this._globalHashrate = document.getElementById('factGlobalHashrate');
         this._globalHashrateUnit = document.getElementById('factGlobalHashrateUnit');
         this._myBalance = document.getElementById('factBalance');
+        this._myBalanceContainer = document.getElementById('factBalanceContainer');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
@@ -56,6 +57,13 @@ class FactsUI {
 
     set myBalance(balance) {
         this._myBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
+    }
+
+    set address(address) {
+        const safeUrl = window.location.origin === 'https://miner.nimiq.com'? 'https://safe.nimiq.com/'
+            : window.location.origin === 'https://miner.nimiq-testnet.com'? 'https://safe.nimiq-testnet.com/'
+                : `${location.origin}/apps/safe/src/`;
+        this._myBalanceContainer.href = `${safeUrl}#/_account/${address.toUserFriendlyAddress().replace(/ /g, '-')}_`;
     }
 
     set synced(isSynced) {
@@ -216,6 +224,7 @@ class Miner {
 
         this.ui = new MinerUI(this);
         this.ui.enableConnectButton();
+        this.ui.facts.address = $.address;
         this._hadConsensusBefore = false;
 
         this.map = new MapUI($);
@@ -289,7 +298,7 @@ class Miner {
 
     _onConsensusEstablished() {
         _paq.push(['trackEvent', 'Consensus', 'established']);
-        this.$.accounts.get(this.$.wallet.address)
+        this.$.accounts.get(this.$.address)
             .then(account => this._onBalanceChanged(account));
 
         this.ui.facts.synced = true;
@@ -377,7 +386,7 @@ class Miner {
         if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
             this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
-            this.$.accounts.get(this.$.wallet.address)
+            this.$.accounts.get(this.$.address)
                 .then(account => this._onBalanceChanged(account));
         }
     }
@@ -412,163 +421,6 @@ class Miner {
         this.ui.facts.myBalance = account.balance;
     }
 }
-
-(() => {
-    // TODO client side database resetting will not be needed anymore in main net, remove
-    let triedDatabaseReset = false;
-    function tryResetDatabaseAndInit() {
-        if (triedDatabaseReset) {
-            // it didn't work out, the error reappears
-            document.getElementById('landingSection').classList.add('warning');
-            document.getElementById('warning-general-error').style.display = 'block';
-        } else {
-            console.log('Resetting the database.');
-            triedDatabaseReset = true;
-            deleteDb('test-light-consensus').then(initNimiq, e => { // todo change to main
-                console.error(e);
-                document.getElementById('landingSection').classList.add('warning');
-                document.getElementById('warning-database-access').style.display = 'block';
-            });
-        }
-    }
-
-    function openDb(dbName) {
-        return new Promise(resolve => {
-            const request = indexedDB.open(dbName);
-            request.onsuccess = () => {
-                // database exists
-                resolve(request.result);
-            };
-            request.onerror = () => {
-                resolve(null);
-            };
-            request.onupgradeneeded = e => {
-                // the database doesn't exist
-                e.target.transaction.abort(); // abort to prevent creation of the database
-                resolve(null);
-            };
-        });
-    }
-
-    function deleteDb(dbName) {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.deleteDatabase(dbName);
-            request.onerror = reject;
-            request.onsuccess = resolve;
-        });
-    }
-
-    function getOldLunaWallet(db) {
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction('keys');
-            const objectStore = transaction.objectStore('keys');
-            const request = objectStore.get('keys');
-            request.onerror = reject;
-            request.onsuccess = () => {
-                const keyPairBytes = request.result;
-                const wallet = Nimiq.Wallet.loadPlain(keyPairBytes);
-                resolve(wallet);
-            };
-        });
-    }
-
-    function createWalletStore(wallet) {
-        let walletStore;
-        return new Nimiq.WalletStore()
-            .then(wS => walletStore = wS)
-            .then(() => walletStore.put(wallet))
-            .then(() => walletStore.hasDefault())
-            .then(hasDefault => {
-                if (hasDefault) return;
-                return walletStore.setDefault(wallet.address);
-            })
-            .then(() => walletStore.close());
-    }
-
-    function upgradeLunaWalletDb() {
-        // upgrade the old wallet store that only holds one keypair to the new one that holds multiple keypairs
-        const dbName = 'wallet';
-        return openDb(dbName).then(db => {
-            // check whether we have the object stores 'wallets' and 'multisig-wallets' of the new wallet store format
-            const requiresUpgrade = db !== null && (!db.objectStoreNames.contains('wallets')
-                || !db.objectStoreNames.contains('multisig-wallets'));
-            if (!requiresUpgrade) {
-                if (db !== null) db.close();
-                return;
-            }
-            // move wallet from old database
-            let wallet;
-            return getOldLunaWallet(db)
-                .then(wlt => wallet = wlt)
-                .then(() => {
-                    db.close();
-                    // delete old database to be able to replace it with the new one
-                    return deleteDb(dbName);
-                })
-                .then(() => createWalletStore(wallet)); // create new database
-        });
-    }
-
-    function getWallet() {
-        // TODO remove before mainnet as only relevant for Luna update
-        let wallet, walletStore;
-        return upgradeLunaWalletDb()
-            .then(() => new Nimiq.WalletStore())
-            .then(ws => walletStore = ws)
-            .then(() => walletStore.getDefault())
-            .then(wlt => wallet = wlt)
-            .then(() => walletStore.close())
-            .then(() => wallet);
-    }
-
-    // Initialize Nimiq Core.
-    function initNimiq() {
-        Nimiq.init(() => {
-            document.getElementById('landingSection').classList.remove('warning');
-            document.getElementById('warning-multiple-tabs').style.display = 'none';
-            const $ = {};
-
-            try {
-                Nimiq.GenesisConfig.bounty(); // TODO change to main net
-            } catch(e) {
-                // If throwed because of double initialization after database reset, ignore
-                if (!triedDatabaseReset) throw e;
-            }
-            Nimiq.Consensus.light().then(consensus => {
-                $.consensus = consensus;
-                // XXX Legacy API
-                $.blockchain = $.consensus.blockchain;
-                $.accounts = $.blockchain.accounts;
-                $.mempool = $.consensus.mempool;
-                $.network = $.consensus.network;
-
-                return getWallet();
-            }).then(wallet => {
-                // XXX Legacy components
-                $.wallet = wallet;
-                $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.wallet.address);
-                $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
-
-                window.$ = $;
-                window.Miner = new Miner($);
-            }).catch(e => {
-                console.error(e);
-                tryResetDatabaseAndInit();
-            });
-        }, function(error) {
-            document.getElementById('landingSection').classList.add('warning');
-            if (error === Nimiq.ERR_WAIT) {
-                document.getElementById('warning-multiple-tabs').style.display = 'block';
-            } else if (error === Nimiq.ERR_UNSUPPORTED) {
-                document.getElementById('warning-old-browser').style.display = 'block';
-            } else {
-                tryResetDatabaseAndInit();
-            }
-        });
-    }
-
-    initNimiq();
-})();
 
 function checkScreenOrientation() {
     // we check the screen dimensions instead of innerWidth/innerHeight for correct behaviour when the keyboard
