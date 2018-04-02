@@ -326,29 +326,49 @@ header #label-luna {
 }
 
 #disclaimer {
+    justify-content: center;
+    align-items: center;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+    animation: 1s fade-in both;
+}
+
+#disclaimer-modal {
+    max-width: 800px;
+    padding: 32px;
+    margin: 8px;
+    box-sizing: border-box;
+}
+
+#disclaimer-modal p {
+    margin: 8px 0;
+}
+
+#disclaimer:target {
+    display: flex;
+}
+
+#disclaimer-link {
 	position: fixed !important;
 	bottom: 16px !important;
 	width: 100%;
-	color: rgba(255, 255, 255, 0.7);
 	padding: 0 8px;
 	box-sizing: border-box;
 	animation: 1s fade-in 1s both;
 }
 
-@media screen and (max-width: 900px) {
-    #disclaimer-new-line {
-        display: none;
-    }
+#disclaimer-link a {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 @media screen and (min-width: 650px) {
-    #disclaimer {
+    #disclaimer-link {
         font-size: 20px;
     }
 }
 
 #copyright {
-    margin-top: 32px;
+    margin-top: 16px;
     color: rgba(255, 255, 255, 0.4);
 }
 
@@ -360,7 +380,7 @@ header #label-luna {
 }
 
 .warning #initialLoadingSpinner,
-.warning #disclaimer {
+.warning #disclaimer-link {
     display: none;
 }
 

@@ -187,8 +187,8 @@ class App {
         window.miner = new Miner($);
     }
 }
-App.SECURE_ORIGIN = window.location.origin === 'https://miner.nimiq.com'? 'https://secure.nimiq.com/index-list-only.html'
-    : window.location.origin === 'https://miner.nimiq-testnet.com'? 'https://secure.nimiq-testnet.com/index-list-only.html'
+App.SECURE_ORIGIN = window.location.origin === 'https://miner.nimiq.com'? 'https://keyguard.nimiq.com/index-list-only.html'
+    : window.location.origin === 'https://miner.nimiq-testnet.com'? 'https://keyguard.nimiq-testnet.com/index-list-only.html'
         : `${location.origin}/libraries/keyguard/src/index-list-only.html`;
 App.NIMIQ_PATH = window.location.hash === '#local'? '/dist/nimiq.js'
     : (window.location.hash === '#staging'? 'https://cdn.nimiq-network.com/staging/nimiq.js'
