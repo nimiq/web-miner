@@ -1,6 +1,8 @@
 class MinerPolicy {
     constructor() {
-        this.name = 'SafePolicy'; // TODO when serving from localhost use 'SafePolicy'
+        this.name = window.location.origin.indexOf('localhost')!==-1
+            ? 'SafePolicy' // for localhost choose SafePolicy as this is the policy that the keyguard chooses
+            : this.constructor.name;
     }
 
     equals(otherPolicy) {

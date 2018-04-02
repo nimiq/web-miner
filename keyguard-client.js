@@ -574,7 +574,8 @@ class KeyguardClient {
         console.log('Got policy:', grantedPolicy);
 
         if (!assumedPolicy.equals(grantedPolicy)) {
-            if (!await this.publicApi.authorize(assumedPolicy)) {
+            const authorized = await this.publicApi.authorize(assumedPolicy);
+            if (!authorized) {
                 throw new Error('Authorization failed.');
             }
         }
