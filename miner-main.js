@@ -128,11 +128,6 @@ class MinerUI {
     constructor(miner) {
         this.miner = miner;
 
-        this._loadingSpinner = document.querySelector('#initialLoadingSpinner');
-
-        this._connectBtn = document.querySelector('#connectBtn');
-        this._connectBtn.onclick = () => miner.connect();
-
         this._toggleMinerBtn = document.querySelector('#toggleMinerBtn');
         this._toggleMinerBtn.onclick = () => miner.toggleMining();
 
@@ -167,13 +162,6 @@ class MinerUI {
                 }, 1000);
             }
         }, this);
-    }
-
-    enableConnectButton() {
-        // we won't need the spinner anymore
-        this._loadingSpinner.parentElement.removeChild(this._loadingSpinner);
-        this._loadingSpinner = null;
-        this._connectBtn.style.display = 'inline-block';
     }
 
     minerStopped() {
@@ -223,7 +211,6 @@ class Miner {
         this.$ = $;
 
         this.ui = new MinerUI(this);
-        this.ui.enableConnectButton();
         this.ui.facts.address = $.address;
         this._hadConsensusBefore = false;
 

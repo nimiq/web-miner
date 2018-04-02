@@ -47,7 +47,9 @@ class App {
         this.$loadingSpinner = document.querySelector('#initialLoadingSpinner');
         this.$walletPromptUi = document.querySelector('#create-wallet-prompt');
         this.$createAccountButton = document.querySelector('#createAccountButton');
-        this.$createAccountButton.addEventListener('click', () => this._createWallet());
+        this.$createAccountButton.addEventListener('click', () => this._createAccount());
+        this.$connectButton = document.querySelector('#connectBtn');
+        this.$connectButton.addEventListener('click', () => this._miner.connect());
 
         return this._launch();
     }
@@ -61,24 +63,26 @@ class App {
             new MinerPolicy(), () => {});
         const defaultAccount = await this.getDefaultAccount();
         if (defaultAccount) {
-            await this._launchMiner();
+            await this._initMiner();
+            this._showConnectButton();
         } else {
-            this._promptWalletCreation();
+            this._showAccountCreationPrompt();
         }
     }
 
-    _promptWalletCreation() {
+    _showAccountCreationPrompt() {
         this.$loadingSpinner.style.display = 'none';
         this.$walletPromptUi.style.display = 'block';
     }
 
-    async _createWallet() {
+    async _createAccount() {
         // needs to be called by a user interaction to open keyguard popup window
         await this._keyGuardClient.createWallet();
         const defaultAccount = await this.getDefaultAccount();
         if (!defaultAccount) return; // User cancelled wallet creation. Keep the prompt open.
         this.$walletPromptUi.style.display = 'none';
-        await this._launchMiner();
+        await this._initMiner();
+        this._miner.connect();
     }
 
     async _loadScript(src) {
@@ -156,7 +160,7 @@ class App {
         });
     }
 
-    async _launchMiner() {
+    async _initMiner() {
         this.$loadingSpinner.style.display = 'block';
         await this._loadScript(App.NIMIQ_PATH);
         _paq.push(['trackEvent', 'Loading', 'success']);
@@ -182,9 +186,16 @@ class App {
             } else {
                 document.getElementById('warning-general-error').style.display = 'block';
             }
-            return;
+            throw e;
         }
-        window.miner = new Miner($);
+        // we won't need the spinner anymore
+        this.$loadingSpinner.parentElement.removeChild(this.$loadingSpinner);
+        this.$loadingSpinner = null;
+        this._miner = new Miner($);
+    }
+
+    _showConnectButton() {
+        this.$connectButton.style.display = 'inline-block';
     }
 }
 App.SECURE_ORIGIN = window.location.origin === 'https://miner.nimiq.com'? 'https://keyguard.nimiq.com/index-list-only.html'
