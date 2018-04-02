@@ -43,7 +43,7 @@ class BottomPanels {
         this._el = el;
         this._panels = new Map(); // map id -> panel
         this._triggers = new Map(); // map id -> triggers
-        this._rewardInfo = this._el.querySelector('#rewardInfo');
+        this._bottomInfo = this._el.querySelector('#bottomInfo');
         this._exitArea = document.querySelector('#bottom-panels-exit');
         this._exitArea.addEventListener('click', () => this.hide());
         this._exitArea.style.display = 'none';
@@ -83,8 +83,8 @@ class BottomPanels {
         if (this._hightlightedTrigger) {
             this._hightlightedTrigger.classList.add('highlighted');
         }
-        this._rewardInfo.style.visibility = 'hidden';
-        this._rewardInfo.style.pointerEvents = 'none';
+        this._bottomInfo.style.visibility = 'hidden';
+        this._bottomInfo.style.pointerEvents = 'none';
         this._hidden = false;
         const height = panel.element.offsetHeight + 'px';
         this._container.style.transform = 'translateY(-' + height + ')';
@@ -104,8 +104,8 @@ class BottomPanels {
         clearTimeout(this._hideTimeout);
         this._hideTimeout = setTimeout(() => {
             this._hidden = true;
-            this._rewardInfo.style.visibility = 'visible';
-            this._rewardInfo.style.pointerEvents = 'all';
+            this._bottomInfo.style.visibility = 'visible';
+            this._bottomInfo.style.pointerEvents = 'all';
             this._currentPanel.hide(false);
             // set the transform again, just in case there was a resize that overwrote it
             this._container.style.transform = 'translateY(-' + BottomPanels.ALWAYS_VISIBLE_HEIGHT + ')';
@@ -119,5 +119,5 @@ class BottomPanels {
         }
     }
 }
-BottomPanels.ALWAYS_VISIBLE_HEIGHT = '32px'; // upper part of the bottom panels where the reward info is visible when
+BottomPanels.ALWAYS_VISIBLE_HEIGHT = '45px'; // upper part of the bottom panels where the bottom info is visible when
 // no panel is shown

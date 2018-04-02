@@ -17,13 +17,13 @@
     <meta property="og:image" content="https://nimiq.com/static/sharing/facebook.png" />
     <meta property="og:url" content="https://nimiq.com/" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Nimiq Testnet Luna" />
+    <meta property="og:title" content="Nimiq Testnet RC" />
     <meta property="og:description" content="The Browser-based Blockchain &amp; Ecosystem." />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
     <link href="nimiq.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <title>Nimiq Testnet Luna</title>
+    <title>Nimiq Testnet RC</title>
 </head>
 
 <body class="safari-position-fixed">
@@ -2144,7 +2144,7 @@
             <svg fill="#F6AE2D" xmlns="http://www.w3.org/2000/svg" width="34" height="30">
                 <path d="M25.2 1H8.8l-8 14 8 14h16.4l8-14-8-14zm-6.7 22V26H16v-2.6c-1.5 0-3.3-.8-4.5-2l1.7-2.4c1.3 1 2.4 1.5 3.6 1.5 1.4 0 2-.6 2-1.7 0-2.6-6.7-2.6-6.7-7 0-2.6 1.6-4.3 4-4.8V4.2h2.5v2.6c1.6.2 2.8 1 3.8 2l-2 2.2c-.8-1-1.6-1.3-2.7-1.3-1.2 0-2 .5-2 1.6.2 2.4 7 2.2 7 7 0 2.4-1.5 4.3-4 4.8z" />
             </svg>
-            <span class="uppercase">Nimiq Testnet <span id="label-luna">Luna</span></span>
+            <span class="uppercase">Nimiq Testnet <span id="label-luna">RC</span></span>
         </div>
         <div class="menu">
             <a href="https://github.com/nimiq-network" target="nimiqgithub" class="github">GitHub</a>
@@ -2156,7 +2156,7 @@
         <style type="text/css">
             #landing-description,
             #initialLoadingSpinner,
-            #disclaimer-link {
+            #landing-disclaimer {
                 display: none;
             }
 
@@ -2230,17 +2230,21 @@
                 </g>
             </svg>
             <div id="create-wallet-prompt">
-                <h2>Generate an account to start mining.</h2>
+                <h2>To start mining create a wallet.</h2>
                 <div class="button" id="createAccountButton">
-                    Generate
+                    Let's Go
                 </div>
             </div>
             <div class="button" id="connectBtn">
                 Connect to Network
             </div>
         </div>
-        <div id="disclaimer-link">
+        <div id="landing-disclaimer">
             <a href="#disclaimer" class="uppercase">Disclaimer</a>
+            <p class="show-testnet"><b>You are using to the Nimiq Testnet. Testnet Mining does not create permanent Nimiq.</b>
+                <br>The Testnet and your Testnet Nimiq balance may be reset at any time.
+                <br>Note that mining on mobile devices drains your battery.
+                <br><a href="#disclaimer">See complete Disclaimer.</a></p>
             <div id="copyright">&copy; 2017-2018 Nimiq Foundation</div>
         </div>
     </div>
@@ -2331,7 +2335,7 @@
         </div>
 
         <div id="bottom-panels">
-            <div id="rewardInfo">
+            <div id="bottomInfo">
                 <span id="rewardInfoAmount">
                     The block <span class="hide-mobile">mining</span> reward is
                     <b><span id="factBlockReward">x</span> Nimiq</b>.
@@ -2339,6 +2343,8 @@
                 At your current hashrate you can expect to mine a block every
                 <b id="factExpectedHashTime">x hours</b>.
                 <a href="#" id="toggleMinerBtn">Pause Mining</a>
+                <br>
+                <a href="#disclaimer">Disclaimer</a>
             </div>
 
             <!-- Blocks Explorer -->
@@ -2446,10 +2452,15 @@
 <!-- Disclaimer -->
 <a id="disclaimer" href="#" class="overlay-root">
     <div id="disclaimer-modal" class="overlay">
+        <p class="show-testnet"><strong>You are using to the Nimiq Testnet. Testnet Mining does not create permanent Nimiq.</strong><br>The Testnet and your Testnet Nimiq balance may be reset at any time.<br></p>
+
         <p>Always backup your recovery words, passphrase, pin and keys. Please note that safe.nimiq.com, keyguard.nimiq.com &amp; miner.nimiq.com are not "web wallets". <strong>You do not create an account or give us your funds to hold onto.</strong> You hold your keys. We only make it easy for you, through a browser, to create, save, and access your information and interact with the blockchain.</p>
 
         <p>We are not responsible for any loss. Nimiq, safe.nimiq.com, keyguard.nimiq.com &amp; miner.nimiq.com, and some of the underlying libraries are under active development. While we thoroughly test, there is always the possibility something unexpected happens that causes your funds to be lost. Please do not place more than you are willing to lose, and please be careful.</p>
 
+        <p>Note that mining on mobile devices drains your battery. Expected mining times constitute an estimate, no guarantee for a mining reward.</p>
+
+        <br>
         <p><strong>MIT License &mdash; Copyright &copy; 2018 Nimiq Foundation</strong></p>
 
         <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>

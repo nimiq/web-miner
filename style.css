@@ -34,6 +34,10 @@ iframe[name="keyguard"] {
     display: none;
 }
 
+body:not([network="test"]) .show-testnet {
+    display: none;
+}
+
 /* map styling */
 
 #map {
@@ -331,12 +335,14 @@ header #label-luna {
     outline: none !important;
     -webkit-tap-highlight-color: transparent;
     animation: 1s fade-in both;
+    padding: 16px 8px;
+    overflow: auto;
 }
 
 #disclaimer-modal {
     max-width: 800px;
     padding: 32px;
-    margin: 8px;
+    margin: auto;
     box-sizing: border-box;
 }
 
@@ -348,7 +354,7 @@ header #label-luna {
     display: flex;
 }
 
-#disclaimer-link {
+#landing-disclaimer {
 	position: fixed !important;
 	bottom: 16px !important;
 	width: 100%;
@@ -357,12 +363,17 @@ header #label-luna {
 	animation: 1s fade-in 1s both;
 }
 
-#disclaimer-link a {
+#landing-disclaimer a {
     color: rgba(255, 255, 255, 0.7);
+    font-size: inherit;
+}
+
+#landing-disclaimer a:not(.uppercase) {
+    text-decoration: underline;
 }
 
 @media screen and (min-width: 650px) {
-    #disclaimer-link {
+    #landing-disclaimer {
         font-size: 20px;
     }
 }
@@ -380,7 +391,7 @@ header #label-luna {
 }
 
 .warning #initialLoadingSpinner,
-.warning #disclaimer-link {
+.warning #landing-disclaimer {
     display: none;
 }
 
@@ -494,7 +505,7 @@ header #label-luna {
     height: 23px;
 }
 
-#rewardInfo {
+#bottomInfo {
     position: absolute;
     top: -4px;
     width: 100%;
@@ -514,19 +525,19 @@ header #label-luna {
     }
 }
 @media (max-width: 700px) {
-    #rewardInfo {
+    #bottomInfo {
         top: -8px;
     }
 }
 
-#rewardInfo a {
+#bottomInfo a {
     color: inherit;
     font-size: 12px;
     text-decoration: underline;
     white-space: nowrap;
 }
 
-#rewardInfo a:hover {
+#bottomInfo a:hover {
     color: white;
 }
 
@@ -704,7 +715,7 @@ header #label-luna {
     animation: 1s fade-in 0.5s reverse forwards, 1s fade-in 1.5s normal forwards, 1s fade-in 4s reverse forwards;
 }
 
-.synced #rewardInfo {
+.synced #bottomInfo {
     /* wait 5 seconds until fading in because this is when we get the first hashrate value */
     animation: 1s fade-in 5s normal forwards;
 }
@@ -1027,7 +1038,7 @@ body[overlay="block-detail"] #block-detail {
         min-height: 15px;
         line-height: 15px;
     }
-    #rewardInfo a {
+    #bottomInfo a {
         padding: 1px;
     }
     header {

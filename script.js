@@ -44,6 +44,7 @@ class MinerPolicy {
 
 class App {
     constructor() {
+        document.body.setAttribute('network', App.NETWORK);
         this.$loadingSpinner = document.querySelector('#initialLoadingSpinner');
         this.$walletPromptUi = document.querySelector('#create-wallet-prompt');
         this.$createAccountButton = document.querySelector('#createAccountButton');
