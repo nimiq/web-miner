@@ -44,6 +44,11 @@ header .logo .uppercase {
     line-height: 1;
 }
 
+header .logo a {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
 header #label-luna {
     font-size: 20px;
     font-weight: bold;

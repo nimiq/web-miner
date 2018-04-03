@@ -11,6 +11,7 @@ class BlockExplorerUi extends Panel {
     }
 
     _createBlockEntry(block) {
+		if (block.isLight()) return null;
     	let entry = new BlockEntry();
     	entry.block = block;
     	entry.addClickListener(entry => this._blockDetailUi.show(entry.block));
@@ -23,8 +24,10 @@ class BlockExplorerUi extends Panel {
     	}
     	// create an entry at the end of the list
     	let entry = this._createBlockEntry(currentBlock);
-    	this._entries.push(entry);
-    	this._blockListEl.appendChild(entry.element);
+    	if (entry) {
+            this._entries.push(entry);
+            this._blockListEl.appendChild(entry.element);
+		}
     	// get the predecessor
     	this._blockchain.getBlock(currentBlock.prevHash).then(prevBlock => this._fillList(prevBlock));
     }
