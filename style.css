@@ -1,7 +1,7 @@
 html,
 body {
     background-color: #042146;
-    background: linear-gradient(#3523ae,#1c0446);
+    background: linear-gradient(30deg, #3023AE, #9C58CB);
     overflow: hidden;
     color: rgba(255, 255, 255, 0.88);
     text-align: center;
@@ -129,7 +129,7 @@ body:not([network="test"]) .show-testnet {
 
 .known-peer {
     display: block !important;
-    fill: #7d6739;
+    fill: rgb(202, 133, 36);
     -webkit-animation: connected 1800ms ease 1;
     animation: connected 1800ms ease 1;
 }
@@ -594,6 +594,10 @@ header #label-luna {
     justify-content: center;
     padding: 0;
     pointer-events: all;
+}
+
+#factBalance {
+    color: white;
 }
 
 /* Balance Hover */

@@ -327,7 +327,7 @@ class MapUI {
         if (peerAddress.protocol === Nimiq.Protocol.WS) {
             return peerAddress.host;
         } else if (peerAddress.netAddress && !peerAddress.netAddress.isPrivate()) {
-            return peerAddress.netAddress.ip;
+            return peerAddress.netAddress.toString();
         } else {
             return null;
         }
