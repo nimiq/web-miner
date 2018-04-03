@@ -23,7 +23,6 @@ header {
     box-sizing: border-box;
     z-index: 1;
     font-weight: 600;
-    pointer-events: none;
 }
 
 header .logo {
@@ -43,6 +42,10 @@ header .logo svg {
 header .logo .uppercase {
     font-weight: 700;
     line-height: 1;
+}
+
+header .menu {
+    display: none;
 }
 
 header .menu a {

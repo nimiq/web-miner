@@ -204,12 +204,15 @@ class App {
 App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com/index-list-only.html'
     : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://keyguard.nimiq-testnet.com/index-list-only.html'
         : `${location.origin}/libraries/keyguard/src/index-list-only.html`;
-App.NIMIQ_PATH = window.location.hash === '#local'? '/dist/nimiq.js'
-    : (window.location.hash === '#staging'? 'https://cdn.nimiq-network.com/staging/nimiq.js'
-        : 'https://cdn.nimiq.com/core/nimiq.js');
+
+App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
+    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://cdn.nimiq-testnet.com/nimiq.js'
+        : `/dist/nimiq.js`;
+
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'test'
         : 'dev';
+
 App.ERROR_OLD_BROWSER = 'old browser';
 App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';
 App.ERROR_DATABASE_ACCESS = 'error database reset failed';
