@@ -44,6 +44,12 @@ header .logo .uppercase {
     line-height: 1;
 }
 
+header #label-luna {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: -20px;
+}
+
 header .menu {
     display: none;
 }
@@ -231,8 +237,16 @@ footer a {
         margin-right: 12px;
     }
 
-    header .menu a{
-            font-size: 15px;
+    header #label-luna {
+        font-size: 16px;
+    }
+
+    header #center-helper {
+        display: none;
+    }
+
+    header .menu a {
+        font-size: 15px;
     }
 
     header .menu .github{
