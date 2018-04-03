@@ -54,6 +54,10 @@ class App {
         this.$connectButton = document.querySelector('#connectBtn');
         this.$connectButton.addEventListener('click', () => this._miner.connect());
 
+        if (App.NETWORK === 'test') {
+            document.querySelector('#header-link').href = 'https://nimiq-testnet.com';
+        }
+
         return this._launch();
     }
 

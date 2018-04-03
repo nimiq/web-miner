@@ -500,8 +500,7 @@ header #label-luna {
     font-size: 16px;
 }
 
-#miningAnimation,
-#nimiqCoinIcon {
+#miningAnimation {
     height: 23px;
 }
 
@@ -562,6 +561,10 @@ header #label-luna {
     pointer-events: none;
 }
 
+#miner-thread-slider {
+    outline: none !important;
+}
+
 @media (min-width: 850px) {
     .synced #mining-on-block[bottom-panel-trigger] {
         cursor: pointer;
@@ -594,6 +597,7 @@ header #label-luna {
     justify-content: center;
     padding: 0;
     pointer-events: all;
+    outline: none !important;
 }
 
 #factBalance {
