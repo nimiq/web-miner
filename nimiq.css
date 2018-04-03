@@ -30,7 +30,7 @@ header .logo {
     align-items: center;
     color: white;
     /*width: 168px;*/
-    font-size: 18px;
+    font-size: 17px;
 }
 
 
@@ -47,6 +47,7 @@ header .logo .uppercase {
 header .logo a {
     outline: none !important;
     -webkit-tap-highlight-color: transparent;
+    line-height: 0;
 }
 
 header #label-luna {
@@ -232,10 +233,6 @@ footer a {
     }
     header {
         padding: 12px;
-    }
-
-    header .logo {
-        font-size: 16px;
     }
 
     header .logo svg {
