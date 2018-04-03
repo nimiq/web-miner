@@ -201,15 +201,15 @@ class App {
         this.$connectButton.style.display = 'inline-block';
     }
 }
-App.SECURE_ORIGIN = window.location.origin === 'https://miner.nimiq.com'? 'https://keyguard.nimiq.com/index-list-only.html'
-    : window.location.origin === 'https://miner.nimiq-testnet.com'? 'https://keyguard.nimiq-testnet.com/index-list-only.html'
+App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com/index-list-only.html'
+    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://keyguard.nimiq-testnet.com/index-list-only.html'
         : `${location.origin}/libraries/keyguard/src/index-list-only.html`;
 App.NIMIQ_PATH = window.location.hash === '#local'? '/dist/nimiq.js'
     : (window.location.hash === '#staging'? 'https://cdn.nimiq-network.com/staging/nimiq.js'
         : 'https://cdn.nimiq.com/core/nimiq.js');
-App.NETWORK = window.location.origin === 'https://miner.nimiq-testnet.com'? 'test'
-    : window.location.origin.indexOf('localhost') !== -1 ? 'dev'
-        : 'main';
+App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
+    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'test'
+        : 'dev';
 App.ERROR_OLD_BROWSER = 'old browser';
 App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';
 App.ERROR_DATABASE_ACCESS = 'error database reset failed';
