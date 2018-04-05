@@ -348,7 +348,7 @@ class MinerPolicy extends BasePolicy {
     allows(method, args, state) {
         switch (method) {
             case 'list':
-            case 'getDefaultAccount':
+            case 'getMinerAccount':
             case 'createWallet':
                 return true;
             default:
@@ -359,7 +359,7 @@ class MinerPolicy extends BasePolicy {
     needsUi(method, args, state) {
         switch (method) {
             case 'list':
-            case 'getDefaultAccount':
+            case 'getMinerAccount':
                 return false;
             case 'createWallet':
                 return true;

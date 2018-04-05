@@ -20,7 +20,7 @@ class MinerPolicy {
         switch (method) {
             case 'list':
             case 'createWallet':
-            case 'getDefaultAccount':
+            case 'getMinerAccount':
                 return true;
             default:
                 throw new Error(`Unhandled method: ${method}`);
@@ -30,7 +30,7 @@ class MinerPolicy {
     needsUi(method, args, state) {
         switch (method) {
             case 'list':
-            case 'getDefaultAccount':
+            case 'getMinerAccount':
                 return false;
             case 'createWallet':
                 return true;
@@ -59,15 +59,15 @@ class App {
         return this._launch();
     }
 
-    async getDefaultAccount() {
-        return this._keyGuardClient.getDefaultAccount();
+    async getMinerAccount() {
+        return this._keyGuardClient.getMinerAccount();
     }
 
     async _launch() {
         this._keyGuardClient = await KeyguardClient.create(App.SECURE_ORIGIN,
             new MinerPolicy(), () => {});
-        const defaultAccount = await this.getDefaultAccount();
-        if (defaultAccount) {
+        const minerAccount = await this.getMinerAccount();
+        if (minerAccount) {
             await this._initMiner();
             this._showConnectButton();
         } else {
@@ -83,8 +83,8 @@ class App {
     async _createAccount() {
         // needs to be called by a user interaction to open keyguard popup window
         await this._keyGuardClient.createWallet();
-        const defaultAccount = await this.getDefaultAccount();
-        if (!defaultAccount) return; // User cancelled wallet creation. Keep the prompt open.
+        const minerAccount = await this.getMinerAccount();
+        if (!minerAccount) return; // User cancelled wallet creation. Keep the prompt open.
         this.$walletPromptUi.style.display = 'none';
         await this._initMiner();
         this._miner.connect();
@@ -136,7 +136,7 @@ class App {
                     $.accounts = $.blockchain.accounts;
                     $.mempool = $.consensus.mempool;
                     $.network = $.consensus.network;
-                    $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getDefaultAccount()).address);
+                    $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
                     $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.address);
                     $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
                     window.$ = $;
