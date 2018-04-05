@@ -480,7 +480,7 @@ class KeyguardClient {
 	}
 
 	async _wrapApi() {
- 		this.embeddedApi = await this._getApi(this.$iframe.contentWindow);
+ 		this.embeddedApi = await this._getApi((await this.$iframe).contentWindow);
 
         for (const methodName of this.embeddedApi.availableMethods) {
             const normalMethod = this._proxyMethod(methodName);
@@ -546,10 +546,8 @@ class KeyguardClient {
 	_proxySecureMethod(methodName) {
 		return async (...args) => {
 			if (this.popup) { // window.open
-				// Make sure we always open the full experience in a popup
-				const src = this._keyguardSrc.replace('-list-only.html', '.html');
-				const apiWindow = window.open(src, 'NimiqKeyguard', `left=${window.innerWidth / 2 - 250},top=100,width=500,height=820,location=yes,dependent=yes`);
 				// const apiWindow = window.open(this._keyguardSrc, 'NimiqKeyguard');
+				const apiWindow = window.open(this._keyguardSrc, 'NimiqKeyguard', `left=${window.innerWidth / 2 - 250},top=100,width=500,height=820,location=yes,dependent=yes`);
 				if (!apiWindow) throw new Error('Keyguard window could not be opened.');
 				const secureApi = await this._getApi(apiWindow);
 				const result = await secureApi[methodName](...args);
@@ -589,12 +587,25 @@ class KeyguardClient {
 		return await RPC.Client(targetWindow, 'KeyguardApi', this._keyguardOrigin);
 	}
 
-	_createIframe(src) {
+	/**
+	 * @return {Promise}
+	 */
+	_createIframe() {
 		const $iframe = document.createElement('iframe');
-		$iframe.src = this._keyguardSrc;
+
+		const readyListener = (resolve) => function readyResolver({source, data}) {
+			if (source === $iframe.contentWindow && data === 'ready') {
+				self.removeEventListener('message', readyResolver);
+				resolve($iframe);
+			}
+		};
+
+		const promise = new Promise(resolve => self.addEventListener('message', readyListener(resolve)));
+
+		$iframe.src = this._keyguardSrc + '/iframe.html';
 		$iframe.name = 'keyguard';
 		document.body.appendChild($iframe);
-		return $iframe;
+		return promise;
 	}
 }
 
