@@ -513,9 +513,9 @@ header #label-luna {
     opacity: 0;
     color: rgba(255, 255, 255, .6);
     z-index: 2;
-    pointer-events: all;
     box-sizing: border-box;
     padding: 0 12px;
+    pointer-events: all;
 }
 
 @media (max-width: 359px) {
@@ -729,6 +729,10 @@ header #label-luna {
 .synced #bottomInfo {
     /* wait 5 seconds until fading in because this is when we get the first hashrate value */
     animation: 1s fade-in 5s normal forwards;
+}
+
+#miningSection:not(.synced) #bottomInfo {
+    pointer-events: none !important;
 }
 
 #block-loader {

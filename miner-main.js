@@ -143,7 +143,15 @@ class MinerUI {
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
         resumeMinerBtn.onclick = () => miner.startMining();
 
+        const reconnectBtn = document.querySelector('#reconnectBtn');
+        reconnectBtn.onclick = () => {
+            // XXX HACK!!!!!!!!!!!!!!!!!!
+            miner.$.network._connectingCount = 0;
+            miner.$.network.connect();
+        };
+
         this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
+        this._warningDisconnected = document.querySelector('#warning-disconnected');
 
         this._createBottomPanels(miner);
 
@@ -193,6 +201,25 @@ class MinerUI {
     hideMinerStoppedWarning() {
         this._warningMinerStopped.style.display = 'none';
         this._warningMinerStopped.style.opacity = 0;
+    }
+    
+    disconnected() {
+        this.hideMinerStoppedWarning();
+        this._warningDisconnected.style.display = 'block';
+        this._warningDisconnected.offsetWidth; // enforce style update
+        this._warningDisconnected.style.opacity = 1;
+        this.facts.disconnected = true;
+    }
+    
+    reconnected() {
+        this._warningDisconnected.style.opacity = 0;
+        setTimeout(() => {
+            this._warningDisconnected.style.display = 'none';
+            if (this.miner.paused) {
+                this.minerStopped(); // show miner stopped warning
+            }
+        }, 1000);
+        this.facts.disconnected = false;
     }
 
     get blockExplorer() {
@@ -249,14 +276,6 @@ class Miner {
         this.map = new MapUI($);
 
         this.paused = false;
-        this._warningConsensusLost = document.querySelector('#warning-consensus-lost');
-
-        const reconnectBtn = document.querySelector('#reconnectBtn');
-        reconnectBtn.onclick = () => {
-            // XXX HACK!!!!!!!!!!!!!!!!!!
-            this.$.network._connectingCount = 0;
-            this.$.network.connect();
-        }
     }
 
     connect() {
@@ -321,6 +340,7 @@ class Miner {
         } else {
             this.startMining();
         }
+        this._onMinerChanged();
     }
 
     startMining() {
@@ -401,7 +421,7 @@ class Miner {
 
         this.ui.facts.synced = true;
         this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
-        this._warningConsensusLost.style.display = 'none';
+        this.ui.reconnected();
 
         if (!this.paused) {
             this.startMining();
@@ -451,24 +471,9 @@ class Miner {
         this.ui.facts.peers = this.$.network.peerCount;
 
         if (this.$.network.peerCount > 0) {
-            if (this._warningConsensusLost.style.display === 'block') {
-                this._warningConsensusLost.style.opacity = 0;
-                setTimeout(() => {
-                    this._warningConsensusLost.style.display = 'none';
-                }, 1000);
-
-                if (this.paused) {
-                    this.ui.minerStopped(); // show miner stopped warning
-                }
-
-                this.ui.facts.disconnected = false;
-            }
+            this.ui.reconnected();
         } else {
-            this.ui.hideMinerStoppedWarning();
-            this._warningConsensusLost.style.display = 'block';
-            this._warningConsensusLost.offsetWidth; // enforce style update
-            this._warningConsensusLost.style.opacity = 1;
-            this.ui.facts.disconnected = true;
+            this.ui.disconnected();
         }
     }
 
