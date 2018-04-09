@@ -518,6 +518,10 @@ header #label-luna {
     pointer-events: all;
 }
 
+#rewardInfoPoolShare {
+    display: none;
+}
+
 @media (max-width: 359px) {
     #rewardInfoAmount {
         display: none;
@@ -924,22 +928,22 @@ input:-moz-placeholder {
     right: 100%
 }
 
-@media (min-width: 850px) {
+@media (min-width: 950px) {
     [bottom-panel-trigger].highlighted .separator {
         display: block;
     }
+}
 
-    [bottom-panel-trigger].highlighted:after {
-        content: "";
-        position: absolute;
-        bottom: -24px;
-        width: 15px;
-        height: 15px;
-        left: 50%;
-        transform: translate(-50%, 0) rotate(45deg);
-        border-top: 1px solid rgba(255,255,255,0.3);
-        border-left: 1px solid rgba(255,255,255,0.3);
-    }
+[bottom-panel-trigger].highlighted:after {
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    width: 15px;
+    height: 15px;
+    left: 50%;
+    transform: translate(-50%, 0) rotate(45deg);
+    border-top: 1px solid rgba(255,255,255,0.3);
+    border-left: 1px solid rgba(255,255,255,0.3);
 }
 
 /* Bottom Panel */

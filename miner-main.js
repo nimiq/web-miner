@@ -10,6 +10,8 @@ class FactsUI {
         this._myBalanceContainer = document.getElementById('factBalanceContainer');
         this._poolBalance = document.getElementById('factPoolMinerBalance');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
+        this._rewardInfoHashTime = document.getElementById('rewardInfoHashTime');
+        this._rewardInfoPoolShare = document.getElementById('rewardInfoPoolShare');
         this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
@@ -33,6 +35,14 @@ class FactsUI {
     }
 
     set expectedHashTime(expectedHashTime) {
+        if (PoolMinerSettingsUi.isPoolMinerEnabled) {
+            this._rewardInfoHashTime.style.display = 'none';
+            this._rewardInfoPoolShare.style.display = 'inline';
+            return;
+        } else {
+            this._rewardInfoHashTime.style.display = 'inline';
+            this._rewardInfoPoolShare.style.display = 'none';
+        }
         if (!expectedHashTime || !Number.isFinite(expectedHashTime)) {
             this._expectedHashTime.innerHTML = '&infin; years';
             return;
@@ -327,6 +337,9 @@ class Miner {
             this.stopMining(false);
         }
         this._currentMiner = miner;
+        if (this._currentMiner === this.poolMiner) {
+            this.ui.facts.expectedHashTime = null;
+        }
         if (!this.paused) {
             this.startMining();
         } else {
@@ -340,7 +353,6 @@ class Miner {
         } else {
             this.startMining();
         }
-        this._onMinerChanged();
     }
 
     startMining() {
@@ -351,6 +363,7 @@ class Miner {
         } else {
             this._currentMiner.startWork();
         }
+        this._onMinerChanged();
     }
 
     _startPoolMiner() {
@@ -384,6 +397,7 @@ class Miner {
         if (this._currentMiner === this.poolMiner) {
             this._currentMiner.disconnect();
         }
+        this._onMinerChanged();
     }
 
     set threads(threadCount) {
@@ -500,6 +514,9 @@ class Miner {
     _onPoolMinerConnectionChange(state) {
         if (state === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this.ui.facts.poolBalance = this.poolMiner.confirmedBalance || 0;
+        } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED && this._currentMiner === this.poolMiner) {
+            this.ui.facts.myHashrate = 0; // set hashrate manually to 0 for the case that we couldn't even connect
+            // an thus disn't start mining and don't get hashrate change events
         }
     }
 
@@ -514,6 +531,7 @@ class Miner {
     }
 
     _onExpectedHashTimeChanged() {
+        if (this.ui.poolMinerSettingsUi.isPoolMinerEnabled) return;
         const myWinProbability = this.hashrate / this.globalHashrate;
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
