@@ -1,13 +1,20 @@
 class BlockExplorerUi extends Panel {
-	constructor(el, blockchain) {
+	constructor(el, $) {
     	super(BlockExplorerUi.ID, el);
     	this._el = el;
-        this._blockchain = blockchain;
+        this._blockchain = $.blockchain;
+        this._consensus = $.consensus;
         this._blockDetailUi = new BlockDetailUi(document.getElementById('block-detail'));
         this._blockListEl = this._el.querySelector('#blocks-overview');
         this._entries = [];
-        blockchain.on('head-changed', this._onHeadChanged.bind(this));
-        this._fillList(blockchain.head);
+        this._blockchain.on('head-changed', this._onHeadChanged.bind(this));
+        this._onConsensus = this._onConsensus.bind(this);
+        this._consensus.on('established', this._onConsensus);
+    }
+
+    _onConsensus() {
+		this._consensus.off('established', this._onConsensus);
+		this._fillList(this._blockchain.head);
     }
 
     _createBlockEntry(block) {
@@ -33,6 +40,7 @@ class BlockExplorerUi extends Panel {
     }
 
     _onHeadChanged(head) {
+		if (!this._consensus.established) return;
 		this._removeForkEntries(head);
     	// add an entry at the beginning of the list
     	let entry;

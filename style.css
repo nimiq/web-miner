@@ -580,15 +580,18 @@ header #label-luna {
     }
 }
 
-.synced #my-hashrate[bottom-panel-trigger] .info-icon {
+.synced #my-hashrate[bottom-panel-trigger] .info-icon,
+.synced #pool-miner[bottom-panel-trigger] .info-icon {
     display: inline-block;
 }
 
-.synced #my-hashrate[bottom-panel-trigger] {
+.synced #my-hashrate[bottom-panel-trigger],
+.synced #pool-miner[bottom-panel-trigger] {
     cursor: pointer;
 }
 
-.synced #my-hashrate[bottom-panel-trigger]:hover {
+.synced #my-hashrate[bottom-panel-trigger]:hover,
+.synced #pool-miner[bottom-panel-trigger]:hover {
     background: rgba(255,255,255,0.08);
 }
 
@@ -957,6 +960,46 @@ input:-moz-placeholder {
     /* each panel can chose its height itself */
 }
 
+[panel] .label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 19px;
+    letter-spacing: 1.5px;
+    margin-top: 8px;
+}
+
+[panel] .settings-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 0 12px;
+    text-align: left;
+}
+
+[panel] .settings-container .row {
+    margin: 8px 0;
+    padding: 0;
+    font-size: 16px;
+    flex-direction: row;
+}
+
+[panel] .settings-container .row .label {
+    flex-grow: 1;
+    text-transform: none;
+    margin: 0;
+    font-size: inherit;
+}
+
+[panel] .settings-container .row button {
+    color: #e2a62f;
+    font-weight: bold;
+    opacity: .85;
+    transition: opacity .3s;
+}
+
+[panel] .settings-container .row button:hover {
+    opacity: 1;
+}
+
+
 /* Overlay State */
 
 body[overlay="bottom-panels"] .fact,
@@ -1030,7 +1073,7 @@ body[overlay="block-detail"] #block-detail {
 
 /* Tablet / Phone */
 
-@media screen and (max-width: 920px) {
+@media screen and (max-width: 1150px) {
     .facts {
         /*flex-direction: column;*/
         align-items: center;

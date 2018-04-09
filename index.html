@@ -2326,6 +2326,16 @@
                 </div>
                 <div class="separator"></div>
             </div>
+            <div class="fact" id="pool-miner" bottom-panel-trigger>
+                <div class="label">
+                    Mining Pool
+                    <img class="info-icon" src="images/info-icon.svg" />
+                </div>
+                <div>
+                    <span class="number" id="factPoolMinerBalance">Off</span>
+                </div>
+                <div class="separator"></div>
+            </div>
             <a href="#" target="nimiq-safe" id="factBalanceContainer" class="fact">
                 <div id="factBalanceContainerInner">
                     <div class="label">
@@ -2333,9 +2343,7 @@
                         <img src="images/arrow_right.svg" />
                     </div>
                     <div>
-                    <span class="number">
-                        <span id="factBalance">0.00</span>
-                    </span>
+                        <span class="number" id="factBalance">0.00</span>
                     </div>
                 </div>
             </a>
@@ -2345,7 +2353,7 @@
             <div id="bottomInfo">
                 <span id="rewardInfoAmount">
                     The block <span class="hide-mobile">mining</span> reward is
-                    <b><span id="factBlockReward">x</span> Nimiq</b>.
+                    <b><span id="factBlockReward">x</span> NIM</b>.
                 </span>
                 At your current hashrate you can expect to mine a block every
                 <b id="factExpectedHashTime">x hours</b>.
@@ -2363,6 +2371,21 @@
             <div id="miner-settings" panel>
                 <div class="label">Number of threads: <span id="miner-settings-thread-count">4</span></div>
                 <input id="miner-thread-slider" type="range" min="1" step="1">
+            </div>
+
+            <!-- Mining Pool Settings -->
+            <div id="pool-miner-settings" panel>
+                <div class="settings-container">
+                    <div class="row">
+                        <div class="label">Connection Status: <span id="pool-miner-settings-connection-status">Disconnected</span></div>
+                        <button id="pool-miner-settings-connect-button">Connect</button>
+                    </div>
+                    <div class="row show-when-connected">
+                        <div class="label">Current pool balance: <span id="pool-miner-settings-pool-balance">Loading...</span></div>
+                        <button id="pool-miner-settings-payout-button">Payout</button>
+                    </div>
+                    <div class="show-when-connected" id="pool-miner-payout-notice">Payout requested. Payouts are typically processed within 24 hours.</div>
+                </div>
             </div>
         </div>
     </div>

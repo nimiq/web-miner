@@ -42,7 +42,7 @@ class UpdateChecker {
                 this._updateWarning.offsetWidth; // style update
                 this._updateWarning.style.opacity = 1;
                 if (version.minRequiredVersion > this._currentVersion.code) {
-                    this._miner.stopWork();
+                    this._miner.stopMining();
                 }
             }
             this._currentVersion = version;
