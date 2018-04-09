@@ -928,22 +928,29 @@ input:-moz-placeholder {
     right: 100%
 }
 
+[bottom-panel-trigger].highlighted:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+
 @media (min-width: 950px) {
     [bottom-panel-trigger].highlighted .separator {
         display: block;
     }
-}
 
-[bottom-panel-trigger].highlighted:after {
-    content: "";
-    position: absolute;
-    bottom: -24px;
-    width: 15px;
-    height: 15px;
-    left: 50%;
-    transform: translate(-50%, 0) rotate(45deg);
-    border-top: 1px solid rgba(255,255,255,0.3);
-    border-left: 1px solid rgba(255,255,255,0.3);
+    [bottom-panel-trigger].highlighted:after {
+        /* chevron */
+        width: 15px;
+        height: 15px;
+        border-left: 1px solid rgba(255,255,255,0.3);
+        transform: translate(-50%, 0) rotate(45deg);
+        bottom: -24px;
+    }
 }
 
 /* Bottom Panel */

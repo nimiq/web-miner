@@ -149,6 +149,11 @@ class MinerUI {
 
         this.facts = new FactsUI();
         this._bottomPanels = new BottomPanels(document.querySelector('#bottom-panels'));
+        this._createBottomPanels(miner);
+
+        this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
+        this._warningDisconnected = document.querySelector('#warning-disconnected');
+        this._warningPoolConnection = document.querySelector('#warning-pool-connection');
 
         const resumeMinerBtn = document.querySelector('#resumeMinerBtn');
         resumeMinerBtn.onclick = () => miner.startMining();
@@ -160,10 +165,8 @@ class MinerUI {
             miner.$.network.connect();
         };
 
-        this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
-        this._warningDisconnected = document.querySelector('#warning-disconnected');
-
-        this._createBottomPanels(miner);
+        const switchToSoloMiningButton = document.querySelector('#warning-pool-connection-switch-solo');
+        switchToSoloMiningButton.onclick = () => miner.setCurrentMiner(miner.soloMiner);
 
         new UpdateChecker(miner);
     }
@@ -193,6 +196,7 @@ class MinerUI {
         this._toggleMinerBtn.innerText = 'Resume Mining';
         this.facts.myHashrate = 0;
         this.facts.expectedHashTime = null;
+        if (this._warningPoolConnection.style.opacity === '1' || this._warningDisconnected.style.opacity === '1') return;
         this._warningMinerStopped.style.display = 'block';
         this._warningMinerStopped.offsetWidth; // enforce style update
         this._warningMinerStopped.style.opacity = 1;
@@ -212,18 +216,44 @@ class MinerUI {
         this._warningMinerStopped.style.display = 'none';
         this._warningMinerStopped.style.opacity = 0;
     }
+
+    poolMinerCantConnect() {
+        if (this._warningDisconnected.style.opacity === '1') return;
+        this.hideMinerStoppedWarning();
+        this._warningPoolConnection.style.display = 'block';
+        this._warningPoolConnection.offsetWidth; // enforce style update
+        this._warningPoolConnection.style.opacity = 1;
+        clearTimeout(this._poolMinerWarningTimeout);
+    }
+
+    poolMinerCanConnect() {
+        this._warningPoolConnection.style.opacity = 0;
+        this._poolMinerWarningTimeout = setTimeout(() => {
+            this._warningPoolConnection.style.display = 'none';
+            if (this.miner.paused) {
+                this.minerStopped(); // show miner stopped warning
+            }
+        }, 1000);
+    }
+
+    hidePoolMinerConnectionWarning() {
+        this._warningPoolConnection.style.display = 'none';
+        this._warningPoolConnection.style.opacity = 0;
+    }
     
     disconnected() {
         this.hideMinerStoppedWarning();
+        this.hidePoolMinerConnectionWarning();
         this._warningDisconnected.style.display = 'block';
         this._warningDisconnected.offsetWidth; // enforce style update
         this._warningDisconnected.style.opacity = 1;
         this.facts.disconnected = true;
+        clearTimeout(this._disconnectWarningTimeout);
     }
     
     reconnected() {
         this._warningDisconnected.style.opacity = 0;
-        setTimeout(() => {
+        this._disconnectWarningTimeout = setTimeout(() => {
             this._warningDisconnected.style.display = 'none';
             if (this.miner.paused) {
                 this.minerStopped(); // show miner stopped warning
@@ -330,16 +360,18 @@ class Miner {
             miner = this.ui.poolMinerSettingsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
         }
         if (miner === this._currentMiner) return;
-        if (this._currentMiner === this.poolMiner) {
-            this.ui.facts.poolBalance = 'off';
-        }
         if (this._currentMiner) {
             this.stopMining(false);
         }
         this._currentMiner = miner;
+
         if (this._currentMiner === this.poolMiner) {
             this.ui.facts.expectedHashTime = null;
+        } else {
+            this.ui.facts.poolBalance = 'off';
+            this.ui.hidePoolMinerConnectionWarning();
         }
+
         if (!this.paused) {
             this.startMining();
         } else {
@@ -514,10 +546,15 @@ class Miner {
     _onPoolMinerConnectionChange(state) {
         if (state === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this.ui.facts.poolBalance = this.poolMiner.confirmedBalance || 0;
-        } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED && this._currentMiner === this.poolMiner) {
-            this.ui.facts.myHashrate = 0; // set hashrate manually to 0 for the case that we couldn't even connect
-            // an thus disn't start mining and don't get hashrate change events
+            this.ui.poolMinerCanConnect();
+        } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED
+            && this._currentMiner === this.poolMiner
+            && this._previousPoolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
+            // connecting failed
+            this.ui.facts.myHashrate = 0;
+            this.ui.poolMinerCantConnect();
         }
+        this._previousPoolConnectionState = state;
     }
 
     _onGlobalHashrateChanged() {
