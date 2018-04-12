@@ -105,6 +105,7 @@ class PoolMinerSettingsUi extends Panel {
             this._connectionStatus.textContent = 'Connected';
             this._connectButton.textContent = 'Disconnect';
             this._el.setAttribute('connected', '');
+            this._updatePayoutStatus();
         } else if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
             this._connectionStatus.textContent = 'Connecting...';
             this._connectButton.textContent = 'Disconnect';
@@ -136,7 +137,7 @@ class PoolMinerSettingsUi extends Panel {
     _updatePayoutStatus() {
         const poolMiner = this._miner.poolMiner;
         this._payoutNotice.style.display = poolMiner.payoutRequestActive? 'block' : 'none';
-        this._payoutButton.style.display = poolMiner.payoutRequestActive || poolMiner.confirmedBalance  === 0?
+        this._payoutButton.style.display = poolMiner.payoutRequestActive || !poolMiner.confirmedBalance?
             'none' : 'block';
         this._el.dispatchEvent(new CustomEvent('resize', {
             bubbles: true
