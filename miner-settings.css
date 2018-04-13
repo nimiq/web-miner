@@ -83,3 +83,8 @@ input[type=range]:focus {
 #pool-miner-settings-payout-button {
     display: none;
 }
+
+/* TODO reenable for pool */
+#pool-miner-settings {
+    display: none !important;
+}

@@ -40,6 +40,7 @@ MinerSettingsUi.KEY_THREAD_COUNT = 'miner-settings-thread-count';
 class PoolMinerSettingsUi extends Panel {
     constructor(el, miner) {
         super(PoolMinerSettingsUi.ID, el);
+        /* TODO reenable for pool
         this._el = el;
         this._miner = miner;
         this._connectionStatus = this._el.querySelector('#pool-miner-settings-connection-status');
@@ -53,7 +54,7 @@ class PoolMinerSettingsUi extends Panel {
 
         miner.poolMiner.on('connection-state', connectionState => this._onConnectionChange(connectionState));
         miner.poolMiner.on('confirmed-balance', balance => this._onBalanceChange(balance));
-        miner.poolMiner.on('balance', () => this._updatePayoutStatus());
+        miner.poolMiner.on('balance', () => this._updatePayoutStatus());*/
     }
 
     get settings() {
@@ -65,7 +66,10 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     static get isPoolMinerEnabled() {
+        /* TODO reenable for pool
         return localStorage[PoolMinerSettingsUi.KEY_USE_POOL_MINER]==='yes';
+         */
+        return false;
     }
 
     get isPoolMinerEnabled() {

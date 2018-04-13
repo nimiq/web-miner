@@ -140,8 +140,9 @@ class App {
                     $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
                     $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.address);
                     $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
+                    /* TODO reenable for pool
                     $.poolMiner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time,
-                        $.address, Nimiq.BasePoolMiner.generateDeviceId($.network.config));
+                        $.address, Nimiq.BasePoolMiner.generateDeviceId($.network.config));*/
                     window.$ = $;
                     resolve($);
                 } catch(e) {
@@ -213,11 +214,12 @@ App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://k
 App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
     : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://cdn.nimiq-testnet.com/nimiq.js'
         //: `/dist/nimiq.js`; // TODO change back
-        : 'https://cdn.nimiq-network.com/branches/marvin-pool/nimiq.js';
+        //: 'https://cdn.nimiq-network.com/branches/marvin-pool/nimiq.js';
+        : 'https://cdn.nimiq-testnet.com/nimiq.js';
 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'test'
-        : 'bounty'; // TODO change back to dev
+        : 'dev';
 
 App.ERROR_OLD_BROWSER = 'old browser';
 App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';

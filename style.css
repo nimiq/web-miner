@@ -599,6 +599,11 @@ header #label-luna {
     background: rgba(255,255,255,0.08);
 }
 
+/* TODO reenable for pool */
+#pool-miner {
+    display: none !important;
+}
+
 #factBalanceContainer {
     display: flex;
     justify-content: center;
