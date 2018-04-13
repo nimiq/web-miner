@@ -35,7 +35,7 @@ iframe[name="keyguard"] {
 }
 
 body:not([network="test"]) .show-testnet {
-    display: none;
+    display: none !important;
 }
 
 /* map styling */
