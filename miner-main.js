@@ -155,12 +155,12 @@ class FactsUI {
         const safeUrl = window.location.origin.indexOf('nimiq.com') !== -1? 'https://safe.nimiq.com/'
             : window.location.origin.indexOf('nimiq-testnet.com') !== -1? 'https://safe.nimiq-testnet.com/'
                 : `${location.origin.replace('miner', 'safe')}/apps/safe/src/`;
-        /*if (accountNeedsUpgrade) {
+        if (accountNeedsUpgrade) {
             this._myBalanceContainer.href = `${safeUrl}#/_please-upgrade_`;
-        } else {*/
+        } else {
             this._myBalanceContainer.href =
                 `${safeUrl}#/_account/${this._address.toUserFriendlyAddress().replace(/ /g, '-')}_`;
-        /*}*/
+        }
     }
 }
 
