@@ -49,4 +49,4 @@ class UpdateChecker {
         }).catch(() => console.warn('Couldn\'t fetch update information'));
     }
 }
-UpdateChecker.CHECK_URL = 'https://cdn.nimiq.com/core/VERSION';
+UpdateChecker.CHECK_URL = 'https://cdn.nimiq.com/VERSION';
