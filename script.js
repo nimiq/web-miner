@@ -73,6 +73,7 @@ class App {
         } else {
             this._showAccountCreationPrompt();
         }
+        App.instance = this;
         return this;
     }
 

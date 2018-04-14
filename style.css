@@ -610,31 +610,40 @@ header .logo {
     padding: 0;
     pointer-events: all;
     outline: none !important;
+    transition: background .2s ease;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+}
+
+#factBalanceContainer:hover {
+    background: rgba(255,255,255,0.1);
 }
 
 #factBalance {
     color: white;
 }
 
-/* Balance Hover */
-
 #factBalanceContainerInner {
     padding: 8px;
     min-width: 131px;
     cursor: pointer;
-    transition: background .2s ease;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.05);
+}
+
+.call-to-action {
+    animation: call-to-action 3s infinite;
+}
+
+@keyframes call-to-action {
+    from { opacity: .65; }
+    40% { opacity: 1; }
+    60% { opacity: 1; }
+    to { opacity: .65; }
 }
 
 #factBalanceContainerInner .label {
     display: flex;
     justify-content: space-between;
     color: #F6AE2D;
-}
-
-#factBalanceContainerInner:hover {
-    background: rgba(255,255,255,0.1);
 }
 
 .ellipsis>*:first-child {
