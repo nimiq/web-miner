@@ -38,6 +38,10 @@ body:not([network="test"]) .show-testnet {
     display: none !important;
 }
 
+body:not([network="main"]) .show-mainnet {
+    display: none !important;
+}
+
 /* map styling */
 
 #map {
@@ -179,10 +183,6 @@ header {
 
 header .logo {
     text-align: left;
-}
-
-header #label-luna {
-    color: rgb(246, 174, 45);
 }
 
 
