@@ -518,10 +518,6 @@ header .logo {
     pointer-events: all;
 }
 
-#rewardInfoPoolShare {
-    display: none;
-}
-
 @media (max-width: 359px) {
     #rewardInfoAmount {
         display: none;
@@ -1151,6 +1147,10 @@ body[overlay="block-detail"] #block-detail {
         -webkit-animation: none;
         animation: none;
         will-change: initial;
+    }
+    #landingSection {
+        height: 160px;
+        margin-top: -90px;
     }
 }
 
