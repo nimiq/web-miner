@@ -7,6 +7,7 @@ class BlockExplorerUi extends Panel {
         this._blockDetailUi = new BlockDetailUi(document.getElementById('block-detail'));
         this._blockListEl = this._el.querySelector('#blocks-overview');
         this._entries = [];
+        this._visible = false;
         this._blockchain.on('head-changed', this._onHeadChanged.bind(this));
         this._onConsensus = this._onConsensus.bind(this);
         this._consensus.on('established', this._onConsensus);
@@ -22,6 +23,7 @@ class BlockExplorerUi extends Panel {
     	let entry = new BlockEntry();
     	entry.block = block;
     	entry.addClickListener(entry => this._blockDetailUi.show(entry.block));
+    	entry.visible = this._visible;
     	return entry;
     }
 
@@ -61,6 +63,7 @@ class BlockExplorerUi extends Panel {
 			const entry = this._entries[i];
 			if (entry.block.height < head.height) break;
 			// remove the old fork entry
+			entry.visible = false;
 			this._entries.splice(i, 1);
 			this._blockListEl.removeChild(entry.element);
 			i--;
@@ -69,6 +72,7 @@ class BlockExplorerUi extends Panel {
     }
 
     show(fade = true) {
+		this._visible = true;
         this._entries.forEach(function(entry) {
         	entry.visible = true;
         });
@@ -76,6 +80,7 @@ class BlockExplorerUi extends Panel {
     }
 
     hide(fade = true) {
+		this._visible = false;
         this._entries.forEach(function(entry) {
         	entry.visible = false;
         });
@@ -196,7 +201,6 @@ class BlockEntry {
 	set block(block) {
 		this._block = block;
 		this._blockNumberEl.textContent = '#'+block.height;
-		this._updateTimeString();
 		let hasTransactions = !!block.transactionCount;
 		this._transactionCountEl.textContent = block.transactionCount+' transactions'
 			+ (hasTransactions? ' (' : '');
@@ -214,6 +218,7 @@ class BlockEntry {
 		}
 		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toUserFriendlyAddress().toUpperCase();
 		this._sizeEl.textContent = block.serializedSize + ' Bytes';
+        this._updateTimeString();
 		if (this._visible) {
 			this._startTimer();
 		}

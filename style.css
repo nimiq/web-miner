@@ -173,18 +173,13 @@ body:not([network="main"]) .show-mainnet {
     }
 }
 
-
-/*
-header {
-    animation: 1s fade-in 5s forwards;
-    opacity: 0;
-}
-*/
-
 header .logo {
     text-align: left;
 }
 
+header #warning-testnet {
+    font-weight: bold;
+}
 
 .button {
     /*background-image: linear-gradient(110deg, #e2a62f, #d7941a);*/
