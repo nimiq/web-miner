@@ -57,19 +57,8 @@ header .message {
     color: rgb(246, 174, 45);
 }
 
-header .menu {
-    display: none;
-}
-
-header .menu a {
-    color: rgba(255, 255, 255, 0.9);
-    padding: 8px;
-    margin-left: 24px;
-    pointer-events: all;
-}
-
-header .menu a:hover {
-    color: #e2a62f;
+header #download-container {
+    text-align: right;
 }
 
 .center,
@@ -244,7 +233,11 @@ footer a {
         font-size: 16px;
     }
 
-    header #center-helper {
+    header #download-container {
+        width: auto !important;
+    }
+
+    body[network="test"] header #download-container {
         display: none;
     }
 
