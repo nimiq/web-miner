@@ -339,12 +339,14 @@ class Miner {
         this.soloMiner.on('hashrate-changed', () => this._onHashrateChanged());
         this.soloMiner.on('start', () => this._onMinerChanged());
         this.soloMiner.on('stop', () => this._onMinerChanged());
-        /* TODO reenable for pool
-        this.poolMiner.on('hashrate-changed', () => this._onHashrateChanged());
-        this.poolMiner.on('start', () => this._onMinerChanged());
-        this.poolMiner.on('stop', () => this._onMinerChanged());
-        this.poolMiner.on('confirmed-balance', balance => this.ui.facts.poolBalance = balance);
-        this.poolMiner.on('connection-state', state => this._onPoolMinerConnectionChange(state));*/
+        // TODO reenable for pool
+        if (App.NETWORK !== 'main') {
+            this.poolMiner.on('hashrate-changed', () => this._onHashrateChanged());
+            this.poolMiner.on('start', () => this._onMinerChanged());
+            this.poolMiner.on('stop', () => this._onMinerChanged());
+            this.poolMiner.on('confirmed-balance', balance => this.ui.facts.poolBalance = balance);
+            this.poolMiner.on('connection-state', state => this._onPoolMinerConnectionChange(state));
+        }
 
         this.setCurrentMiner();
         this.threads = this.threads || this._currentMiner.threads;
@@ -416,12 +418,12 @@ class Miner {
                 this.poolMiner.startWork();
             }
         };
-        this._currentMiner.on('connection-state', onConnectionChange);
+        this.poolMiner.on('connection-state', onConnectionChange);
 
         if (this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             // we need to connect
             const { host, port } = this.ui.poolMinerSettingsUi.settings;
-            this._currentMiner.connect(host, port);
+            this.poolMiner.connect(host, port);
         }
     }
 
@@ -436,8 +438,10 @@ class Miner {
 
     set threads(threadCount) {
         this.soloMiner.threads = threadCount;
-        /* TODO reenable for pool
-        this.poolMiner.threads = threadCount;*/
+        // TODO reenable for pool
+        if (App.NETWORK !== 'main') {
+            this.poolMiner.threads = threadCount;
+        }
         this.ui.minerSettingsUi.threads = threadCount;
     }
 

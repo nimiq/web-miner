@@ -85,6 +85,6 @@ input[type=range]:focus {
 }
 
 /* TODO reenable for pool */
-#pool-miner-settings {
+body[network="main"] #pool-miner-settings {
     display: none !important;
 }

@@ -591,7 +591,7 @@ header #warning-testnet {
 }
 
 /* TODO reenable for pool */
-#pool-miner {
+body[network="main"] #pool-miner {
     display: none !important;
 }
 
