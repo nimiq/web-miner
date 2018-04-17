@@ -44,9 +44,9 @@ class FactsUI {
         }
         const nims = Nimiq.Policy.satoshisToCoins(satoshis);
         if (nims < 0.01) {
-            this._averageBlockReward.textContent = satoshis.toFixed(2) + 'Satoshi';
+            this._averageBlockReward.textContent = satoshis.toFixed(2) + ' Satoshi';
         } else {
-            this._averageBlockReward.textContent = nims.toFixed(2) + 'NIM';
+            this._averageBlockReward.textContent = nims.toFixed(2) + ' NIM';
         }
     }
 
