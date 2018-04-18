@@ -109,51 +109,8 @@
 
 /* Block Detail Overlay */
 
-#block-detail {
-  overflow: auto;
-  align-items: flex-start;
-  -webkit-overflow-scrolling: touch;
-}
-
-#block-detail .overlay-container {
-  height: auto;
-  max-height: none;
-  /*display: block;*/
-  margin-top: 64px;
-  display: flex;
-  min-height: calc(100% - 64px);
-  align-items: center;
-  pointer-events: none;
-}
-
-#block-detail .overlay {
-  pointer-events: all;
-}
-
-#block-detail p {
-  line-height: 1.3;
-  font-size: 19px;
-}
-
-#block-detail .small {
-  font-size: 16px;
-}
-
 #block-detail .overlay-head-col:first-child {
   margin-right: 48px;
-}
-
-#block-detail .overlay-head {
-  border-bottom: 1px solid rgba(3,32,71,0.15);
-  justify-content: flex-start;
-}
-
-#block-detail .overlay-head-col p {
-  color: rgba(3,32,71, 0.6);
-}
-
-#block-detail .overlay-head-col .label {
-  color: rgba(3,32,71, 0.4);
 }
 
 #block-detail #block-detail-block-number {
@@ -173,49 +130,26 @@
   border-bottom: 1px solid rgba(3,32,71,0.15);
 }
 
-.block-detail-container {
-  padding: 32px;
-}
-
-.block-detail-container:first-child {
+#block-detail .overlay-detail-container:first-child {
   border-right: 1px solid rgba(3,32,71,0.15);
   width: 100%;
 }
 
-.block-detail-container:last-child {
+#block-detail .overlay-detail-container:last-child {
   width: auto;
   flex: 0 0 auto;
 }
 
-.block-detail-row {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-.block-detail-row:first-child {
-  margin-top: 0;
-}
-
-.block-detail-row p {
-  line-height: 1;
-}
-
-#block-detail .block-detail-label {
-  color: rgba(3,32,71,0.4);
-  margin-right: 40px;
-}
-
-#block-detail-hashes .block-detail-label {
+#block-detail-hashes .overlay-detail-label {
   width: 120px;
   flex: 0 0 auto;
 }
 
-#block-detail-hashes .block-detail-row {
+#block-detail-hashes .overlay-detail-row {
   justify-content: flex-start;
 }
 
-#block-detail-hashes .block-detail-row p {
+#block-detail-hashes .overlay-detail-row p {
   word-break: break-all;
   text-align: left;
   max-width: 420px;
@@ -286,12 +220,12 @@
     max-width: none;
   }
 
-  .block-detail-root .block-detail-container {
-    width: 50%;
+  .block-detail-root .overlay-detail-container {
+    width: 50% !important;
     box-sizing: border-box;
   }
 
-  #block-detail-hashes .block-detail-row p {
+  #block-detail-hashes .overlay-detail-row p {
     max-width: none;
   }
 

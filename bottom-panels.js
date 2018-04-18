@@ -121,3 +121,33 @@ class BottomPanels {
 }
 BottomPanels.ALWAYS_VISIBLE_HEIGHT = '45px'; // upper part of the bottom panels where the bottom info is visible when
 // no panel is shown
+
+
+class Overlay {
+    constructor(el) {
+        this._el = el;
+        el.querySelector('.overlay-close').addEventListener('click', this.hide.bind(this));
+        el.addEventListener('click', event => {
+            if (event.srcElement === el) {
+                // clicked on the background container
+                this.hide();
+            }
+        });
+    }
+
+    show() {
+        const previousOverlay = document.body.getAttribute('overlay');
+        if (previousOverlay !== this.constructor.ID) {
+            this._previousOverlay = previousOverlay;
+        }
+        document.body.setAttribute('overlay', this.constructor.ID);
+    }
+
+    hide() {
+        if (this._previousOverlay) {
+            document.body.setAttribute('overlay', this._previousOverlay);
+        } else {
+            document.body.removeAttribute('overlay');
+        }
+    }
+}

@@ -226,9 +226,9 @@ class BlockEntry {
 }
 
 
-class BlockDetailUi {
+class BlockDetailUi extends Overlay {
 	constructor(el) {
-		this._el = el;
+		super(el);
 		this._blockNumberEl = el.querySelector('#block-detail-block-number');
 		this._blockHashEl = el.querySelector('#block-detail-block-hash');
 		this._transactionCountEl = el.querySelector('#block-detail-info-transactions');
@@ -246,14 +246,6 @@ class BlockDetailUi {
 		this._extraDataContainer = el.querySelector('#block-detail-container-extra-data');
 		this._transactionsContainer = el.querySelector('#block-detail-transactions');
 		this._noTransactionsInfo = el.querySelector('#block-detail-no-transactions');
-		// TODO refactor into class Overlay
-		el.querySelector('#blockexplorer-close').addEventListener('click', this.hide.bind(this));
-		el.addEventListener('click', event => {
-			if (event.srcElement === el) {
-				// clicked on the background container
-				this.hide();
-			}
-		});
 	}
 
 	set block(block) {
@@ -329,23 +321,11 @@ class BlockDetailUi {
 		return result;
 	}
 
-	// TODO refactor into class Overlay
-	show(block) {
-		if (block) {
-			this.block = block;
-		}
-		const previousOverlay = document.body.getAttribute('overlay');
-		if (previousOverlay !== 'block-detail') {
-            this._previousOverlay = previousOverlay;
-		}
-		document.body.setAttribute('overlay', 'block-detail');
-	}
-
-	hide() {
-		if (this._previousOverlay) {
-			document.body.setAttribute('overlay', this._previousOverlay);
-		} else {
-			document.body.removeAttribute('overlay');
-		}
-	}
+    show(block) {
+        if (block) {
+            this.block = block;
+        }
+        super.show();
+    }
 }
+BlockDetailUi.ID = 'block-detail';

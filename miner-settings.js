@@ -147,12 +147,14 @@ class PoolMinerSettingsUi extends Panel {
     _connect() {
         this.isPoolMinerEnabled = true;
         if (!this._poolSelector.value) return;
+        let switchingPool = false;
         if (this._poolSelector.value !== this.selectedMiningPoolId) {
             // disconnect from previous pool
             this._poolMiner.disconnect();
+            switchingPool = true;
         }
         this.selectedMiningPoolId = this._poolSelector.value; // set as selected pool when user actually connects
-        if (this._poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        if (this._poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED && !switchingPool) return;
         const {host, port} = this.settings;
         this._poolMiner.connect(host, port);
     }
@@ -249,22 +251,15 @@ PoolMinerSettingsUi.KEY_USE_POOL_MINER = 'pool-miner-settings-use-pool';
 PoolMinerSettingsUi.KEY_SELECTED_POOL = 'pool-miner-settings-selected-pool';
 
 
-class MiningPoolInfoUi {
+class MiningPoolInfoUi extends Overlay {
     constructor(el) {
-        this._el = el;
+        super(el);
         this._name = el.querySelector('#mining-pool-info-name');
         this._host = el.querySelector('#mining-pool-info-host');
         this._port = el.querySelector('#mining-pool-info-port');
         this._description = el.querySelector('#mining-pool-info-description');
         this._fees = el.querySelector('#mining-pool-info-fees');
         this._payouts = el.querySelector('#mining-pool-info-payouts');
-        el.querySelector('#mining-pool-info-close').addEventListener('click', this.hide.bind(this));
-        el.addEventListener('click', event => {
-            if (event.srcElement === el) {
-                // clicked on the background container
-                this.hide();
-            }
-        });
     }
 
     set miningPool(miningPool) {
@@ -280,19 +275,7 @@ class MiningPoolInfoUi {
         if (miningPool) {
             this.miningPool = miningPool;
         }
-        const previousOverlay = document.body.getAttribute('overlay');
-        if (previousOverlay !== this.constructor.ID) {
-            this._previousOverlay = previousOverlay;
-        }
-        document.body.setAttribute('overlay', this.constructor.ID);
-    }
-
-    hide() {
-        if (this._previousOverlay) {
-            document.body.setAttribute('overlay', this._previousOverlay);
-        } else {
-            document.body.removeAttribute('overlay');
-        }
+        super.show();
     }
 }
 MiningPoolInfoUi.ID = 'mining-pool-info';
