@@ -220,8 +220,7 @@ App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.
         //: 'https://cdn.nimiq-testnet.com/nimiq.js'; // TODO change back
 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
-    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'test'
-        : 'dev';
+    : 'test';
 
 App.ERROR_OLD_BROWSER = 'old browser';
 App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';

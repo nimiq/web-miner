@@ -145,7 +145,6 @@
 
 #block-detail .overlay-head {
   border-bottom: 1px solid rgba(3,32,71,0.15);
-  height: auto;
   justify-content: flex-start;
 }
 

@@ -246,6 +246,7 @@ class BlockDetailUi {
 		this._extraDataContainer = el.querySelector('#block-detail-container-extra-data');
 		this._transactionsContainer = el.querySelector('#block-detail-transactions');
 		this._noTransactionsInfo = el.querySelector('#block-detail-no-transactions');
+		// TODO refactor into class Overlay
 		el.querySelector('#blockexplorer-close').addEventListener('click', this.hide.bind(this));
 		el.addEventListener('click', event => {
 			if (event.srcElement === el) {
@@ -328,6 +329,7 @@ class BlockDetailUi {
 		return result;
 	}
 
+	// TODO refactor into class Overlay
 	show(block) {
 		if (block) {
 			this.block = block;

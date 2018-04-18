@@ -84,7 +84,22 @@ input[type=range]:focus {
     display: none;
 }
 
+#pool-miner-settings-pool-info {
+    opacity: .7;
+    transition: opacity .2s;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+}
+#pool-miner-settings-pool-info:hover {
+    opacity: .9;
+}
+
 /* TODO reenable for pool */
-body[network="main"] #pool-miner-settings {
+body[network="main"] #pool-miner-settings,
+body[network="main"] #mining-pool-info {
     display: none !important;
 }
+
+

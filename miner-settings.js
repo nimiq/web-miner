@@ -44,25 +44,35 @@ class PoolMinerSettingsUi extends Panel {
         if (App.NETWORK !== 'main') {
             this._el = el;
             this._miner = miner;
+            this._poolMiner = miner.poolMiner;
+            this._poolSelector = this._el.querySelector('#pool-miner-settings-pool-select');
+            this._connectionInfo = this._el.querySelector('#pool-miner-settings-connection');
             this._connectionStatus = this._el.querySelector('#pool-miner-settings-connection-status');
             this._connectButton = this._el.querySelector('#pool-miner-settings-connect-button');
             this._balance = this._el.querySelector('#pool-miner-settings-pool-balance');
-            this._payoutButton = this._el.querySelector('#pool-miner-settings-payout-button');
+            //this._payoutButton = this._el.querySelector('#pool-miner-settings-payout-button');
             this._payoutNotice = this._el.querySelector('#pool-miner-payout-notice');
+            this._poolInfoButton = this._el.querySelector('#pool-miner-settings-pool-info');
+            this._poolInfoUi = new MiningPoolInfoUi(document.querySelector('#mining-pool-info'));
 
+            this._poolSelector.addEventListener('change', () => this._updateUi());
+            this._poolInfoButton.addEventListener('click', () => this._showPoolInfo());
             this._connectButton.addEventListener('click', () => this._changeConnection());
-            this._payoutButton.addEventListener('click', () => this._requestPayout());
+            //this._payoutButton.addEventListener('click', () => this._requestPayout());
 
-            miner.poolMiner.on('connection-state', connectionState => this._onConnectionChange(connectionState));
-            miner.poolMiner.on('confirmed-balance', balance => this._onBalanceChange(balance));
-            miner.poolMiner.on('balance', () => this._updatePayoutStatus());
+            miner.poolMiner.on('connection-state', () => this._updateUi());
+            miner.poolMiner.on('confirmed-balance', () => this._updateUi());
+            miner.poolMiner.on('balance', () => this._updateUi());
+
+            this._initMiningPoolSelector();
         }
     }
 
     get settings() {
+        const [host, port] = this._poolIdToHostAndPort(this.selectedMiningPoolId);
         return {
-            host: PoolMinerSettingsUi.DEFAULT_POOL_MINER_HOST,
-            port: PoolMinerSettingsUi.DEFAULT_POOL_MINER_PORT,
+            host: host,
+            port: port,
             enabled: this.isPoolMinerEnabled
         };
     }
@@ -82,8 +92,52 @@ class PoolMinerSettingsUi extends Panel {
         this._miner.setCurrentMiner();
     }
 
+    get selectedMiningPoolId() {
+        return localStorage[PoolMinerSettingsUi.KEY_SELECTED_POOL];
+    }
+
+    set selectedMiningPoolId(miningPoolId) {
+        localStorage[PoolMinerSettingsUi.KEY_SELECTED_POOL] = miningPoolId;
+    }
+
+    _hostAndPortToPoolId(host, port) {
+        return host + ':' + port;
+    }
+
+    _poolIdToHostAndPort(poolId) {
+        if (!poolId) return [null, null];
+        return poolId.split(':');
+    }
+
+    async _loadMiningPools() {
+        this._loadMiningPoolsPromise = this._loadMiningPoolsPromise || new Promise(async (resolve, reject) => {
+            try {
+                const file = App.NETWORK === 'main' ? 'mining-pools-mainnet.json' : 'mining-pools-testnet.json';
+                const url = window.location.origin.indexOf('localhost') !== -1 ? `/apps/miner/${file}` : `/${file}`;
+                const response = await fetch(url);
+                resolve(response.json());
+            } catch(e) {
+                reject(e);
+            }
+        });
+        return this._loadMiningPoolsPromise;
+    }
+
+    async _initMiningPoolSelector() {
+        const miningPools = await this._loadMiningPools();
+        for (const miningPool of miningPools) {
+            const entry = document.createElement('option');
+            entry.setAttribute('value', this._hostAndPortToPoolId(miningPool.host, miningPool.port));
+            entry.textContent = miningPool.name;
+            this._poolSelector.appendChild(entry);
+        }
+        this._poolSelector.value = this.selectedMiningPoolId || "";
+        this._updateUi();
+    }
+
     _changeConnection() {
-        if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+        if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
+            || this._poolSelector.value !== this.selectedMiningPoolId) {
             this._connect();
         } else {
             this._disconnect();
@@ -92,64 +146,153 @@ class PoolMinerSettingsUi extends Panel {
 
     _connect() {
         this.isPoolMinerEnabled = true;
-        const poolMiner = this._miner.poolMiner;
-        if (poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        if (!this._poolSelector.value) return;
+        if (this._poolSelector.value !== this.selectedMiningPoolId) {
+            // disconnect from previous pool
+            this._poolMiner.disconnect();
+        }
+        this.selectedMiningPoolId = this._poolSelector.value; // set as selected pool when user actually connects
+        if (this._poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
         const {host, port} = this.settings;
-        poolMiner.connect(host, port);
+        this._poolMiner.connect(host, port);
     }
 
     _disconnect() {
         this.isPoolMinerEnabled = false;
-        const poolMiner = this._miner.poolMiner;
-        if (poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
-        poolMiner.disconnect();
+        if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        this._poolMiner.disconnect();
     }
 
-    _onConnectionChange(connectionState) {
-        if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
-            this._connectionStatus.textContent = 'Connected';
-            this._connectButton.textContent = 'Disconnect';
-            this._el.setAttribute('connected', '');
-            this._updatePayoutStatus();
-        } else if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
-            this._connectionStatus.textContent = 'Connecting...';
-            this._connectButton.textContent = 'Disconnect';
-            this._el.removeAttribute('connected');
+
+    _updateUi() {
+        this._updatePoolInfoButton();
+        this._updateConnectionStatus();
+        this._updateConnectButtonLabel();
+        this._updateBalance();
+        this._updatePayoutStatus();
+        // TODO don't use resize event to communicate with bottom panels
+        this._el.dispatchEvent(new CustomEvent('resize', {
+            bubbles: true
+        }));
+    }
+
+    _updatePoolInfoButton() {
+        if (!this._poolSelector.value) {
+            this._poolInfoButton.style.display = 'none';
         } else {
+            this._poolInfoButton.style.display = null;
+        }
+    }
+
+    _updateConnectionStatus() {
+        if (!this._poolSelector.value) {
+            this._connectionInfo.style.display = 'none';
+            return;
+        } else {
+            this._connectionInfo.style.display = null;
+        }
+        if (this._poolSelector.value !== this.selectedMiningPoolId
+            || this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             this._connectionStatus.textContent = 'Disconnected';
-            this._connectButton.textContent = 'Connect';
+            this._el.removeAttribute('connected');
+        } else if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
+            this._connectionStatus.textContent = 'Connected';
+            this._el.setAttribute('connected', '');
+        } else {
+            this._connectionStatus.textContent = 'Connecting...';
             this._el.removeAttribute('connected');
         }
-        this._el.dispatchEvent(new CustomEvent('resize', {
-            bubbles: true
-        }));
     }
 
-    _onBalanceChange(balance) {
-        this._balance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
-        this._updatePayoutStatus();
+    _updateConnectButtonLabel() {
+        if (this._poolSelector.value !== this.selectedMiningPoolId
+            || this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+            this._connectButton.textContent = 'Connect';
+        } else {
+            this._connectButton.textContent = 'Disconnect';
+        }
     }
 
-    _requestPayout() {
-        const poolMiner = this._miner.poolMiner;
-        poolMiner.requestPayout();
-        this._payoutNotice.style.display = 'block';
-        this._el.dispatchEvent(new CustomEvent('resize', {
-            bubbles: true
-        }));
+    _updateBalance() {
+        this._balance.textContent = Nimiq.Policy.satoshisToCoins(this._poolMiner.confirmedBalance || 0).toFixed(2);
     }
 
     _updatePayoutStatus() {
-        const poolMiner = this._miner.poolMiner;
-        this._payoutNotice.style.display = poolMiner.payoutRequestActive? 'block' : 'none';
-        this._payoutButton.style.display = poolMiner.payoutRequestActive || !poolMiner.confirmedBalance?
-            'none' : 'block';
+        this._payoutNotice.style.display = this._poolMiner.payoutRequestActive? 'block' : 'none';
+        /*this._payoutButton.style.display = poolMiner.payoutRequestActive || !poolMiner.confirmedBalance?
+            'none' : null;*/
+    }
+
+    async _showPoolInfo() {
+        if (!this._poolSelector.value) return;
+        const [host, port] = this._poolIdToHostAndPort(this._poolSelector.value);
+        const miningPools = await this._loadMiningPools();
+        for (const miningPool of miningPools) {
+            if (miningPool.host !== host || miningPool.port !== port) continue;
+            this._poolInfoUi.show(miningPool);
+            return;
+        }
+    }
+
+    /*
+    _requestPayout() {
+        this._poolMiner.requestPayout();
+        this._payoutNotice.style.display = 'block;
         this._el.dispatchEvent(new CustomEvent('resize', {
             bubbles: true
         }));
     }
+    */
 }
 PoolMinerSettingsUi.ID = 'pool-miner-settings';
-PoolMinerSettingsUi.DEFAULT_POOL_MINER_HOST = 'pool.nimiq-network.com';
-PoolMinerSettingsUi.DEFAULT_POOL_MINER_PORT = '8080';
 PoolMinerSettingsUi.KEY_USE_POOL_MINER = 'pool-miner-settings-use-pool';
+PoolMinerSettingsUi.KEY_SELECTED_POOL = 'pool-miner-settings-selected-pool';
+
+
+class MiningPoolInfoUi {
+    constructor(el) {
+        this._el = el;
+        this._name = el.querySelector('#mining-pool-info-name');
+        this._host = el.querySelector('#mining-pool-info-host');
+        this._port = el.querySelector('#mining-pool-info-port');
+        this._description = el.querySelector('#mining-pool-info-description');
+        this._fees = el.querySelector('#mining-pool-info-fees');
+        this._payouts = el.querySelector('#mining-pool-info-payouts');
+        el.querySelector('#mining-pool-info-close').addEventListener('click', this.hide.bind(this));
+        el.addEventListener('click', event => {
+            if (event.srcElement === el) {
+                // clicked on the background container
+                this.hide();
+            }
+        });
+    }
+
+    set miningPool(miningPool) {
+        this._name.textContent = miningPool.name;
+        this._host.textContent = miningPool.host;
+        this._port.textContent = miningPool.port;
+        this._description.textContent = miningPool.description;
+        this._fees.textContent = miningPool.fees;
+        this._payouts.textContent = miningPool.payouts;
+    }
+
+    show(miningPool) {
+        if (miningPool) {
+            this.miningPool = miningPool;
+        }
+        const previousOverlay = document.body.getAttribute('overlay');
+        if (previousOverlay !== this.constructor.ID) {
+            this._previousOverlay = previousOverlay;
+        }
+        document.body.setAttribute('overlay', this.constructor.ID);
+    }
+
+    hide() {
+        if (this._previousOverlay) {
+            document.body.setAttribute('overlay', this._previousOverlay);
+        } else {
+            document.body.removeAttribute('overlay');
+        }
+    }
+}
+MiningPoolInfoUi.ID = 'mining-pool-info';

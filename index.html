@@ -2376,12 +2376,19 @@
             <div id="pool-miner-settings" panel>
                 <div class="settings-container">
                     <div class="row">
+                        <div class="label">Mining Pool:</div>
+                        <select id="pool-miner-settings-pool-select">
+                            <option value="" disabled selected hidden>Select Mining Pool</option>
+                        </select>
+                        <img id="pool-miner-settings-pool-info" class="info-icon" src="images/info-icon.svg">
+                    </div>
+                    <div class="row" id="pool-miner-settings-connection">
                         <div class="label">Connection Status: <span id="pool-miner-settings-connection-status">Disconnected</span></div>
                         <button id="pool-miner-settings-connect-button">Connect</button>
                     </div>
                     <div class="row show-when-connected">
                         <div class="label">Current pool balance: <span id="pool-miner-settings-pool-balance">Loading...</span></div>
-                        <button id="pool-miner-settings-payout-button">Payout</button>
+                        <!--<button id="pool-miner-settings-payout-button">Payout</button>-->
                     </div>
                     <div class="show-when-connected" id="pool-miner-payout-notice">Payout requested. Payouts are typically processed within 24 hours.</div>
                 </div>
@@ -2477,6 +2484,48 @@
         <img src="images/close.svg" />
     </button>
 </div>
+
+
+<!-- Mining Pool Info -->
+
+<div id="mining-pool-info" class="overlay-root">
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-head">
+                <div class="overlay-head-col left">
+                    <p class="label small">Mining Pool</p>
+                    <p id="mining-pool-info-name"></p>
+                </div>
+            </div>
+            <div class="block-detail-container">
+                <div class="block-detail-row">
+                    <p class="block-detail-label">Host</p>
+                    <p class="block-detail-info uppercase" id="mining-pool-info-host"></p>
+                </div>
+                <div class="block-detail-row">
+                    <p class="block-detail-label">Port</p>
+                    <p class="block-detail-info uppercase" id="mining-pool-info-port"></p>
+                </div>
+                <div class="block-detail-row">
+                    <p class="block-detail-label">Description</p>
+                    <p class="block-detail-info uppercase" id="mining-pool-info-description"></p>
+                </div>
+                <div class="block-detail-row">
+                    <p class="block-detail-label">Fees</p>
+                    <p class="block-detail-info uppercase" id="mining-pool-info-fees"></p>
+                </div>
+                <div class="block-detail-row">
+                    <p class="block-detail-label">Payouts</p>
+                    <p class="block-detail-info uppercase" id="mining-pool-info-payouts"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="overlay-close" id="mining-pool-info-close">
+        <img src="images/close.svg" />
+    </button>
+</div>
+
 
 <!-- Disclaimer -->
 <a id="disclaimer" href="#" class="overlay-root">

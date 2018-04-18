@@ -897,7 +897,6 @@ input:-moz-placeholder {
 
 .overlay-head {
     padding: 32px;
-    height: 100%;
     display: flex;
     justify-content: space-between;
     background: rgba(3,32,71,.03);
@@ -999,6 +998,7 @@ input:-moz-placeholder {
     padding: 0;
     font-size: 16px;
     flex-direction: row;
+    align-items: center;
 }
 
 [panel] .settings-container .row .label {
@@ -1013,17 +1013,35 @@ input:-moz-placeholder {
     font-weight: bold;
     opacity: .85;
     transition: opacity .3s;
+    padding: 0;
 }
 
 [panel] .settings-container .row button:hover {
     opacity: 1;
 }
 
+[panel] .settings-container .row select {
+    background-color: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    color: rgba(255,255,255,.7);
+    outline: none !important;
+    border: none;
+    text-align: right;
+    text-align-last: right;
+    padding-right: 4px;
+}
+
+[panel] .settings-container .row select option {
+    color: black;
+}
+
 
 /* Overlay State */
 
 body[overlay="bottom-panels"] .fact,
-body[overlay="block-detail"] .fact {
+body[overlay="block-detail"] .fact,
+body[overlay="mining-pool-info"] .fact {
     opacity: .7;
 }
 
@@ -1031,7 +1049,8 @@ body[overlay="bottom-panels"] #map {
     filter: blur(10px);
 }
 
-body[overlay="block-detail"] .miner-container {
+body[overlay="block-detail"] .miner-container,
+body[overlay="mining-pool-info"] .miner-container {
     filter: blur(10px);
 }
 
@@ -1039,7 +1058,8 @@ body[overlay="block-detail"].mobile-landscape .miner-container {
     filter: none;
 }
 
-body[overlay="block-detail"] #block-detail {
+body[overlay="block-detail"] #block-detail,
+body[overlay="mining-pool-info"] #mining-pool-info {
     display: flex;
 }
 
