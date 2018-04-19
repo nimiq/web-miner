@@ -145,15 +145,16 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     _connect() {
+        const previousMiningPool = this.selectedMiningPoolId;
+        this.selectedMiningPoolId = this._poolSelector.value; // set as selected pool when user actually connects
         this.isPoolMinerEnabled = true;
         if (!this._poolSelector.value) return;
         let switchingPool = false;
-        if (this._poolSelector.value !== this.selectedMiningPoolId) {
+        if (previousMiningPool && this._poolSelector.value !== previousMiningPool) {
             // disconnect from previous pool
             this._poolMiner.disconnect();
             switchingPool = true;
         }
-        this.selectedMiningPoolId = this._poolSelector.value; // set as selected pool when user actually connects
         if (this._poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED && !switchingPool) return;
         const {host, port} = this.settings;
         this._poolMiner.connect(host, port);
