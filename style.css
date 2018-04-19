@@ -936,10 +936,6 @@ input:-moz-placeholder {
     margin-top: 16px;
 }
 
-.overlay-detail-row p {
-    line-height: 1;
-}
-
 .overlay-detail-row:first-child {
     margin-top: 0;
 }

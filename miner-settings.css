@@ -102,4 +102,20 @@ body[network="main"] #mining-pool-info {
     display: none !important;
 }
 
+#mining-pool-info .overlay-container {
+    max-width: 800px;
+}
 
+#mining-pool-info #mining-pool-info-name {
+    color: inherit;
+}
+
+#mining-pool-info .overlay-detail-row {
+    text-align: left;
+    justify-content: flex-start;
+}
+
+#mining-pool-info .overlay-detail-label {
+    width: 96px;
+    flex-shrink: 0;
+}
