@@ -1,12 +1,12 @@
 [{
-  "name": "Nimiq Testnet Mining Pool",
+  "name": "nimiq-testnet.com",
   "host": "pool.nimiq-testnet.com",
   "port": "8444",
   "description": "Mine as part of a pool of several miners and get shares of the collective block rewards of the mining pool according to your hash rate.",
   "fees": "1%",
   "payouts": "Mining rewards get automatically payed out every 15 minutes (but might take longer in testnet)."
 }, {
-  "name": "Nimiq Watch Mining Pool",
+  "name": "nimiq.watch",
   "host": "pool.nimiq.watch",
   "port": "8443",
   "description": "Mine as part of a pool of several miners and get shares of the collective block rewards of the mining pool according to your hash rate.",
