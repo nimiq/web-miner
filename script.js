@@ -139,13 +139,6 @@ class App {
                     $.mempool = $.consensus.mempool;
                     $.network = $.consensus.network;
                     $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
-                    $.miner = new Nimiq.Miner($.blockchain, $.accounts, $.mempool, $.network.time, $.address);
-                    $.miner.on('block-mined', (block) => _paq.push(['trackEvent', 'Miner', 'block-mined']));
-                    // TODO reenable for pool
-                    if (App.NETWORK !== 'main') {
-                        $.poolMiner = new Nimiq.SmartPoolMiner($.blockchain, $.accounts, $.mempool, $.network.time,
-                            $.address, Nimiq.BasePoolMiner.generateDeviceId($.network.config));
-                    }
                     window.$ = $;
                     resolve($);
                 } catch(e) {

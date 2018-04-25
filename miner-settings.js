@@ -44,7 +44,6 @@ class PoolMinerSettingsUi extends Panel {
         if (App.NETWORK !== 'main') {
             this._el = el;
             this._miner = miner;
-            this._poolMiner = miner.poolMiner;
             this._poolSelector = this._el.querySelector('#pool-miner-settings-pool-select');
             this._connectionInfo = this._el.querySelector('#pool-miner-settings-connection');
             this._connectionStatus = this._el.querySelector('#pool-miner-settings-connection-status');
@@ -60,9 +59,8 @@ class PoolMinerSettingsUi extends Panel {
             this._connectButton.addEventListener('click', () => this._changeConnection());
             //this._payoutButton.addEventListener('click', () => this._requestPayout());
 
-            miner.poolMiner.on('connection-state', () => this._updateUi());
-            miner.poolMiner.on('confirmed-balance', () => this._updateUi());
-            miner.poolMiner.on('balance', () => this._updateUi());
+            this._poolEventsBound = false;
+            if (this.isPoolMinerEnabled) this._bindPoolEvents();
 
             this._initMiningPoolSelector();
         }
@@ -89,6 +87,7 @@ class PoolMinerSettingsUi extends Panel {
 
     set isPoolMinerEnabled(enabled) {
         localStorage[PoolMinerSettingsUi.KEY_USE_POOL_MINER] = enabled? 'yes' : 'no';
+        if (enabled) this._bindPoolEvents();
         this._miner.setCurrentMiner();
     }
 
@@ -135,8 +134,16 @@ class PoolMinerSettingsUi extends Panel {
         this._updateUi();
     }
 
+    _bindPoolEvents() {
+        if (this._poolEventsBound) return;
+        this._poolEventsBound = true;
+        this._miner.poolMiner.on('connection-state', () => this._updateUi());
+        this._miner.poolMiner.on('confirmed-balance', () => this._updateUi());
+        this._miner.poolMiner.on('balance', () => this._updateUi());
+    }
+
     _changeConnection() {
-        if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
+        if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
             || this._poolSelector.value !== this.selectedMiningPoolId) {
             this._connect();
         } else {
@@ -145,25 +152,26 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     _connect() {
+        if (!this._poolSelector.value) return;
         const previousMiningPool = this.selectedMiningPoolId;
         this.selectedMiningPoolId = this._poolSelector.value; // set as selected pool when user actually connects
         this.isPoolMinerEnabled = true;
-        if (!this._poolSelector.value) return;
         let switchingPool = false;
         if (previousMiningPool && this._poolSelector.value !== previousMiningPool) {
             // disconnect from previous pool
-            this._poolMiner.disconnect();
+            this._miner.poolMiner.disconnect();
             switchingPool = true;
         }
-        if (this._poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED && !switchingPool) return;
+        if (this._miner.poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED
+            && !switchingPool) return;
         const {host, port} = this.settings;
-        this._poolMiner.connect(host, port);
+        this._miner.poolMiner.connect(host, port);
     }
 
     _disconnect() {
         this.isPoolMinerEnabled = false;
-        if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
-        this._poolMiner.disconnect();
+        if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        this._miner.poolMiner.disconnect();
     }
 
 
@@ -194,11 +202,12 @@ class PoolMinerSettingsUi extends Panel {
         } else {
             this._connectionInfo.style.display = null;
         }
-        if (this._poolSelector.value !== this.selectedMiningPoolId
-            || this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+        if (!this._miner.isPoolMinerInstantiated
+            || this._poolSelector.value !== this.selectedMiningPoolId
+            || this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             this._connectionStatus.textContent = 'Disconnected';
             this._el.removeAttribute('connected');
-        } else if (this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
+        } else if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this._connectionStatus.textContent = 'Connected';
             this._el.setAttribute('connected', '');
         } else {
@@ -208,8 +217,9 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     _updateConnectButtonLabel() {
-        if (this._poolSelector.value !== this.selectedMiningPoolId
-            || this._poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+        if (!this._miner.isPoolMinerInstantiated
+            || this._poolSelector.value !== this.selectedMiningPoolId
+            || this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             this._connectButton.textContent = 'Connect';
         } else {
             this._connectButton.textContent = 'Disconnect';
@@ -217,13 +227,17 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     _updateBalance() {
-        this._balance.textContent = Nimiq.Policy.satoshisToCoins(this._poolMiner.confirmedBalance || 0).toFixed(2);
+        const balance = !this._miner.isPoolMinerInstantiated? 0 : (this._miner.poolMiner.confirmedBalance || 0);
+        this._balance.textContent =
+            Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
     }
 
     _updatePayoutStatus() {
-        this._payoutNotice.style.display = this._poolMiner.payoutRequestActive? 'block' : 'none';
-        /*this._payoutButton.style.display = poolMiner.payoutRequestActive || !poolMiner.confirmedBalance?
-            'none' : null;*/
+        this._payoutNotice.style.display =
+            this._miner.isPoolMinerInstantiated && this._miner.poolMiner.payoutRequestActive? 'block' : 'none';
+        /*this._payoutButton.style.display =
+            !this._miner.isPoolMinerInstantiated || poolMiner.payoutRequestActive || !poolMiner.confirmedBalance
+            ? 'none' : null;*/
     }
 
     async _showPoolInfo() {
@@ -239,7 +253,7 @@ class PoolMinerSettingsUi extends Panel {
 
     /*
     _requestPayout() {
-        this._poolMiner.requestPayout();
+        this._miner.poolMiner.requestPayout();
         this._payoutNotice.style.display = 'block;
         this._el.dispatchEvent(new CustomEvent('resize', {
             bubbles: true
