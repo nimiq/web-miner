@@ -208,9 +208,7 @@ App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://k
         : `${location.origin}/libraries/keyguard/src`;
 
 App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
-    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://cdn.nimiq-testnet.com/nimiq.js'
-        : 'https://cdn.nimiq-network.com/branches/marvin-pool/nimiq.js';
-        //: 'https://cdn.nimiq-testnet.com/nimiq.js'; // TODO change back
+    : 'https://cdn.nimiq-testnet.com/nimiq.js';
 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : 'test';

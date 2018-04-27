@@ -382,6 +382,7 @@ class Miner {
     startMining() {
         this.paused = false;
         if (!this.$.consensus.established) return; // will pick up mining when we have consensus
+        this._currentMiner.threads = this.threads || this._currentMiner.threads;
         if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
             this._startPoolMiner();
         } else {
@@ -418,6 +419,7 @@ class Miner {
     stopMining(disableRestart = true) {
         if (disableRestart) this.paused = true;
         this._currentMiner.stopWork();
+        this._currentMiner.threads = 0;
         if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
             this._currentMiner.disconnect();
         }
@@ -425,13 +427,12 @@ class Miner {
     }
 
     set threads(threadCount) {
-        if (this._soloMiner) this._soloMiner.threads = threadCount;
-        if (this._poolMiner) this._poolMiner.threads = threadCount;
+        if (this._currentMiner) this._currentMiner.threads = threadCount;
         this.ui.minerSettingsUi.threads = threadCount;
     }
 
     get threads() {
-        return this.ui? this.ui.minerSettingsUi.threads : undefined;
+        return this.ui.minerSettingsUi.threads;
     }
 
     get hashrate() {
@@ -452,7 +453,6 @@ class Miner {
         this._soloMiner = new Nimiq.Miner(this.$.blockchain, this.$.accounts, this.$.mempool, this.$.network.time,
             this.$.address);
         console.log('Solo Miner instantiated');
-        if (this.threads) this._soloMiner.threads = this.threads;
         this._soloMiner.on('block-mined', () => _paq.push(['trackEvent', 'Miner', 'block-mined']));
         this._soloMiner.on('hashrate-changed', () => this._onHashrateChanged());
         this._soloMiner.on('start', () => this._onMinerChanged());
@@ -465,7 +465,6 @@ class Miner {
         this._poolMiner = new Nimiq.SmartPoolMiner(this.$.blockchain, this.$.accounts, this.$.mempool,
             this.$.network.time, this.$.address, Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config));
         console.log('Pool Miner instantiated');
-        if (this.threads) this._poolMiner.threads = this.threads;
         this._poolMiner.on('hashrate-changed', () => this._onHashrateChanged());
         this._poolMiner.on('start', () => this._onMinerChanged());
         this._poolMiner.on('stop', () => this._onMinerChanged());
