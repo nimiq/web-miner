@@ -9,12 +9,11 @@ class BlockExplorerUi extends Panel {
         this._entries = [];
         this._visible = false;
         this._blockchain.on('head-changed', this._onHeadChanged.bind(this));
-        this._onConsensus = this._onConsensus.bind(this);
-        this._consensus.on('established', this._onConsensus);
+        this._consensusListenerId = this._consensus.on('established', () => this._onConsensus());
     }
 
     _onConsensus() {
-		this._consensus.off('established', this._onConsensus);
+		this._consensus.off('established', this._consensusListenerId);
 		this._fillList(this._blockchain.head);
     }
 

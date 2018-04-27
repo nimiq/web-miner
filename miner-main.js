@@ -464,16 +464,15 @@ class Miner {
         }
 
         // still connecting or disconnected
-        const onConnectionChange = connectionState => {
+        const connectionListenerId = this.poolMiner.on('connection-state', connectionState => {
             if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) return;
             // connection established or closed again
-            this.poolMiner.off('connection-state', onConnectionChange);
+            this.poolMiner.off('connection-state', connectionListenerId);
             if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED
                 && !this.paused && this._currentMiner === this.poolMiner) {
                 this.poolMiner.startWork();
             }
-        };
-        this.poolMiner.on('connection-state', onConnectionChange);
+        });
 
         this._connectPoolMiner();
     }
