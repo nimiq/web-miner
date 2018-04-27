@@ -575,18 +575,18 @@ header #warning-testnet {
     }
 }
 
-.synced #my-hashrate[bottom-panel-trigger] .info-icon,
-.synced #pool-miner[bottom-panel-trigger] .info-icon {
+#my-hashrate[bottom-panel-trigger] .info-icon,
+#pool-miner[bottom-panel-trigger] .info-icon {
     display: inline-block;
 }
 
-.synced #my-hashrate[bottom-panel-trigger],
-.synced #pool-miner[bottom-panel-trigger] {
+#my-hashrate[bottom-panel-trigger],
+#pool-miner[bottom-panel-trigger] {
     cursor: pointer;
 }
 
-.synced #my-hashrate[bottom-panel-trigger]:hover,
-.synced #pool-miner[bottom-panel-trigger]:hover {
+#my-hashrate[bottom-panel-trigger]:hover,
+#pool-miner[bottom-panel-trigger]:hover {
     background: rgba(255,255,255,0.08);
 }
 

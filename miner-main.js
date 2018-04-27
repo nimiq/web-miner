@@ -347,85 +347,6 @@ class Miner {
         this._onHeadChanged();
     }
 
-    setCurrentMiner(miner = null) {
-        if (miner) {
-            this.ui.poolMinerSettingsUi.isPoolMinerEnabled = miner instanceof Nimiq.BasePoolMiner;
-        } else {
-            miner = this.ui.poolMinerSettingsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
-        }
-        if (miner === this._currentMiner) return;
-        if (this._currentMiner) {
-            this.stopMining(false);
-        }
-        this._currentMiner = miner;
-
-        if (!(this._currentMiner  instanceof Nimiq.BasePoolMiner)) {
-            this.ui.facts.poolBalance = 'off';
-            this.ui.hidePoolMinerConnectionWarning();
-        }
-
-        if (!this.paused) {
-            this.startMining();
-        } else {
-            this.stopMining(false);
-        }
-    }
-
-    toggleMining() {
-        if (!this.paused) {
-            this.stopMining();
-        } else {
-            this.startMining();
-        }
-    }
-
-    startMining() {
-        this.paused = false;
-        if (!this.$.consensus.established) return; // will pick up mining when we have consensus
-        this._currentMiner.threads = this.threads || this._currentMiner.threads;
-        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-            this._startPoolMiner();
-        } else {
-            this._currentMiner.startWork();
-        }
-        this._onMinerChanged();
-    }
-
-    _startPoolMiner() {
-        if (this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
-            this.poolMiner.startWork();
-            return;
-        }
-
-        // still connecting or disconnected
-        const onConnectionChange = connectionState => {
-            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) return;
-            // connection established or closed again
-            this.poolMiner.off('connection-state', onConnectionChange);
-            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED
-                && !this.paused && this._currentMiner === this.poolMiner) {
-                this.poolMiner.startWork();
-            }
-        };
-        this.poolMiner.on('connection-state', onConnectionChange);
-
-        if (this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
-            // we need to connect
-            const { host, port } = this.ui.poolMinerSettingsUi.settings;
-            this.poolMiner.connect(host, port);
-        }
-    }
-
-    stopMining(disableRestart = true) {
-        if (disableRestart) this.paused = true;
-        this._currentMiner.stopWork();
-        this._currentMiner.threads = 0;
-        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-            this._currentMiner.disconnect();
-        }
-        this._onMinerChanged();
-    }
-
     set threads(threadCount) {
         if (this._currentMiner) this._currentMiner.threads = threadCount;
         this.ui.minerSettingsUi.threads = threadCount;
@@ -475,6 +396,92 @@ class Miner {
 
     get isPoolMinerInstantiated() {
         return !!this._poolMiner;
+    }
+
+    setCurrentMiner(miner = null) {
+        if (miner) {
+            this.ui.poolMinerSettingsUi.isPoolMinerEnabled = miner instanceof Nimiq.BasePoolMiner;
+        } else {
+            miner = this.ui.poolMinerSettingsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
+        }
+        if (miner === this._currentMiner) return;
+
+        if (this._currentMiner) {
+            this.stopMining(false);
+            if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
+                this.ui.facts.poolBalance = 'off';
+                this.ui.hidePoolMinerConnectionWarning();
+            }
+        }
+
+        this._currentMiner = miner;
+
+        if (!this.paused) {
+            this.startMining();
+            if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
+                // already manually connect to pool in the case that mining doesn't start when not synced yet
+                this._connectPoolMiner();
+            }
+        } else {
+            this.stopMining(false);
+        }
+    }
+
+    toggleMining() {
+        if (!this.paused) {
+            this.stopMining();
+        } else {
+            this.startMining();
+        }
+    }
+
+    stopMining(disableRestart = true) {
+        if (disableRestart) this.paused = true;
+        this._currentMiner.stopWork();
+        this._currentMiner.threads = 0;
+        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
+            this._currentMiner.disconnect();
+        }
+        this._onMinerChanged();
+    }
+
+    startMining() {
+        this.paused = false;
+        if (!this.$.consensus.established) return; // will pick up mining when we have consensus
+        this._currentMiner.threads = this.threads || this._currentMiner.threads;
+        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
+            this._startPoolMiner();
+        } else {
+            this._currentMiner.startWork();
+        }
+        this._onMinerChanged();
+    }
+
+    _startPoolMiner() {
+        if (this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
+            this.poolMiner.startWork();
+            return;
+        }
+
+        // still connecting or disconnected
+        const onConnectionChange = connectionState => {
+            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) return;
+            // connection established or closed again
+            this.poolMiner.off('connection-state', onConnectionChange);
+            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED
+                && !this.paused && this._currentMiner === this.poolMiner) {
+                this.poolMiner.startWork();
+            }
+        };
+        this.poolMiner.on('connection-state', onConnectionChange);
+
+        this._connectPoolMiner();
+    }
+
+    _connectPoolMiner() {
+        if (this.poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        const { host, port } = this.ui.poolMinerSettingsUi.settings;
+        this.poolMiner.connect(host, port);
     }
 
     _onConsensusEstablished() {
