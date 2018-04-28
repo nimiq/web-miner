@@ -339,6 +339,8 @@ header #warning-testnet {
     padding: 32px;
     margin: auto;
     box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
 }
 
 #disclaimer-modal p {
@@ -811,7 +813,7 @@ input:-moz-placeholder {
 /* Overlay Context State */
 
 .overlay-root {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
@@ -820,8 +822,6 @@ input:-moz-placeholder {
     justify-content: center;
     align-items: center;
     background: rgba(0,0,0,0.3);
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 #bottom-panels-exit {
@@ -839,10 +839,12 @@ input:-moz-placeholder {
     border-radius: 3px;
     box-shadow: 0 2px 44px 0 rgba(0,0,0,0.3);
     font-size: 22px;
-    overflow: auto;
     position: relative;
     z-index: 2;
     pointer-events: all;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .overlay-close {
@@ -867,7 +869,7 @@ input:-moz-placeholder {
     position: relative;
     pointer-events: none;
     margin-top: 64px;
-    min-height: calc(100% - 64px);
+    height: calc(100% - 64px);
 }
 
 .overlay-container > * {
@@ -928,6 +930,8 @@ input:-moz-placeholder {
 
 .overlay .overlay-detail-container {
     padding: 32px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .overlay-detail-row {
@@ -1244,8 +1248,7 @@ body[overlay="mining-pool-info"] #mining-pool-info {
 
 @media (max-width: 470px) {
     .overlay-container {
-        max-height: none;
-        padding: 80px 8px 8px;
+        padding: 8px;
     }
 
     .overlay-close {
@@ -1258,9 +1261,23 @@ body[overlay="mining-pool-info"] #mining-pool-info {
     }
 }
 
+@media (max-width: 420px) {
+    [panel] .label {
+        letter-spacing: .5px;
+    }
+
+    .overlay-detail-label {
+        margin-right: 24px !important;
+    }
+}
+
 @media (max-width: 380px) {
     .hide-mobile {
         display: none;
+    }
+
+    [panel] .label {
+        letter-spacing: initial;
     }
 }
 
