@@ -254,24 +254,6 @@ header #warning-testnet {
     font-size: 45px;
 }
 
-@media (max-width: 375px) {
-    .landing-warning, .warning-advice {
-        font-size: 22px;
-    }
-    .landing-warning {
-        top: 57%;
-    }
-    #warning-no-localstorage {
-        top: 52%;
-    }
-    #progress {
-        font-size: 24px;
-    }
-    .miner-warning {
-        font-size: 22px;
-    }
-}
-
 #warning-mobile-landscape {
     display: none;
     animation: none !important;
@@ -1262,8 +1244,18 @@ body[overlay="mining-pool-info"] #mining-pool-info {
 }
 
 @media (max-width: 420px) {
+    .miner-warning,
+    #progress {
+        font-size: 22px;
+    }
+
     [panel] .label {
         letter-spacing: .5px;
+        font-size: 16px;
+    }
+
+    [panel] .settings-container .row {
+        font-size: 14px;
     }
 
     .overlay-detail-label {
@@ -1279,6 +1271,16 @@ body[overlay="mining-pool-info"] #mining-pool-info {
     [panel] .label {
         letter-spacing: initial;
     }
+
+    .landing-warning, .warning-advice {
+        font-size: 22px;
+    }
+    .landing-warning {
+        top: 57%;
+    }
+    #warning-no-localstorage {
+        top: 52%;
+    }
 }
 
 @media (max-width: 360px) {
@@ -1288,5 +1290,38 @@ body[overlay="mining-pool-info"] #mining-pool-info {
 
     .overlay-head-col {
         text-align: left;
+    }
+}
+
+/* small mobile screens */
+@media (max-width: 420px) and (max-height: 600px) {
+    .facts .label {
+        font-size: 10px;
+    }
+
+    .facts .number {
+        font-size: 24px;
+    }
+
+    .facts .unit {
+        font-size: 13px;
+    }
+
+    [bottom-panel-trigger] .info-icon {
+        height: 10px;
+        width: 10px;
+    }
+
+    #block-loader {
+        height: 18px;
+    }
+
+    #factBalanceContainerInner {
+        min-width: initial;
+    }
+
+    #factBalanceContainerInner img {
+        width: 16px;
+        margin-left: 4px;
     }
 }
