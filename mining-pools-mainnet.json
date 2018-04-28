@@ -1,1 +1,8 @@
-[]
+[, {
+    "name": "nimiq.watch",
+    "host": "pool.nimiq.watch",
+    "port": "8443",
+    "description": "Mine as part of the nimiq.watch mining pool and get shares of the mined block rewards according to your hash rate.",
+    "fees": "1%",
+    "payouts": "Automatic payouts every 6 hours"
+  }]
