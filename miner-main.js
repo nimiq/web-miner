@@ -11,7 +11,10 @@ class FactsUI {
         this._myBalanceContainer = document.getElementById('factBalanceContainer');
         this._myBalanceContainerInner = document.getElementById('factBalanceContainerInner');
         this._poolBalance = document.getElementById('factPoolMinerBalance');
+        this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._averageBlockReward = document.getElementById('factAverageBlockReward');
+        this._rewardInfoSoloMiner = document.getElementById('rewardInfoSoloMiner');
+        this._rewardInfoPoolMiner = document.getElementById('rewardInfoPoolMiner');
         this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
@@ -37,6 +40,16 @@ class FactsUI {
         this._setHashrate(hashrate, 'global');
     }
 
+    set poolEnabled(poolEnabled) {
+        if (poolEnabled) {
+            this._rewardInfoSoloMiner.style.display = 'none';
+            this._rewardInfoPoolMiner.style.display = 'inline';
+        } else {
+            this._rewardInfoSoloMiner.style.display = 'inline';
+            this._rewardInfoPoolMiner.style.display = 'none';
+        }
+    }
+
     set averageBlockReward(satoshis) {
         if (!satoshis) {
             this._averageBlockReward.textContent = '0 NIM';
@@ -48,6 +61,30 @@ class FactsUI {
         } else {
             this._averageBlockReward.textContent = nims.toFixed(2) + ' NIM';
         }
+    }
+
+    set expectedHashTime(expectedHashTime) {
+        if (!Number.isFinite(expectedHashTime)) {
+            this._expectedHashTime.innerHTML = '&infin; years';
+            return;
+        }
+
+        // the time is given in seconds. Convert it to an appropriate base unit:
+        let timesteps = [{ unit: 'minutes', factor: 60 }, { unit: 'hours', factor: 60 }, { unit: 'days', factor: 24 },
+            { unit: 'months', factor: 365 / 12 }, { unit: 'years', factor: 12 }, { unit: 'decades', factor: 10 }
+        ];
+        let convertedTime = expectedHashTime;
+        let unit = 'seconds';
+        for (let i = 0; i < timesteps.length; ++i) {
+            let timestep = timesteps[i];
+            if (convertedTime / timestep.factor < 1) {
+                break;
+            } else {
+                convertedTime /= timestep.factor;
+                unit = timestep.unit;
+            }
+        }
+        this._expectedHashTime.textContent = convertedTime.toFixed(1) + ' ' + unit;
     }
 
     set myBalance(balance) {
@@ -199,6 +236,7 @@ class MinerUI {
         this._toggleMinerBtn.innerText = 'Resume Mining';
         this.facts.myHashrate = 0;
         this.facts.averageBlockReward = 0;
+        this.facts.expectedHashTime = Number.POSITIVE_INFINITY;
         if (this._warningPoolConnection.style.opacity === '1' || this._warningDisconnected.style.opacity === '1') return;
         this._warningMinerStopped.style.display = 'block';
         this._warningMinerStopped.offsetWidth; // enforce style update
@@ -425,6 +463,8 @@ class Miner {
         } else {
             this.stopMining(false);
         }
+
+        this.ui.facts.poolEnabled = this._currentMiner instanceof Nimiq.BasePoolMiner;
     }
 
     toggleMining() {
@@ -583,16 +623,25 @@ class Miner {
     _onGlobalHashrateChanged() {
         this.ui.facts.globalHashrate = this.globalHashrate;
         this._onAverageBlockRewardChanged();
+        this._onExpectedHashTimeChanged();
     }
 
     _onHashrateChanged() {
         this.ui.facts.myHashrate = this.hashrate;
         this._onAverageBlockRewardChanged();
+        this._onExpectedHashTimeChanged();
     }
 
     _onAverageBlockRewardChanged() {
+        if (!this.ui.poolMinerSettingsUi.isPoolMinerEnabled) return;
         this.ui.facts.averageBlockReward =
-            (this.hashrate / this.globalHashrate) * Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
+            Math.min(1, this.hashrate / this.globalHashrate) * Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
+    }
+
+    _onExpectedHashTimeChanged() {
+        if (this.ui.poolMinerSettingsUi.isPoolMinerEnabled) return;
+        const myWinProbability = this.hashrate / this.globalHashrate;
+        this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
     async _onBalanceChanged(account) {

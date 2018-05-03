@@ -2234,7 +2234,7 @@
                 </g>
             </svg>
             <div id="create-wallet-prompt">
-                <h2>To start mining create a wallet.</h2>
+                <h2>To start mining create an account.</h2>
                 <div class="button" id="createAccountButton">
                     Let's Go
                 </div>
@@ -2353,8 +2353,14 @@
                     The block <span class="hide-mobile">mining</span> reward is
                     <b><span id="factBlockReward">x</span> NIM</b>.
                 </span>
-                At your current hashrate you get
-                <b id="factAverageBlockReward">x NIM</b> on average per block.
+                <span id="rewardInfoSoloMiner">
+                    At your current hashrate you can expect to mine a block every
+                    <b id="factExpectedHashTime">x hours</b>.
+                </span>
+                <span id="rewardInfoPoolMiner">
+                    At your current hashrate you get
+                    <b id="factAverageBlockReward">x NIM</b> on average per block.
+                </span>
                 <a href="#" id="toggleMinerBtn">Pause Mining</a>
                 <br>
                 <a href="#disclaimer">Disclaimer</a>

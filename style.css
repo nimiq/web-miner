@@ -497,6 +497,10 @@ header #warning-testnet {
     pointer-events: all;
 }
 
+#rewardInfoPoolMiner {
+    display: none;
+}
+
 @media (max-width: 359px) {
     #rewardInfoAmount {
         display: none;
