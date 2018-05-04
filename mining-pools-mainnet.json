@@ -62,5 +62,13 @@
     "description": "Mine as One and Enjoy the 🍣. 0% Fee for the First Month!",
     "fees": "0%",
     "payouts": "Automatic payouts every 3 hours"
+  },
+  {
+    "name": "NimiqPool.com",
+    "host": "node.nimiqpool.com",
+    "port": "8444",
+    "description": "Mine as part of the NimiqPool and get shares of the mined block rewards according to your hash rate.",
+    "fees": "1%",
+    "payouts": "Secure and Automatic payouts every 3 hours"
   }
 ]
