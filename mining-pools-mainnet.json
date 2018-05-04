@@ -24,14 +24,6 @@
     "payouts": "Automatic payouts every 3 hours"
   },
   {
-    "name": "skypool.org",
-    "host": "sh0-nimiq.skypool.xyz",
-    "port": "8444",
-    "description": "visit https://nimiq.skypool.org for the best mining hashrate",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 6 hours"
-  },
-  {
     "name": "Beeppool",
     "host": "beeppool.org/ws",
     "port": "443",
