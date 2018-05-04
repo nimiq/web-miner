@@ -114,12 +114,21 @@ class PoolMinerSettingsUi extends Panel {
                 const file = App.NETWORK === 'main' ? 'mining-pools-mainnet.json' : 'mining-pools-testnet.json';
                 const url = window.location.origin.indexOf('localhost') !== -1 ? `/apps/miner/${file}` : `/${file}`;
                 const response = await fetch(url);
-                resolve(response.json());
+                const pools = this._shuffleArray(await response.json());
+                resolve(pools);
             } catch(e) {
                 reject(e);
             }
         });
         return this._loadMiningPoolsPromise;
+    }
+
+    _shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 
     async _initMiningPoolSelector() {
