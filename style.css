@@ -578,11 +578,6 @@ header #warning-testnet {
     background: rgba(255,255,255,0.08);
 }
 
-/* TODO reenable for pool */
-body[network="main"] #pool-miner {
-    display: none !important;
-}
-
 #factBalanceContainer {
     display: flex;
     justify-content: center;

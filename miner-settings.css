@@ -96,12 +96,6 @@ input[type=range]:focus {
     opacity: .9;
 }
 
-/* TODO reenable for pool */
-body[network="main"] #pool-miner-settings,
-body[network="main"] #mining-pool-info {
-    display: none !important;
-}
-
 #mining-pool-info .overlay-container {
     max-width: 800px;
 }

@@ -40,30 +40,27 @@ MinerSettingsUi.KEY_THREAD_COUNT = 'miner-settings-thread-count';
 class PoolMinerSettingsUi extends Panel {
     constructor(el, miner) {
         super(PoolMinerSettingsUi.ID, el);
-        // TODO reenable for pool
-        if (App.NETWORK !== 'main') {
-            this._el = el;
-            this._miner = miner;
-            this._poolSelector = this._el.querySelector('#pool-miner-settings-pool-select');
-            this._connectionInfo = this._el.querySelector('#pool-miner-settings-connection');
-            this._connectionStatus = this._el.querySelector('#pool-miner-settings-connection-status');
-            this._connectButton = this._el.querySelector('#pool-miner-settings-connect-button');
-            this._balance = this._el.querySelector('#pool-miner-settings-pool-balance');
-            //this._payoutButton = this._el.querySelector('#pool-miner-settings-payout-button');
-            this._payoutNotice = this._el.querySelector('#pool-miner-payout-notice');
-            this._poolInfoButton = this._el.querySelector('#pool-miner-settings-pool-info');
-            this._poolInfoUi = new MiningPoolInfoUi(document.querySelector('#mining-pool-info'));
+        this._el = el;
+        this._miner = miner;
+        this._poolSelector = this._el.querySelector('#pool-miner-settings-pool-select');
+        this._connectionInfo = this._el.querySelector('#pool-miner-settings-connection');
+        this._connectionStatus = this._el.querySelector('#pool-miner-settings-connection-status');
+        this._connectButton = this._el.querySelector('#pool-miner-settings-connect-button');
+        this._balance = this._el.querySelector('#pool-miner-settings-pool-balance');
+        //this._payoutButton = this._el.querySelector('#pool-miner-settings-payout-button');
+        this._payoutNotice = this._el.querySelector('#pool-miner-payout-notice');
+        this._poolInfoButton = this._el.querySelector('#pool-miner-settings-pool-info');
+        this._poolInfoUi = new MiningPoolInfoUi(document.querySelector('#mining-pool-info'));
 
-            this._poolSelector.addEventListener('change', () => this._updateUi());
-            this._poolInfoButton.addEventListener('click', () => this._showPoolInfo());
-            this._connectButton.addEventListener('click', () => this._changeConnection());
-            //this._payoutButton.addEventListener('click', () => this._requestPayout());
+        this._poolSelector.addEventListener('change', () => this._updateUi());
+        this._poolInfoButton.addEventListener('click', () => this._showPoolInfo());
+        this._connectButton.addEventListener('click', () => this._changeConnection());
+        //this._payoutButton.addEventListener('click', () => this._requestPayout());
 
-            this._poolEventsBound = false;
-            if (this.isPoolMinerEnabled) this._bindPoolEvents();
+        this._poolEventsBound = false;
+        if (this.isPoolMinerEnabled) this._bindPoolEvents();
 
-            this._initMiningPoolSelector();
-        }
+        this._initMiningPoolSelector();
     }
 
     get settings() {
@@ -76,8 +73,6 @@ class PoolMinerSettingsUi extends Panel {
     }
 
     static get isPoolMinerEnabled() {
-        // TODO reenable for pool
-        if (App.NETWORK === 'main') return false;
         return localStorage[PoolMinerSettingsUi.KEY_USE_POOL_MINER]==='yes';
     }
 
