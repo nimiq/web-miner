@@ -363,20 +363,22 @@ header #warning-testnet {
 }
 
 #initialLoadingSpinner {
-    display: block;
+    display: none;
     margin: auto;
-    animation: 1s fade-in 1s both;
+    animation: .7s fade-in .1s both;
     width: 56px;
 }
 
 .warning #initialLoadingSpinner,
-.warning #landing-disclaimer {
-    display: none;
+.warning #landing-disclaimer,
+.warning #connectBtn,
+.warning #create-account-prompt {
+    display: none !important;
 }
 
-#create-wallet-prompt {
+#create-account-prompt {
     display: none;
-    animation: 700ms fade-in 700ms both;
+    animation: .7s fade-in .7s both;
 }
 
 #connectBtn,
@@ -401,7 +403,7 @@ header #warning-testnet {
 
 #connectBtn {
     display: none;
-    animation: 700ms fade-in 700ms both;
+    animation: 700ms fade-in 300ms both;
 }
 
 #miningSection {

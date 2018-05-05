@@ -45,12 +45,10 @@ class MinerPolicy {
 class App {
     constructor() {
         document.body.setAttribute('network', App.NETWORK);
-        this.$loadingSpinner = document.querySelector('#initialLoadingSpinner');
-        this.$walletPromptUi = document.querySelector('#create-wallet-prompt');
+        this.$accountPromptUi = document.querySelector('#create-account-prompt');
         this.$createAccountButton = document.querySelector('#createAccountButton');
         this.$createAccountButton.addEventListener('click', () => this._createAccount());
         this.$connectButton = document.querySelector('#connectBtn');
-        this.$connectButton.addEventListener('click', () => this._miner.connect());
 
         if (App.NETWORK === 'test') {
             document.querySelector('#header-link').href = 'https://nimiq-testnet.com';
@@ -67,9 +65,11 @@ class App {
         this._keyGuardClient = await KeyguardClient.create(App.SECURE_ORIGIN,
             new MinerPolicy(), () => {});
         const minerAccount = await this.getMinerAccount();
+        this._dependenciesPromise = this._initDependencies();
         if (minerAccount) {
-            await this._initMiner();
             this._showConnectButton();
+            await this._awaitUserConnect();
+            await this._connectMiner();
         } else {
             this._showAccountCreationPrompt();
         }
@@ -78,18 +78,16 @@ class App {
     }
 
     _showAccountCreationPrompt() {
-        this.$loadingSpinner.style.display = 'none';
-        this.$walletPromptUi.style.display = 'block';
+        this.$accountPromptUi.style.display = 'block';
     }
 
     async _createAccount() {
         // needs to be called by a user interaction to open keyguard popup window
         await this._keyGuardClient.createWallet();
         const minerAccount = await this.getMinerAccount();
-        if (!minerAccount) return; // User cancelled wallet creation. Keep the prompt open.
-        this.$walletPromptUi.style.display = 'none';
-        await this._initMiner();
-        this._miner.connect();
+        if (!minerAccount) return; // User cancelled account creation. Keep the prompt open.
+        this.$accountPromptUi.style.display = 'none';
+        await this._connectMiner();
     }
 
     async _loadScript(src) {
@@ -138,7 +136,6 @@ class App {
                     $.accounts = $.blockchain.accounts;
                     $.mempool = $.consensus.mempool;
                     $.network = $.consensus.network;
-                    $.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
                     window.$ = $;
                     resolve($);
                 } catch(e) {
@@ -165,13 +162,11 @@ class App {
         });
     }
 
-    async _initMiner() {
-        this.$loadingSpinner.style.display = 'block';
+    async _initDependencies() {
         await this._loadScript(App.NIMIQ_PATH);
         _paq.push(['trackEvent', 'Loading', 'success']);
-        let $;
         try {
-            $ = (await Promise.all([
+            this.$ = (await Promise.all([
                 this._initNimiqInstance(),
                 // load scripts that depend on Nimiq script
                 this._loadScript('geoip.js'),
@@ -193,14 +188,31 @@ class App {
             }
             throw e;
         }
-        // we won't need the spinner anymore
-        this.$loadingSpinner.parentElement.removeChild(this.$loadingSpinner);
-        this.$loadingSpinner = null;
-        this._miner = new Miner($);
+    }
+
+    async _connectMiner() {
+        const $loadingSpinner = document.querySelector('#initialLoadingSpinner');
+        $loadingSpinner.style.display = 'block';
+        await this._dependenciesPromise;
+        $loadingSpinner.parentElement.removeChild($loadingSpinner);
+        this.$.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
+        this._miner = new Miner(this.$);
+        this._miner.connect();
     }
 
     _showConnectButton() {
         this.$connectButton.style.display = 'inline-block';
+    }
+
+    _awaitUserConnect() {
+        return new Promise(resolve => {
+            this.$connectButton.addEventListener('click', () => {
+                this.$connectButton.parentElement.removeChild(this.$connectButton);
+                this.$connectButton = null;
+                resolve();
+            });
+        });
+        return this._userConnectPromise;
     }
 }
 App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com'
