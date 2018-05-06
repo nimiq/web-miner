@@ -32,14 +32,6 @@
     "payouts": "Manual payout, 1-2 times a day"
   },
   {
-    "name": "bhlynd pool",
-    "host": "pool.bhlynd.nz",
-    "port": "8444",
-    "description": "Mine as part of the bhlynd mining pool and get shares of the mined block rewards according to your hash rate. Please note, the pool is only accessible from New Zealand and Australia. ",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 6 hours"
-  },
-  {
     "name": "nimiqchain.info",
     "host": "pool.nimiqchain.info",
     "port": "8444",
@@ -62,5 +54,13 @@
     "description": "Mine as part of the NimiqPool and get shares of the mined block rewards according to your hash rate.",
     "fees": "1%",
     "payouts": "Secure and Automatic payouts every 3 hours"
+  },
+  {
+    "name": "PhilPool",
+    "host": "node.philpool.com",
+    "port": "8444",
+    "description": "Enjoy low fees and mine with the philpool community, receive payouts hourly based on blockfinds and your hashrate.",
+    "fees": "0.5%",
+    "payouts": "Automatic payout every 1 hour"
   }
 ]
