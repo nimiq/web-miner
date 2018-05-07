@@ -896,6 +896,7 @@ input:-moz-placeholder {
     flex: 1;
     border-bottom: 1px solid rgba(3,32,71,0.15);
     justify-content: flex-start;
+    flex-shrink: 0;
 }
 
 .overlay-head-col .label {
@@ -917,9 +918,12 @@ input:-moz-placeholder {
 }
 
 .overlay-column-container > :first-child {
-    border-right: 1px solid rgba(3,32,71,0.15);
     box-sizing: border-box;
     flex: 0 0 auto;
+}
+
+.overlay-column-container > :not(:last-child) {
+    border-right: 1px solid rgba(3,32,71,0.15);
 }
 
 .overlay .overlay-detail-container {

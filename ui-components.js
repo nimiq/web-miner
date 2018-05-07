@@ -107,6 +107,7 @@ class BottomPanels {
             this._bottomInfo.style.visibility = 'visible';
             this._bottomInfo.style.pointerEvents = 'all';
             this._currentPanel.hide(false);
+            this._currentPanel = null;
             // set the transform again, just in case there was a resize that overwrote it
             this._container.style.transform = 'translateY(-' + BottomPanels.ALWAYS_VISIBLE_HEIGHT + ')';
         }, 500);
