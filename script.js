@@ -168,11 +168,11 @@ class App {
         try {
             this.$ = (await Promise.all([
                 this._initNimiqInstance(),
-                // load scripts that depend on Nimiq script
                 this._loadScript('geoip.js'),
                 this._loadScript('map.js'),
-                this._loadScript('block-explorer.js'),
                 this._loadScript('miner-settings.js'),
+                this._loadScript('mining-pools.js'),
+                this._loadScript('block-explorer.js'),
                 this._loadScript('update-check.js'),
                 this._loadScript('miner-main.js')
             ]))[0];
@@ -212,7 +212,6 @@ class App {
                 resolve();
             });
         });
-        return this._userConnectPromise;
     }
 }
 App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com'

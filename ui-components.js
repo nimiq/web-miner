@@ -124,7 +124,8 @@ BottomPanels.ALWAYS_VISIBLE_HEIGHT = '45px'; // upper part of the bottom panels 
 
 
 class Overlay {
-    constructor(el) {
+    constructor(id, el) {
+        this._id = id;
         this._el = el;
         el.querySelector('.overlay-close').addEventListener('click', this.hide.bind(this));
         el.addEventListener('click', event => {
@@ -137,10 +138,10 @@ class Overlay {
 
     show() {
         const previousOverlay = document.body.getAttribute('overlay');
-        if (previousOverlay !== this.constructor.ID) {
+        if (previousOverlay !== this._id) {
             this._previousOverlay = previousOverlay;
         }
-        document.body.setAttribute('overlay', this.constructor.ID);
+        document.body.setAttribute('overlay', this._id);
     }
 
     hide() {

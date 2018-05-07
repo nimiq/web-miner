@@ -5,7 +5,7 @@
     "port": "8444",
     "description": "Mine as part of a pool of several miners and get shares of the collective block rewards of the mining pool according to your hash rate.",
     "fees": "1%",
-    "payouts": "Mining rewards get automatically payed out every 15 minutes (but might take longer in testnet)."
+    "payouts": "Automatic payouts every 15 minutes."
   },
   {
     "name": "test.nimiq.watch",

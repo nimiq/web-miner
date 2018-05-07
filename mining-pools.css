@@ -1,0 +1,91 @@
+#mining-pools .overlay-container,
+#mining-pools .overlay {
+    max-width: 1000px;
+    width: 100%;
+}
+
+#mining-pools #mining-pools-list {
+    width: 250px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#mining-pools #mining-pools-list > input {
+    /* not making it display:none such that switching between list entries with arrow key is possible */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    display: block;
+}
+
+#mining-pools #mining-pools-list > label {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 32px;
+    transition: background .3s;
+    cursor: pointer;
+    text-align: left;
+    font-size: 19px;
+}
+
+#mining-pools #mining-pools-list > input:checked + label {
+    background: rgba(3,32,71,.03);
+}
+
+#mining-pools #mining-pools-list > label:hover {
+    background: #eee !important;
+}
+
+#mining-pool-detail .overlay-detail-row {
+    text-align: left;
+    justify-content: flex-start;
+}
+
+#mining-pool-detail .overlay-detail-row:first-child {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+#mining-pool-detail .overlay-detail-label {
+    width: 96px;
+    flex-shrink: 0;
+}
+
+#mining-pool-detail #mining-pool-info-name {
+    display: inline-block;
+    color: inherit;
+}
+
+#mining-pool-detail #mining-pool-connection-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px 4px;
+}
+
+#mining-pool-detail #mining-pool-connection-indicator[status="disconnected"] {
+    background: #F44336;
+}
+
+#mining-pool-detail #mining-pool-connection-indicator[status="connecting"] {
+    background: #FFC107;
+}
+
+#mining-pool-detail #mining-pool-connection-indicator[status="connected"] {
+    background: #4CAF50;
+}
+
+#mining-pool-detail:not([connected]) .show-when-connected {
+    display: none !important;
+}
+
+#mining-pool-detail .show-when-connected {
+    animation: fade-in .3s;
+}
+

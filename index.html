@@ -2292,7 +2292,7 @@
                     <span class="unit">Peers</span>
                 </div>
             </div>
-            <div class="fact" id="mining-on-block" bottom-panel-trigger>
+            <div class="fact" id="mining-on-block" trigger-fact>
                 <div>
                     <div class="label"><span id="factBlockProcessingState">Current</span> Block
                     <img class="info-icon" src="images/info-icon.svg" />
@@ -2313,7 +2313,7 @@
                     <span class="unit" id="factGlobalHashrateUnit">kH/s</span>
                 </div>
             </div>
-            <div class="fact" id="my-hashrate" bottom-panel-trigger>
+            <div class="fact" id="my-hashrate" trigger-fact>
                 <div class="label">
                     My Hashrate
                     <img class="info-icon" src="images/info-icon.svg" />
@@ -2324,7 +2324,7 @@
                 </div>
                 <div class="separator"></div>
             </div>
-            <div class="fact" id="pool-miner" bottom-panel-trigger>
+            <div class="fact" id="pool-miner" trigger-fact>
                 <div class="label">
                     Mining Pool
                     <img class="info-icon" src="images/info-icon.svg" />
@@ -2332,7 +2332,6 @@
                 <div>
                     <span class="number" id="factPoolMinerBalance">Off</span>
                 </div>
-                <div class="separator"></div>
             </div>
             <a href="#" target="nimiq-safe" id="factBalanceContainer" class="fact">
                 <div id="factBalanceContainerInner">
@@ -2376,28 +2375,6 @@
                 <div class="label">Number of threads: <span id="miner-settings-thread-count">4</span></div>
                 <input id="miner-thread-slider" type="range" min="1" step="1">
             </div>
-
-            <!-- Mining Pool Settings -->
-            <div id="pool-miner-settings" panel>
-                <div class="settings-container">
-                    <div class="row">
-                        <div class="label">Mining Pool:</div>
-                        <select id="pool-miner-settings-pool-select">
-                            <option value="" disabled selected hidden>Select Mining Pool</option>
-                        </select>
-                        <img id="pool-miner-settings-pool-info" class="info-icon" src="images/info-icon.svg">
-                    </div>
-                    <div class="row" id="pool-miner-settings-connection">
-                        <div class="label">Connection Status: <span id="pool-miner-settings-connection-status">Disconnected</span></div>
-                        <button id="pool-miner-settings-connect-button">Connect</button>
-                    </div>
-                    <div class="row show-when-connected">
-                        <div class="label">Current Pool Balance: <span id="pool-miner-settings-pool-balance">Loading...</span></div>
-                        <!--<button id="pool-miner-settings-payout-button">Payout</button>-->
-                    </div>
-                    <div class="show-when-connected" id="pool-miner-payout-notice">Payout requested. Payouts are typically processed within 24 hours.</div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -2410,14 +2387,14 @@
             <div class="overlay-head">
                 <div class="overlay-head-col left">
                     <p class="label small">Block No.</p>
-                    <p id="block-detail-block-number"></p>
+                    <p id="block-detail-block-number" class="overlay-title"></p>
                 </div>
                 <div class="overlay-head-col left">
                     <p class="label small">Hash</p>
                     <p id="block-detail-block-hash"></p>
                 </div>
             </div>
-            <div class="block-detail-root">
+            <div class="overlay-column-container">
                 <div class="overlay-detail-container">
                     <div class="overlay-detail-row">
                         <p class="overlay-detail-label">Transactions</p>
@@ -2490,38 +2467,50 @@
     </button>
 </div>
 
-
-<!-- Mining Pool Info -->
-
-<div id="mining-pool-info" class="overlay-root">
+<!-- Mining Pool -->
+<div id="mining-pools" class="overlay-root">
     <div class="overlay-container">
         <div class="overlay">
             <div class="overlay-head">
                 <div class="overlay-head-col left">
-                    <p class="label small">Mining Pool</p>
-                    <p id="mining-pool-info-name"></p>
+                    <p class="overlay-title">Mining Pool</p>
+                    <p>Join a mining pool to get more constant payouts.</p>
                 </div>
             </div>
-            <div class="overlay-detail-container">
-                <div class="overlay-detail-row">
-                    <p class="overlay-detail-label">Host</p>
-                    <p id="mining-pool-info-host"></p>
-                </div>
-                <div class="overlay-detail-row">
-                    <p class="overlay-detail-label">Port</p>
-                    <p id="mining-pool-info-port"></p>
-                </div>
-                <div class="overlay-detail-row">
-                    <p class="overlay-detail-label">Description</p>
-                    <p id="mining-pool-info-description"></p>
-                </div>
-                <div class="overlay-detail-row">
-                    <p class="overlay-detail-label">Fees</p>
-                    <p id="mining-pool-info-fees"></p>
-                </div>
-                <div class="overlay-detail-row">
-                    <p class="overlay-detail-label">Payouts</p>
-                    <p id="mining-pool-info-payouts"></p>
+            <div class="overlay-column-container">
+                <div id="mining-pools-list"></div>
+                <div id="mining-pool-detail" class="overlay-detail-container">
+                    <div class="overlay-detail-row">
+                        <div>
+                            <p id="mining-pool-info-name"></p>
+                            <div id="mining-pool-connection-indicator"></div>
+                        </div>
+                        <div id="mining-pool-join" class="button">Join</div>
+                    </div>
+                    <div class="overlay-detail-row show-when-connected">
+                        <p class="overlay-detail-label">Balance</p>
+                        <p id="mining-pool-info-balance"></p>
+                    </div>
+                    <div class="overlay-detail-row">
+                        <p class="overlay-detail-label">Description</p>
+                        <p id="mining-pool-info-description"></p>
+                    </div>
+                    <div class="overlay-detail-row">
+                        <p class="overlay-detail-label">Fees</p>
+                        <p id="mining-pool-info-fees"></p>
+                    </div>
+                    <div class="overlay-detail-row">
+                        <p class="overlay-detail-label">Payouts</p>
+                        <p id="mining-pool-info-payouts"></p>
+                    </div>
+                    <div class="overlay-detail-row">
+                        <p class="overlay-detail-label">Host</p>
+                        <p id="mining-pool-info-host"></p>
+                    </div>
+                    <div class="overlay-detail-row">
+                        <p class="overlay-detail-label">Port</p>
+                        <p id="mining-pool-info-port"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2530,7 +2519,6 @@
         <img src="images/close.svg" />
     </button>
 </div>
-
 
 <!-- Disclaimer -->
 <a id="disclaimer" href="#" class="overlay-root">
@@ -2561,9 +2549,10 @@
 <script src="browser-warning.js"></script>
 <script src="keyguard-client.js"></script>
 <script src="script.js"></script>
-<script src="bottom-panels.js"></script>
-<link href="blockexplorer.css" rel="stylesheet">
+<script src="ui-components.js" async></script>
 <link href="miner-settings.css" rel="stylesheet">
+<link href="mining-pools.css" rel="stylesheet">
+<link href="block-explorer.css" rel="stylesheet">
 </body>
 
 </html>

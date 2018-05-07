@@ -101,7 +101,7 @@ class FactsUI {
     }
 
     set poolBalance(balance) {
-        if (!PoolMinerSettingsUi.isPoolMinerEnabled || balance==='off') this._poolBalance.textContent = 'Off';
+        if (!MiningPoolsUi.isPoolMinerEnabled || balance==='off') this._poolBalance.textContent = 'Off';
         else this._poolBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
     }
 
@@ -190,6 +190,9 @@ class MinerUI {
         this.facts = new FactsUI();
         this._bottomPanels = new BottomPanels(document.querySelector('#bottom-panels'));
         this._createBottomPanels(miner);
+
+        this._miningPoolsUi = new MiningPoolsUi(document.querySelector('#mining-pools'), this.miner);
+        document.querySelector('#pool-miner').addEventListener('click', () => this._miningPoolsUi.show());
 
         this._warningMinerStopped = document.querySelector('#warning-miner-stopped');
         this._warningDisconnected = document.querySelector('#warning-disconnected');
@@ -311,8 +314,8 @@ class MinerUI {
         return this._minerSettingsUi;
     }
 
-    get poolMinerSettingsUi() {
-        return this._poolMinerSettingsUi;
+    get miningPoolsUi() {
+        return this._miningPoolsUi;
     }
 
     _createBottomPanels(miner) {
@@ -338,11 +341,6 @@ class MinerUI {
         this._minerSettingsUi = new MinerSettingsUi(document.getElementById('miner-settings'), miner);
         minerSettingsTrigger.addEventListener('click', () => this._bottomPanels.show(this._minerSettingsUi.id));
         this._bottomPanels.addPanel(this._minerSettingsUi, minerSettingsTrigger);
-
-        const poolMinerSettingsTrigger = document.getElementById('pool-miner');
-        this._poolMinerSettingsUi = new PoolMinerSettingsUi(document.getElementById('pool-miner-settings'), miner);
-        poolMinerSettingsTrigger.addEventListener('click', () => this._bottomPanels.show(this._poolMinerSettingsUi.id));
-        this._bottomPanels.addPanel(this._poolMinerSettingsUi, poolMinerSettingsTrigger);
     }
 }
 
@@ -438,9 +436,9 @@ class Miner {
 
     setCurrentMiner(miner = null) {
         if (miner) {
-            this.ui.poolMinerSettingsUi.isPoolMinerEnabled = miner instanceof Nimiq.BasePoolMiner;
+            this.ui.miningPoolsUi.isPoolMinerEnabled = miner instanceof Nimiq.BasePoolMiner;
         } else {
-            miner = this.ui.poolMinerSettingsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
+            miner = this.ui.miningPoolsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
         }
         if (miner === this._currentMiner) return;
 
@@ -458,7 +456,7 @@ class Miner {
             this.startMining();
             if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
                 // already manually connect to pool in the case that mining doesn't start when not synced yet
-                this._connectPoolMiner();
+                this.connectPoolMiner();
             }
         } else {
             this.stopMining(false);
@@ -480,7 +478,7 @@ class Miner {
         this._currentMiner.stopWork();
         this._currentMiner.threads = 0;
         if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-            this._currentMiner.disconnect();
+            this.disconnectPoolMiner();
         }
         this._onMinerChanged();
     }
@@ -514,13 +512,20 @@ class Miner {
             }
         });
 
-        this._connectPoolMiner();
+        this.connectPoolMiner();
     }
 
-    _connectPoolMiner() {
+    connectPoolMiner() {
         if (this.poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
-        const { host, port } = this.ui.poolMinerSettingsUi.settings;
+        const { host, port } = this.ui.miningPoolsUi.settings;
         this.poolMiner.connect(host, port);
+    }
+
+    disconnectPoolMiner(onlyWhenNotMining = false) {
+        if (!this.isPoolMinerInstantiated
+            || this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
+            || onlyWhenNotMining && !this.paused) return;
+        this.poolMiner.disconnect();
     }
 
     _onConsensusEstablished() {
@@ -633,13 +638,13 @@ class Miner {
     }
 
     _onAverageBlockRewardChanged() {
-        if (!this.ui.poolMinerSettingsUi.isPoolMinerEnabled) return;
+        if (!this.ui.miningPoolsUi.isPoolMinerEnabled) return;
         this.ui.facts.averageBlockReward =
             Math.min(1, this.hashrate / this.globalHashrate) * Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
     }
 
     _onExpectedHashTimeChanged() {
-        if (this.ui.poolMinerSettingsUi.isPoolMinerEnabled) return;
+        if (this.ui.miningPoolsUi.isPoolMinerEnabled) return;
         const myWinProbability = this.hashrate / this.globalHashrate;
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }

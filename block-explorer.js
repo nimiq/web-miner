@@ -227,7 +227,7 @@ class BlockEntry {
 
 class BlockDetailUi extends Overlay {
 	constructor(el) {
-		super(el);
+		super(BlockDetailUi.ID, el);
 		this._blockNumberEl = el.querySelector('#block-detail-block-number');
 		this._blockHashEl = el.querySelector('#block-detail-block-hash');
 		this._transactionCountEl = el.querySelector('#block-detail-info-transactions');
