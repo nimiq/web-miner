@@ -2474,22 +2474,18 @@
             <div class="overlay-head">
                 <div class="overlay-head-col left">
                     <p class="overlay-title">Mining Pool</p>
-                    <p>Join a mining pool to get more constant payouts.</p>
+                    <p>Join a mining pool to get more consistent payouts.</p>
                 </div>
             </div>
             <div class="overlay-column-container">
                 <div id="mining-pools-list"></div>
                 <div id="mining-pool-detail" class="overlay-detail-container">
                     <div class="overlay-detail-row">
-                        <div>
-                            <p id="mining-pool-info-name"></p>
-                            <div id="mining-pool-connection-indicator"></div>
-                        </div>
+                        <p id="mining-pool-info-name"></p>
+                        <div id="mining-pool-connection-indicator"></div>
+                        <div class="flex-spacer"></div>
+                        <p id="mining-pool-info-balance" class="show-when-connected is-currency"></p>
                         <div id="mining-pool-join" class="button">Join</div>
-                    </div>
-                    <div class="overlay-detail-row show-when-connected">
-                        <p class="overlay-detail-label">Balance</p>
-                        <p id="mining-pool-info-balance"></p>
                     </div>
                     <div class="overlay-detail-row">
                         <p class="overlay-detail-label">Description</p>

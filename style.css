@@ -42,6 +42,10 @@ body:not([network="main"]) .show-mainnet {
     display: none !important;
 }
 
+.flex-spacer {
+    flex-grow: 1;
+}
+
 /* map styling */
 
 #map {
@@ -837,6 +841,7 @@ input:-moz-placeholder {
     padding: 24px;
     position: relative;
     pointer-events: none;
+    margin: auto;
     margin-top: 64px;
     height: calc(100% - 64px);
 }
@@ -1151,7 +1156,13 @@ body[overlay="mining-pools"] #mining-pools {
     background-size: contain;
     vertical-align: baseline;
     position: relative;
+    width: 14px;
+    height: 14px;
+    margin-right: 3px;
+    margin-bottom: 1px;
+    top: 2px;
 }
+
 
 /* Tablet / Phone */
 

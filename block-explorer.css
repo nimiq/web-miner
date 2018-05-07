@@ -109,6 +109,14 @@
 
 /* Block Detail Overlay */
 
+#block-detail {
+  overflow: auto;
+}
+
+#block-detail .overlay-container {
+  height: auto;
+}
+
 #block-detail .overlay-head-col:first-child {
   margin-right: 48px;
 }
@@ -171,13 +179,6 @@
 
 .table-row:last-child p {
   border-bottom: none;
-}
-
-#block-detail .is-currency:before {
-  width: 14px;
-  height: 14px;
-  margin-right: 3px;
-  top: 2px;
 }
 
 .table-row .is-currency:before {
