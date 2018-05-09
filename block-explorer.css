@@ -115,6 +115,7 @@
 
 #block-detail .overlay-container {
   height: auto;
+  min-height: calc(100% - 64px);
 }
 
 #block-detail .overlay-head-col:first-child {

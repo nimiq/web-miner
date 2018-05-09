@@ -3,6 +3,7 @@ class MiningPoolsUi extends Overlay {
         super(MiningPoolsUi.ID, el);
         this._el = el;
         this._miner = miner;
+        this._poolsList = this._el.querySelector('#mining-pools-list');
         this._detailUi = new MiningPoolDetailUi(el.querySelector('#mining-pool-detail'), this, miner);
 
         this._initMiningPoolsList();
@@ -82,7 +83,6 @@ class MiningPoolsUi extends Overlay {
 
     async _initMiningPoolsList() {
         const miningPools = await this._loadMiningPools();
-        const poolsList = this._el.querySelector('#mining-pools-list');
         for (const miningPool of miningPools) {
             const poolId = MiningPoolsUi.poolIdFromHostAndPort(miningPool.host, miningPool.port);
             const radioButton = document.createElement('input');
@@ -94,13 +94,17 @@ class MiningPoolsUi extends Overlay {
             const label = document.createElement('label');
             label.textContent = miningPool.name;
             label.setAttribute('for', radioButton.id);
-            poolsList.appendChild(radioButton);
-            poolsList.appendChild(label);
+            this._poolsList.appendChild(radioButton);
+            this._poolsList.appendChild(label);
         }
-        const selectedRadio = poolsList.querySelector(`input[value="${this.joinedMiningPoolId}"]`)
-            || poolsList.querySelector('input:first-of-type');
+        this._selectPool(this.joinedMiningPoolId);
+    }
+
+    _selectPool(poolId) {
+        const selectedRadio = this._poolsList.querySelector(`input[value="${poolId}"]`)
+            || this._poolsList.querySelector('input:first-of-type'); // arbitrarily select first entry
         selectedRadio.checked = true;
-        await this._onPoolSelected(selectedRadio.value);
+        this._onPoolSelected(selectedRadio.value);
     }
 
     async _onPoolSelected(selectedPoolId) {
@@ -118,13 +122,13 @@ class MiningPoolsUi extends Overlay {
             // make sure we're connected to update balance
             this._miner.connectPoolMiner();
         }
+        this._selectPool(this.joinedMiningPoolId);
         super.show();
     }
 
     hide() {
         super.hide();
         this._miner.disconnectPoolMiner(true);
-
     }
 }
 MiningPoolsUi.ID = 'mining-pools';
