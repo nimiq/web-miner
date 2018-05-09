@@ -130,7 +130,7 @@ class Overlay {
         this._el = el;
         el.querySelector('.overlay-close').addEventListener('click', this.hide.bind(this));
         el.addEventListener('click', event => {
-            if (event.srcElement === el) {
+            if (event.target === el) {
                 // clicked on the background container
                 this.hide();
             }
