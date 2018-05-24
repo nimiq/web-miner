@@ -29,7 +29,6 @@ header .logo {
     display: flex;
     align-items: center;
     color: white;
-    /*width: 168px;*/
     font-size: 17px;
 }
 
@@ -60,49 +59,6 @@ header #download-container {
     text-align: right;
 }
 
-.center,
-.content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-}
-
-.row {
-    display: flex;
-    padding: 16px 0;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.third {
-    width: 33%;
-    box-sizing: border-box;
-    padding: 0 16px;
-}
-
-.row .center {
-    padding: 24px;
-}
-
-section {
-    padding: 64px 0;
-    position: relative;
-    background-image: linear-gradient(180deg, #fff, #f5f5f5);
-}
-
-.content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 16px;
-}
-
 h1,
 h2,
 h3 {
@@ -114,25 +70,6 @@ h3 {
 h1 {
     font-size: 34px;
     margin: 10px 0;
-}
-
-h2 {
-    opacity: 0.8;
-    font-weight: normal;
-    font-size: 24px;
-}
-
-h3 {
-    margin: 8px;
-    opacity: 0.8
-}
-
-h1.large {
-    font-size: 45px;
-}
-
-h2.large {
-    font-size: 34px;
 }
 
 p {
@@ -163,63 +100,17 @@ a {
     color: #e2a62f;
 }
 
-section img {
-    height: 160px;
-}
-
-section img.large {
-    height: 39vw;
-}
-
-footer {
-    width: 100%;
-    padding: 32px 0;
-    background: #333;
-    display: flex;
-    justify-content: center;
-}
-
-footer a {
-    opacity: 0.9;
-    padding: 16px;
-}
-
 .uppercase {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.icon {
-    height: 32px;
-    opacity: 0.61;
-}
-
-.icon:hover {
-    opacity: 0.8;
-}
-
 @media (max-width: 800px) {
-    .row {
-        flex-direction: column;
-    }
-    .row .third {}
     h1 {
         font-size: 24px;
         margin: 10px 0;
     }
-    h2 {
-        font-size: 20px;
-    }
-    h3 {
-        margin: 8px;
-        opacity: 0.8
-    }
-    h1.large {
-        font-size: 34px;
-    }
-    h2.large {
-        font-size: 24px;
-    }
+
     header {
         padding: 12px;
     }
@@ -237,14 +128,6 @@ footer a {
     }
 
     body[network="test"] header #download-container {
-        display: none;
-    }
-
-    header .menu a {
-        font-size: 15px;
-    }
-
-    header .menu .github{
         display: none;
     }
 }

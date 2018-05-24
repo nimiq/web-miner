@@ -121,23 +121,6 @@ class HexagonMap {
         return point;
     }
 
-    _testCoordinateConversion(latitude, longitude) {
-        var testDot = window.testDot;
-        if (!testDot) {
-            testDot = document.createElement('div');
-            testDot.style.background = 'red';
-            testDot.style.width = '5px';
-            testDot.style.height = '5px';
-            testDot.style.position = 'absolute';
-            document.body.appendChild(testDot);
-            window.testDot = testDot;
-        }
-        var convertedCoordinates = this._convertCoordinates(latitude, longitude);
-        console.log(convertedCoordinates);
-        testDot.style.left = convertedCoordinates.x-2+'px';
-        testDot.style.top = convertedCoordinates.y-2+'px';
-    }
-
     _getClosestCell(x, y) {
         var mapDimensions = this.getDimensions();
         var bestDistance = 0;

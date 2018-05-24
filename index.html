@@ -12,9 +12,9 @@
     <link rel="shortcut icon" href="/images/icons/favicon.ico">
     <meta name="msapplication-config" content="/images/icons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-    <meta name="twitter:image" content="https://nimiq.com/static/sharing/twitter.png" />
+    <meta name="twitter:image" content="https://nimiq.com/static/sharing/twitter.jpg" />
     <meta name="twitter:author" content="@nimiqnetwork" />
-    <meta property="og:image" content="https://nimiq.com/static/sharing/facebook.png" />
+    <meta property="og:image" content="https://nimiq.com/static/sharing/facebook.jpg" />
     <meta property="og:url" content="https://nimiq.com/" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Nimiq Miner" />
@@ -2252,9 +2252,6 @@
             <div id="copyright">&copy; 2017-2018 Nimiq Foundation</div>
         </div>
     </div>
-    <!-- Loading -->
-    <div id="loadingSection">
-    </div>
     <!-- Peer description -->
     <div class="peer-desc-container hide-mobile-landscape">
         <div class="peer-desc">
@@ -2282,7 +2279,7 @@
             A new version is available. <a href="#" id="warning-update-reload">Reload</a>
         </div>
         <div id="warning-pool-connection" class="miner-warning">
-            Connecting to the mining pool failed. <a href="#" id="warning-pool-connection-switch-solo">Switch to solo mining.</a>
+            Connecting to the mining pool failed, currently solo mining. <a href="#" id="warning-pool-connection-switch-solo">Disable pool.</a>
         </div>
         <div class="facts">
             <div class="fact">
@@ -2293,16 +2290,14 @@
                 </div>
             </div>
             <div class="fact" id="mining-on-block" trigger-fact>
+                <div class="label"><span id="factBlockProcessingState">Current</span> Block
+                <img class="info-icon" src="images/info-icon.svg" />
+                </div>
                 <div>
-                    <div class="label"><span id="factBlockProcessingState">Current</span> Block
-                    <img class="info-icon" src="images/info-icon.svg" />
-                    </div>
-                    <div>
-                        <span class="number">
-                            <img id="block-loader" src="images/hexagon-side-animation.gif" />
-                            <span id="factBlockHeight">0</span>
-                        </span>
-                    </div>
+                    <span class="number">
+                        <img id="block-loader" src="images/hexagon-side-animation.gif" />
+                        <span id="factBlockHeight">0</span>
+                    </span>
                 </div>
                 <div class="separator"></div>
             </div>
@@ -2373,7 +2368,7 @@
             <!-- Miner Settings -->
             <div id="miner-settings" panel>
                 <div class="label">Number of threads: <span id="miner-settings-thread-count">4</span></div>
-                <input id="miner-thread-slider" type="range" min="1" step="1">
+                <input id="miner-settings-thread-slider" type="range" min="1" step="1">
             </div>
         </div>
     </div>

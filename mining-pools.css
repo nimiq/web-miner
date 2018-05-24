@@ -61,6 +61,10 @@
     width: calc(100% - 1px); /* to not render background over right border */
 }
 
+#mining-pool-detail {
+    padding: 32px 40px;
+}
+
 #mining-pool-detail .overlay-detail-row {
     text-align: left;
     justify-content: flex-start;
@@ -152,6 +156,10 @@
 
     #mining-pools .overlay-title {
         font-size: 32px;
+    }
+
+    #mining-pool-detail {
+        padding: 32px;
     }
 
     #mining-pool-detail #mining-pool-connection-indicator {

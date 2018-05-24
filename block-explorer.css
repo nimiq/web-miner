@@ -79,34 +79,6 @@
   width: 100%;
 }
 
-.blocks-overview-block .block-size {
-  text-align: right;
-}
-
-/*
-@media (max-width: 750px) {
-
-  .blocks-overview-block > div {
-    padding-right: 24px;
-  }
-
-  .blocks-overview-block > div.mined-by {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-
-  .blocks-overview-block > div {
-    padding-right: 16px;
-  }
-
-  .blocks-overview-block > div.block-size {
-    display: none;
-  }
-}
-*/
-
 /* Block Detail Overlay */
 
 #block-detail {

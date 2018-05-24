@@ -215,7 +215,7 @@ class MinerUI {
     }
 
     setState(newState) {
-        let states = ['landing', 'loading', 'mining'];
+        let states = ['landing', 'mining'];
         states.forEach(function(state) {
             const section = document.querySelector(`#${state}Section`);
             const style = section.style;
@@ -304,10 +304,6 @@ class MinerUI {
             }
         }, 1000);
         this.facts.disconnected = false;
-    }
-
-    get blockExplorer() {
-        return this._blockExplorer;
     }
 
     get minerSettingsUi() {
@@ -530,8 +526,6 @@ class Miner {
 
     _onConsensusEstablished() {
         _paq.push(['trackEvent', 'Consensus', 'established']);
-        this.$.accounts.get(this.$.address)
-            .then(account => this._onBalanceChanged(account));
 
         this.ui.facts.synced = true;
         this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
@@ -542,6 +536,7 @@ class Miner {
         }
 
         this._onGlobalHashrateChanged();
+        this._updateBalance();
     }
 
     _onConsensusLost() {
@@ -596,8 +591,7 @@ class Miner {
         if (this.$.consensus.established && !branching) {
             this._onGlobalHashrateChanged();
             this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
-            this.$.accounts.get(this.$.address)
-                .then(account => this._onBalanceChanged(account));
+            this._updateBalance();
         }
     }
 
@@ -649,8 +643,8 @@ class Miner {
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
-    async _onBalanceChanged(account) {
-        account = account || Nimiq.BasicAccount.INITIAL;
+    async _updateBalance() {
+        const account = await this.$.accounts.get(this.$.address) || Nimiq.BasicAccount.INITIAL;
         this.ui.facts.myBalance = account.balance;
         const minerAccount = await App.instance.getMinerAccount();
         // show the user that he should backup his account

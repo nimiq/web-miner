@@ -322,7 +322,7 @@ header #warning-testnet {
 }
 
 #disclaimer-modal {
-    max-width: 800px;
+    max-width: 1000px;
     padding: 32px;
     margin: auto;
     box-sizing: border-box;
@@ -471,10 +471,6 @@ header #warning-testnet {
     font-size: 16px;
 }
 
-#miningAnimation {
-    height: 23px;
-}
-
 #bottomInfo {
     position: absolute;
     top: -4px;
@@ -534,10 +530,6 @@ header #warning-testnet {
 
 #mining-on-block {
     pointer-events: none;
-}
-
-#miner-thread-slider {
-    outline: none !important;
 }
 
 @media (min-width: 850px) {
@@ -743,10 +735,6 @@ input {
     width: 100%;
 }
 
-input:required {
-    box-shadow:none;
-}
-
 button {
     margin: 0;
     line-height: 1;
@@ -876,10 +864,6 @@ input:-moz-placeholder {
 
 .left {
     text-align: left;
-}
-
-.right {
-    text-align: right;
 }
 
 .overlay .uppercase {
@@ -1032,57 +1016,6 @@ input:-moz-placeholder {
     letter-spacing: 1.5px;
     margin-top: 8px;
 }
-
-[panel] .settings-container {
-    max-width: 500px;
-    margin: auto;
-    padding: 0 12px;
-    text-align: left;
-}
-
-[panel] .settings-container .row {
-    margin: 8px 0;
-    padding: 0;
-    font-size: 16px;
-    flex-direction: row;
-    align-items: center;
-}
-
-[panel] .settings-container .row .label {
-    flex-grow: 1;
-    text-transform: none;
-    margin: 0;
-    font-size: inherit;
-}
-
-[panel] .settings-container .row button {
-    color: #e2a62f;
-    font-weight: bold;
-    opacity: .85;
-    transition: opacity .3s;
-    padding: 0;
-}
-
-[panel] .settings-container .row button:hover {
-    opacity: 1;
-}
-
-[panel] .settings-container .row select {
-    background-color: transparent;
-    font-size: inherit;
-    font-family: inherit;
-    color: rgba(255,255,255,.7);
-    outline: none !important;
-    border: none;
-    text-align: right;
-    text-align-last: right;
-    padding-right: 4px;
-}
-
-[panel] .settings-container .row select option {
-    color: black;
-}
-
 
 /* Overlay State */
 
@@ -1279,10 +1212,6 @@ body[overlay="mining-pools"] #mining-pools {
     [panel] .label {
         letter-spacing: .5px;
         font-size: 16px;
-    }
-
-    [panel] .settings-container .row {
-        font-size: 14px;
     }
 
     .overlay-detail-label {
