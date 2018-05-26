@@ -47,6 +47,7 @@ class FactsUI {
         } else {
             this._rewardInfoSoloMiner.style.display = 'inline';
             this._rewardInfoPoolMiner.style.display = 'none';
+            this._poolBalance.textContent = 'Off';
         }
     }
 
@@ -101,7 +102,7 @@ class FactsUI {
     }
 
     set poolBalance(balance) {
-        if (!MiningPoolsUi.isPoolMinerEnabled || balance==='off') this._poolBalance.textContent = 'Off';
+        if (!MiningPoolsUi.isPoolMinerEnabled) this._poolBalance.textContent = 'Off';
         else this._poolBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
     }
 
@@ -209,7 +210,7 @@ class MinerUI {
         };
 
         const switchToSoloMiningButton = document.querySelector('#warning-pool-connection-switch-solo');
-        switchToSoloMiningButton.onclick = () => miner.setCurrentMiner(miner.soloMiner);
+        switchToSoloMiningButton.onclick = () => miner.disconnectPoolMiner();
 
         new UpdateChecker(miner);
     }
@@ -346,7 +347,7 @@ class Miner {
         this.$ = $;
 
         this.ui = new MinerUI(this);
-        this.ui.facts.address = $.address;
+        this.ui.facts.address = $.miner.address;
 
         this.map = new MapUI($);
 
@@ -354,6 +355,13 @@ class Miner {
     }
 
     connect() {
+        this.$.miner.on('hashrate-changed', () => this._onHashrateChanged());
+        this.$.miner.on('block-mined', () => _paq.push(['trackEvent', 'Miner', 'block-mined']));
+        this.$.miner.on('start', () => this._onMinerChanged());
+        this.$.miner.on('stop', () => this._onMinerChanged());
+        this.$.miner.on('confirmed-balance', balance => this.ui.facts.poolBalance = balance);
+        this.$.miner.on('connection-state', state => this._onPoolMinerConnectionChange(state));
+
         this.$.consensus.on('established', () => this._onConsensusEstablished());
         this.$.consensus.on('lost', () => this._onConsensusLost());
         this.$.consensus.on('syncing', () => this._onConsensusSyncing());
@@ -368,10 +376,13 @@ class Miner {
         this.$.network.on('peers-changed', () => this._onPeersChanged());
         this.$.network.on('peer-joined', peer => this._onPeerJoined(peer));
 
-        this.setCurrentMiner();
-        this.threads = this.threads || this._currentMiner.threads;
-
         this.$.network.connect();
+
+        this.threads = this.threads || this.$.miner.threads;
+        if (MiningPoolsUi.isPoolMinerEnabled) {
+            // Fetch the pool balance while still syncing.
+            this.connectPoolMiner();
+        }
 
         this.map.fadeIn();
         this.ui.setState('mining');
@@ -380,16 +391,16 @@ class Miner {
     }
 
     set threads(threadCount) {
-        if (this._currentMiner) this._currentMiner.threads = threadCount;
+        this.$.miner.threads = threadCount;
         this.ui.minerSettingsUi.threads = threadCount;
     }
 
     get threads() {
-        return this.ui.minerSettingsUi.threads;
+        return this.$.miner.threads;
     }
 
     get hashrate() {
-        return this._currentMiner.hashrate;
+        return this.$.miner.hashrate;
     }
 
     get globalHashrate() {
@@ -398,67 +409,12 @@ class Miner {
         return difficulty * Math.pow(2, 16) / Nimiq.Policy.BLOCK_TIME;
     }
 
-    get soloMiner() {
-        if (this._soloMiner) return this._soloMiner;
-        // instantiate miner lazily only when needed as the simultaneous instantiation of solo miner crashes the
-        // browser tab under certain circumstances due to too many worker threads (e.g. on high thread count or when
-        // both miners instantiated at the same time as the connect call)
-        this._soloMiner = new Nimiq.Miner(this.$.blockchain, this.$.accounts, this.$.mempool, this.$.network.time,
-            this.$.address);
-        console.log('Solo Miner instantiated');
-        this._soloMiner.on('block-mined', () => _paq.push(['trackEvent', 'Miner', 'block-mined']));
-        this._soloMiner.on('hashrate-changed', () => this._onHashrateChanged());
-        this._soloMiner.on('start', () => this._onMinerChanged());
-        this._soloMiner.on('stop', () => this._onMinerChanged());
-        return this._soloMiner;
+    get poolConnectionState() {
+        return this.$.miner.connectionState;
     }
 
-    get poolMiner() {
-        if (this._poolMiner) return this._poolMiner;
-        this._poolMiner = new Nimiq.SmartPoolMiner(this.$.blockchain, this.$.accounts, this.$.mempool,
-            this.$.network.time, this.$.address, Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config));
-        console.log('Pool Miner instantiated');
-        this._poolMiner.on('hashrate-changed', () => this._onHashrateChanged());
-        this._poolMiner.on('start', () => this._onMinerChanged());
-        this._poolMiner.on('stop', () => this._onMinerChanged());
-        this._poolMiner.on('confirmed-balance', balance => this.ui.facts.poolBalance = balance);
-        this._poolMiner.on('connection-state', state => this._onPoolMinerConnectionChange(state));
-        return this._poolMiner;
-    }
-
-    get isPoolMinerInstantiated() {
-        return !!this._poolMiner;
-    }
-
-    setCurrentMiner(miner = null) {
-        if (miner) {
-            this.ui.miningPoolsUi.isPoolMinerEnabled = miner instanceof Nimiq.BasePoolMiner;
-        } else {
-            miner = this.ui.miningPoolsUi.isPoolMinerEnabled? this.poolMiner : this.soloMiner;
-        }
-        if (miner === this._currentMiner) return;
-
-        if (this._currentMiner) {
-            this.stopMining(false);
-            if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-                this.ui.facts.poolBalance = 'off';
-                this.ui.hidePoolMinerConnectionWarning();
-            }
-        }
-
-        this._currentMiner = miner;
-
-        if (!this.paused) {
-            this.startMining();
-            if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-                // already manually connect to pool in the case that mining doesn't start when not synced yet
-                this.connectPoolMiner();
-            }
-        } else {
-            this.stopMining(false);
-        }
-
-        this.ui.facts.poolEnabled = this._currentMiner instanceof Nimiq.BasePoolMiner;
+    get poolBalance() {
+        return this.$.miner.confirmedBalance || 0;
     }
 
     toggleMining() {
@@ -471,57 +427,37 @@ class Miner {
 
     stopMining(disableRestart = true) {
         if (disableRestart) this.paused = true;
-        this._currentMiner.stopWork();
-        this._currentMiner.threads = 0;
-        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-            this.disconnectPoolMiner();
-        }
+        this.$.miner.stopWork();
+        this.disconnectPoolMiner(false);
         this._onMinerChanged();
     }
 
     startMining() {
         this.paused = false;
         if (!this.$.consensus.established) return; // will pick up mining when we have consensus
-        this._currentMiner.threads = this.threads || this._currentMiner.threads;
-        if (this._currentMiner instanceof Nimiq.BasePoolMiner) {
-            this._startPoolMiner();
-        } else {
-            this._currentMiner.startWork();
+        if (this.ui.miningPoolsUi.isPoolMinerEnabled) {
+            this.connectPoolMiner();
         }
+        this.$.miner.startWork();
         this._onMinerChanged();
     }
 
-    _startPoolMiner() {
-        if (this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
-            this.poolMiner.startWork();
-            return;
-        }
-
-        // still connecting or disconnected
-        const connectionListenerId = this.poolMiner.on('connection-state', connectionState => {
-            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) return;
-            // connection established or closed again
-            this.poolMiner.off('connection-state', connectionListenerId);
-            if (connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED
-                && !this.paused && this._currentMiner === this.poolMiner) {
-                this.poolMiner.startWork();
-            }
-        });
-
-        this.connectPoolMiner();
-    }
-
     connectPoolMiner() {
-        if (this.poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        this.ui.miningPoolsUi.isPoolMinerEnabled = true;
+        this.ui.facts.poolEnabled = true;
+        if (this.$.miner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
         const { host, port } = this.ui.miningPoolsUi.settings;
-        this.poolMiner.connect(host, port);
+        this.$.miner.connect(host, port);
     }
 
-    disconnectPoolMiner(onlyWhenNotMining = false) {
-        if (!this.isPoolMinerInstantiated
-            || this.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
-            || onlyWhenNotMining && !this.paused) return;
-        this.poolMiner.disconnect();
+    disconnectPoolMiner(disablePoolMining = true) {
+        if (disablePoolMining) {
+            this.ui.miningPoolsUi.isPoolMinerEnabled = false;
+            this.ui.facts.poolEnabled = false;
+        }
+        this.ui.hidePoolMinerConnectionWarning();
+        if (this.$.miner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
+        this.$.miner.disconnect();
     }
 
     _onConsensusEstablished() {
@@ -596,7 +532,7 @@ class Miner {
     }
 
     _onMinerChanged() {
-        // checking for paused instead of _currentMiner.working as if working===false && paused===false, the miner tries
+        // checking for paused instead of miner.working as if working===false && paused===false, the miner tries
         // to start automatically and there is no point in asking the user whether he wants to resume mining
         if (!this.paused) {
             this.ui.minerWorking();
@@ -606,11 +542,11 @@ class Miner {
     }
 
     _onPoolMinerConnectionChange(state) {
+        if (!this.ui.miningPoolsUi.isPoolMinerEnabled) return;
         if (state === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
-            this.ui.facts.poolBalance = this.poolMiner.confirmedBalance || 0;
+            this.ui.facts.poolBalance = this.poolBalance;
             this.ui.poolMinerCanConnect();
         } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED
-            && this._currentMiner === this.poolMiner
             && this._previousPoolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
             // connecting failed
             this.ui.facts.myHashrate = 0;
@@ -644,7 +580,7 @@ class Miner {
     }
 
     async _updateBalance() {
-        const account = await this.$.accounts.get(this.$.address) || Nimiq.BasicAccount.INITIAL;
+        const account = await this.$.accounts.get(this.$.miner.address) || Nimiq.BasicAccount.INITIAL;
         this.ui.facts.myBalance = account.balance;
         const minerAccount = await App.instance.getMinerAccount();
         // show the user that he should backup his account

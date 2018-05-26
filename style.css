@@ -588,14 +588,14 @@ header #warning-testnet {
 }
 
 .call-to-action {
-    animation: call-to-action 3s infinite;
+    animation: call-to-action 1.5s infinite;
 }
 
 @keyframes call-to-action {
-    from { opacity: .65; }
+    from { opacity: .6; }
     40% { opacity: 1; }
     60% { opacity: 1; }
-    to { opacity: .65; }
+    to { opacity: .6; }
 }
 
 #factBalanceContainerInner .label {

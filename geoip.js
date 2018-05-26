@@ -40,6 +40,8 @@ class GeoIP {
             return;
         }
 
+        if (window.location.origin.indexOf('miner.localhost') !== -1) return;
+
         var xmlhttp = new XMLHttpRequest();
         var url = 'https://geoip.nimiq-network.com:8443/v1/locate' + (host && host.length > 0 ? '?host=' + host : '');
 

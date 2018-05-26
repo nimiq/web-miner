@@ -195,7 +195,9 @@ class App {
         $loadingSpinner.style.display = 'block';
         await this._dependenciesPromise;
         $loadingSpinner.parentElement.removeChild($loadingSpinner);
-        this.$.address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
+        const address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
+        this.$.miner = new Nimiq.SmartPoolMiner(this.$.blockchain, this.$.accounts, this.$.mempool,
+            this.$.network.time, address, Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config));
         this._miner = new Miner(this.$);
         this._miner.connect();
     }

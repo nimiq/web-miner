@@ -27,8 +27,13 @@ class MiningPoolsUi extends Overlay {
     }
 
     set isPoolMinerEnabled(enabled) {
+        if (enabled === this.isPoolMinerEnabled) return;
         localStorage[MiningPoolsUi.KEY_USE_POOL_MINER] = enabled? 'yes' : 'no';
-        this._miner.setCurrentMiner();
+        if (enabled) {
+            this._miner.connectPoolMiner();
+        } else {
+            this._miner.disconnectPoolMiner();
+        }
     }
 
     get joinedMiningPoolId() {
@@ -39,13 +44,11 @@ class MiningPoolsUi extends Overlay {
         if (poolId === this.joinedMiningPoolId) return;
         const switchingPool = !!this.joinedMiningPoolId;
         localStorage[MiningPoolsUi.KEY_JOINED_POOL] = poolId;
-        if (switchingPool && this._miner.isPoolMinerInstantiated
-            && this._miner.poolMiner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+        if (switchingPool && this._miner.poolConnectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             // disconnect from previous pool
-            this._miner.poolMiner.disconnect();
-            // reconnect to new pool TODO use this._miner.connectPoolMiner when connectionState bug after disconnect is fixed in pool miner
-            const { host, port } = this.settings;
-            this._miner.poolMiner.connect(host, port);
+            this._miner.disconnectPoolMiner(false);
+            // reconnect to new pool
+            this._miner.connectPoolMiner();
         }
     }
 
@@ -128,7 +131,7 @@ class MiningPoolsUi extends Overlay {
 
     hide() {
         super.hide();
-        this._miner.disconnectPoolMiner(true);
+        if (this._miner.paused) this._miner.disconnectPoolMiner(false);
     }
 }
 MiningPoolsUi.ID = 'mining-pools';
@@ -147,7 +150,8 @@ class MiningPoolDetailUi {
         this._joinButton = el.querySelector('#mining-pool-join');
         this._balance = el.querySelector('#mining-pool-info-balance');
         this._joinButton.addEventListener('click', () => this._joinOrLeave());
-        this._poolEventsBound = false;
+        this._miner.$.miner.on('connection-state', () => this._updateConnectionStatus());
+        this._miner.$.miner.on('confirmed-balance', () => this._updateBalance());
     }
 
     set miningPool(miningPool) {
@@ -158,26 +162,17 @@ class MiningPoolDetailUi {
         this._el.querySelector('#mining-pool-info-description').textContent = miningPool.description;
         this._el.querySelector('#mining-pool-info-fees').textContent = miningPool.fees;
         this._el.querySelector('#mining-pool-info-payouts').textContent = miningPool.payouts;
-        if (this._poolsUi.isPoolMinerEnabled) this._bindPoolEvents();
         this._updateConnectionStatus();
         this._updateBalance();
     }
 
-    _bindPoolEvents() {
-        if (this._poolEventsBound) return;
-        this._poolEventsBound = true;
-        this._miner.poolMiner.on('connection-state', () => this._updateConnectionStatus());
-        this._miner.poolMiner.on('confirmed-balance', () => this._updateBalance());
-    }
-
     _updateConnectionStatus() {
-        if (!this._miner.isPoolMinerInstantiated
-            || this._miningPoolId !== this._poolsUi.joinedMiningPoolId
-            || this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+        if (this._miningPoolId !== this._poolsUi.joinedMiningPoolId
+            || this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             this._connectionStatus.setAttribute('status', 'disconnected');
             this._el.removeAttribute('connected');
             this._joinButton.textContent = 'Join';
-        } else if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
+        } else if (this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this._connectionStatus.setAttribute('status', 'connected');
             this._el.setAttribute('connected', '');
             this._joinButton.textContent = 'Leave';
@@ -189,17 +184,14 @@ class MiningPoolDetailUi {
     }
 
     _updateBalance() {
-        const balance = !this._miner.isPoolMinerInstantiated? 0 : (this._miner.poolMiner.confirmedBalance || 0);
-        this._balance.textContent =
-            Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
+        this._balance.textContent = Nimiq.Policy.satoshisToCoins(this._miner.poolBalance).toFixed(2);
     }
 
     _joinOrLeave() {
-        if (this._miner.poolMiner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
+        if (this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
             || this._miningPoolId !== this._poolsUi.joinedMiningPoolId) {
             this._poolsUi.joinedMiningPoolId = this._miningPoolId;
             this._poolsUi.isPoolMinerEnabled = true;
-            this._bindPoolEvents();
             this._miner.connectPoolMiner();
         } else {
             this._poolsUi.isPoolMinerEnabled = false;
