@@ -67,7 +67,8 @@ class MiningPoolsUi extends Overlay {
                 const file = App.NETWORK === 'main' ? 'mining-pools-mainnet.json' : 'mining-pools-testnet.json';
                 const url = window.location.origin.indexOf('localhost') !== -1 ? `/apps/miner/${file}` : `/${file}`;
                 const response = await fetch(url);
-                const pools = this._shuffleArray(await response.json());
+                const pools = this._shuffleArray(await response.json())
+                    .filter(pool => !App.NANO_CLIENT || pool.supportsNano);
                 resolve(pools);
             } catch(e) {
                 reject(e);

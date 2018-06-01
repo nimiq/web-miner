@@ -130,12 +130,14 @@ class App {
                     }
 
                     const $ = {};
-                    $.consensus = await Nimiq.Consensus.light();
+                    $.consensus = App.NANO_CLIENT? await Nimiq.Consensus.nano() : await Nimiq.Consensus.light();
                     // XXX Legacy API
                     $.blockchain = $.consensus.blockchain;
-                    $.accounts = $.blockchain.accounts;
                     $.mempool = $.consensus.mempool;
                     $.network = $.consensus.network;
+                    if (!App.NANO_CLIENT) {
+                        $.accounts = $.blockchain.accounts;
+                    }
                     window.$ = $;
                     resolve($);
                 } catch(e) {
@@ -196,8 +198,13 @@ class App {
         await this._dependenciesPromise;
         $loadingSpinner.parentElement.removeChild($loadingSpinner);
         const address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
-        this.$.miner = new Nimiq.SmartPoolMiner(this.$.blockchain, this.$.accounts, this.$.mempool,
-            this.$.network.time, address, Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config));
+        const deviceId = Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config);
+        if (App.NANO_CLIENT) {
+            this.$.miner = new Nimiq.NanoPoolMiner(this.$.blockchain, this.$.network.time, address, deviceId);
+        } else {
+            this.$.miner = new Nimiq.SmartPoolMiner(this.$.blockchain, this.$.accounts, this.$.mempool,
+                this.$.network.time, address, deviceId);
+        }
         this._miner = new Miner(this.$);
         this._miner.connect();
     }
@@ -222,6 +229,8 @@ App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://k
 
 App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
     : 'https://cdn.nimiq-testnet.com/nimiq.js';
+
+App.NANO_CLIENT = window.innerWidth <= 640; // use nano on mobile
 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : 'test';

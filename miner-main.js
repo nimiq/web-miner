@@ -44,10 +44,12 @@ class FactsUI {
         if (poolEnabled) {
             this._rewardInfoSoloMiner.style.display = 'none';
             this._rewardInfoPoolMiner.style.display = 'inline';
+            this.needToSelectPool = false;
         } else {
             this._rewardInfoSoloMiner.style.display = 'inline';
             this._rewardInfoPoolMiner.style.display = 'none';
             this._poolBalance.textContent = 'Off';
+            this.needToSelectPool = App.NANO_CLIENT;
         }
     }
 
@@ -144,6 +146,14 @@ class FactsUI {
         }
     }
 
+    set needToSelectPool(needToSelectPool) {
+        if (needToSelectPool) {
+            this._miningSection.classList.add('need-to-select-pool');
+        } else {
+            this._miningSection.classList.remove('need-to-select-pool');
+        }
+    }
+
     _setHashrate(hashrate, type) {
         let steps = ['k', 'M', 'G', 'T', 'P', 'E']; // kilo, mega, giga, tera, peta, exa
         let prefix = '';
@@ -209,8 +219,13 @@ class MinerUI {
             miner.$.network.connect();
         };
 
-        const switchToSoloMiningButton = document.querySelector('#warning-pool-connection-switch-solo');
-        switchToSoloMiningButton.onclick = () => miner.disconnectPoolMiner();
+        const showPoolUi = () => this.miningPoolsUi.show();
+        [document.querySelector('#warning-select-pool-btn'),
+            document.querySelector('#warning-pool-connection-change-pool')].forEach(btn => btn.onclick = showPoolUi);
+
+        if (App.NANO_CLIENT) {
+            document.querySelector('#warning-pool-connection-mining-status').textContent = 'mining disabled';
+        }
 
         new UpdateChecker(miner);
     }
@@ -238,9 +253,6 @@ class MinerUI {
 
     minerStopped() {
         this._toggleMinerBtn.innerText = 'Resume Mining';
-        this.facts.myHashrate = 0;
-        this.facts.averageBlockReward = 0;
-        this.facts.expectedHashTime = Number.POSITIVE_INFINITY;
         if (this._warningPoolConnection.style.opacity === '1' || this._warningDisconnected.style.opacity === '1') return;
         this._warningMinerStopped.style.display = 'block';
         this._warningMinerStopped.offsetWidth; // enforce style update
@@ -316,7 +328,16 @@ class MinerUI {
     }
 
     _createBottomPanels(miner) {
+        const minerSettingsTrigger = document.getElementById('my-hashrate');
+        this._minerSettingsUi = new MinerSettingsUi(document.getElementById('miner-settings'), miner);
+        minerSettingsTrigger.addEventListener('click', () => this._bottomPanels.show(this._minerSettingsUi.id));
+        this._bottomPanels.addPanel(this._minerSettingsUi, minerSettingsTrigger);
+
         const blockExplorerTrigger = document.getElementById('mining-on-block');
+        if (App.NANO_CLIENT) {
+            blockExplorerTrigger.removeAttribute('trigger-fact');
+            return;
+        }
         this._blockExplorer = new BlockExplorerUi(document.getElementById('block-explorer'), miner.$);
         blockExplorerTrigger.addEventListener('click', () => {
             if (window.innerWidth >= BlockExplorerUi.MIN_WIDTH) {
@@ -333,11 +354,6 @@ class MinerUI {
                 this._bottomPanels.hide();
             }
         });
-
-        const minerSettingsTrigger = document.getElementById('my-hashrate');
-        this._minerSettingsUi = new MinerSettingsUi(document.getElementById('miner-settings'), miner);
-        minerSettingsTrigger.addEventListener('click', () => this._bottomPanels.show(this._minerSettingsUi.id));
-        this._bottomPanels.addPanel(this._minerSettingsUi, minerSettingsTrigger);
     }
 }
 
@@ -383,6 +399,7 @@ class Miner {
             // Fetch the pool balance while still syncing.
             this.connectPoolMiner();
         }
+        this.ui.facts.needToSelectPool = App.NANO_CLIENT && !MiningPoolsUi.isPoolMinerEnabled;
 
         this.map.fadeIn();
         this.ui.setState('mining');
@@ -418,10 +435,10 @@ class Miner {
     }
 
     toggleMining() {
-        if (!this.paused) {
-            this.stopMining();
-        } else {
+        if (this.paused) {
             this.startMining();
+        } else {
+            this.stopMining();
         }
     }
 
@@ -434,9 +451,12 @@ class Miner {
 
     startMining() {
         this.paused = false;
-        if (!this.$.consensus.established) return; // will pick up mining when we have consensus
         if (this.ui.miningPoolsUi.isPoolMinerEnabled) {
             this.connectPoolMiner();
+        }
+        if (!this.$.consensus.established || (App.NANO_CLIENT && !this.$.miner.isConnected())) {
+            // will pick up mining when we have consensus and for nano when we are connected to the pool.
+            return;
         }
         this.$.miner.startWork();
         this._onMinerChanged();
@@ -454,8 +474,8 @@ class Miner {
         if (disablePoolMining) {
             this.ui.miningPoolsUi.isPoolMinerEnabled = false;
             this.ui.facts.poolEnabled = false;
+            this.ui.hidePoolMinerConnectionWarning();
         }
-        this.ui.hidePoolMinerConnectionWarning();
         if (this.$.miner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
         this.$.miner.disconnect();
     }
@@ -509,6 +529,7 @@ class Miner {
 
     _onPeerJoined(peer) {
         this._updateTargetHeight(150);
+        if (App.NANO_CLIENT) return;
         this.$.consensus._agents.get(peer.id)._chain.on('head-changed', () => this._updateTargetHeight());
     }
 
@@ -539,6 +560,7 @@ class Miner {
         } else {
             this.ui.minerStopped();
         }
+        this._onHashrateChanged();
     }
 
     _onPoolMinerConnectionChange(state) {
@@ -546,11 +568,13 @@ class Miner {
         if (state === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this.ui.facts.poolBalance = this.poolBalance;
             this.ui.poolMinerCanConnect();
-        } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED
-            && this._previousPoolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
-            // connecting failed
-            this.ui.facts.myHashrate = 0;
-            this.ui.poolMinerCantConnect();
+            if (!this.paused) this.startMining();
+        } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+            if (App.NANO_CLIENT) this.stopMining(false); // nano can't mine without pool
+            if (this._previousPoolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
+                // pool connecting failed
+                this.ui.poolMinerCantConnect();
+            }
         }
         this._previousPoolConnectionState = state;
     }
@@ -568,19 +592,23 @@ class Miner {
     }
 
     _onAverageBlockRewardChanged() {
-        if (!this.ui.miningPoolsUi.isPoolMinerEnabled) return;
         this.ui.facts.averageBlockReward =
             Math.min(1, this.hashrate / this.globalHashrate) * Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
     }
 
     _onExpectedHashTimeChanged() {
-        if (this.ui.miningPoolsUi.isPoolMinerEnabled) return;
         const myWinProbability = this.hashrate / this.globalHashrate;
         this.ui.facts.expectedHashTime = (1 / myWinProbability) * Nimiq.Policy.BLOCK_TIME;
     }
 
     async _updateBalance() {
-        const account = await this.$.accounts.get(this.$.miner.address) || Nimiq.BasicAccount.INITIAL;
+        let account;
+        if (App.NANO_CLIENT) {
+            account = await this.$.consensus.getAccount(this.$.miner.address);
+        } else {
+            account = await this.$.accounts.get(this.$.miner.address);
+        }
+        account = account || Nimiq.BasicAccount.INITIAL;
         this.ui.facts.myBalance = account.balance;
         const minerAccount = await App.instance.getMinerAccount();
         // show the user that he should backup his account

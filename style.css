@@ -423,8 +423,16 @@ header #warning-testnet {
 
 #miningSection:not(.synced) #warning-miner-stopped,
 .disconnected #progressContainer,
+.need-to-select-pool #progressContainer,
+.need-to-select-pool .miner-warning:not(#warning-select-pool):not(#warning-update),
+.need-to-select-pool #bottomInfo,
 .update-available .miner-warning:not(#warning-update) {
     display: none !important;
+}
+
+.need-to-select-pool #warning-select-pool {
+    display: block;
+    opacity: 1;
 }
 
 .facts {
@@ -530,6 +538,9 @@ header #warning-testnet {
 
 #mining-on-block {
     pointer-events: none;
+}
+#mining-on-block .info-icon {
+    display: none;
 }
 
 @media (min-width: 850px) {
