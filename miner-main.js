@@ -374,7 +374,7 @@ class Miner {
 
         this.$.network.connect();
 
-        this.threads = this.threads || this.$.miner.threads;
+        this.threads = this.ui.minerSettingsUi.threads || this.$.miner.threads;
         if (MiningPoolsUi.isPoolMinerEnabled) {
             // Fetch the pool balance while still syncing.
             this.connectPoolMiner();
@@ -391,10 +391,6 @@ class Miner {
     set threads(threadCount) {
         this.$.miner.threads = threadCount;
         this.ui.minerSettingsUi.threads = threadCount;
-    }
-
-    get threads() {
-        return this.$.miner.threads;
     }
 
     get hashrate() {
