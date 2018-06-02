@@ -498,14 +498,19 @@ header #warning-testnet {
     display: none;
 }
 
+@media (max-width: 850px) {
+    #bottomInfo {
+        top: -8px;
+    }
+}
+@media (max-width: 480px) {
+    #hintJoinPool {
+        display: none !important;
+    }
+}
 @media (max-width: 359px) {
     #rewardInfoAmount {
         display: none;
-    }
-}
-@media (max-width: 700px) {
-    #bottomInfo {
-        top: -8px;
     }
 }
 

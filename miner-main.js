@@ -13,8 +13,6 @@ class FactsUI {
         this._poolBalance = document.getElementById('factPoolMinerBalance');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._averageBlockReward = document.getElementById('factAverageBlockReward');
-        this._rewardInfoSoloMiner = document.getElementById('rewardInfoSoloMiner');
-        this._rewardInfoPoolMiner = document.getElementById('rewardInfoPoolMiner');
         this._blockReward = document.getElementById('factBlockReward');
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
@@ -38,17 +36,6 @@ class FactsUI {
 
     set globalHashrate(hashrate) {
         this._setHashrate(hashrate, 'global');
-    }
-
-    set poolEnabled(poolEnabled) {
-        if (poolEnabled) {
-            this._rewardInfoSoloMiner.style.display = 'none';
-            this._rewardInfoPoolMiner.style.display = 'inline';
-        } else {
-            this._rewardInfoSoloMiner.style.display = 'inline';
-            this._rewardInfoPoolMiner.style.display = 'none';
-            this._poolBalance.textContent = 'Off';
-        }
     }
 
     set averageBlockReward(satoshis) {
@@ -102,7 +89,7 @@ class FactsUI {
     }
 
     set poolBalance(balance) {
-        if (!MiningPoolsUi.isPoolMinerEnabled) this._poolBalance.textContent = 'Off';
+        if (!MiningPoolsUi.isPoolMinerEnabled || balance === 'Off') this._poolBalance.textContent = 'Off';
         else this._poolBalance.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(balance));
     }
 
@@ -182,6 +169,10 @@ class MinerUI {
         this._toggleMinerBtn = this._miningSection.querySelector('#toggleMinerBtn');
         this._toggleMinerBtn.onclick = () => miner.toggleMining();
 
+        this._rewardInfoSoloMiner = this._miningSection.querySelector('#rewardInfoSoloMiner');
+        this._rewardInfoPoolMiner = this._miningSection.querySelector('#rewardInfoPoolMiner');
+        this._hintJoinPool = this._miningSection.querySelector('#hintJoinPool');
+
         this.facts = new FactsUI();
         this._bottomPanels = new BottomPanels(document.querySelector('#bottom-panels'));
         this._createBottomPanels(miner);
@@ -209,7 +200,8 @@ class MinerUI {
 
         const showPoolUi = () => this.miningPoolsUi.show();
         [this._warningSelectPool.querySelector('#warning-select-pool-btn'),
-            this._warningPoolConnection.querySelector('#warning-pool-connection-change-pool')].forEach(btn =>
+            this._warningPoolConnection.querySelector('#warning-pool-connection-change-pool'),
+            this._hintJoinPool.querySelector('#hintJoinPoolBtn')].forEach(btn =>
             btn.onclick = showPoolUi);
 
         const resumeMinerBtn = this._miningSection.querySelector('#resumeMinerBtn');
@@ -271,16 +263,6 @@ class MinerUI {
         this._miningSection.classList.remove('disconnected');
     }
 
-    needToSelectPool() {
-        this.showWarning(this._warningSelectPool);
-        this._miningSection.classList.add('need-to-select-pool');
-    }
-
-    poolSelected() {
-        this.hideWarning(this._warningSelectPool);
-        this._miningSection.classList.remove('need-to-select-pool');
-    }
-
     poolMinerCantConnect() {
         this.showWarning(this._warningPoolConnection);
     }
@@ -297,6 +279,25 @@ class MinerUI {
     minerWorking() {
         this.hideWarning(this._warningMinerStopped);
         this._toggleMinerBtn.innerText = 'Pause Mining';
+    }
+
+    poolDisabled() {
+        this._rewardInfoSoloMiner.style.display = 'inline';
+        this._rewardInfoPoolMiner.style.display = 'none';
+        this._hintJoinPool.style.display = 'inline';
+        this.facts.poolBalance = 'Off';
+        if (App.NANO_CLIENT) {
+            this.showWarning(this._warningSelectPool);
+            this._miningSection.classList.add('need-to-select-pool');
+        }
+    }
+
+    poolEnabled() {
+        this._rewardInfoSoloMiner.style.display = 'none';
+        this._rewardInfoPoolMiner.style.display = 'inline';
+        this._hintJoinPool.style.display = 'none';
+        this.hideWarning(this._warningSelectPool);
+        this._miningSection.classList.remove('need-to-select-pool');
     }
 
     get minerSettingsUi() {
@@ -378,8 +379,9 @@ class Miner {
         if (MiningPoolsUi.isPoolMinerEnabled) {
             // Fetch the pool balance while still syncing.
             this.connectPoolMiner();
-        } else if (App.NANO_CLIENT) {
-            this.ui.needToSelectPool();
+            this.ui.poolEnabled();
+        } else {
+            this.ui.poolDisabled();
         }
 
         this.map.fadeIn();
@@ -441,8 +443,7 @@ class Miner {
 
     connectPoolMiner() {
         this.ui.miningPoolsUi.isPoolMinerEnabled = true;
-        this.ui.facts.poolEnabled = true;
-        this.ui.poolSelected();
+        this.ui.poolEnabled();
         if (this.$.miner.connectionState !== Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
         const { host, port } = this.ui.miningPoolsUi.settings;
         this.$.miner.connect(host, port);
@@ -451,8 +452,7 @@ class Miner {
     disconnectPoolMiner(disablePoolMining = true) {
         if (disablePoolMining) {
             this.ui.miningPoolsUi.isPoolMinerEnabled = false;
-            this.ui.facts.poolEnabled = false;
-            if (App.NANO_CLIENT) this.ui.needToSelectPool();
+            this.ui.poolDisabled();
         }
         if (this.$.miner.connectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) return;
         this.$.miner.disconnect();
