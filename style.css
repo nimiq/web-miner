@@ -177,6 +177,10 @@ body:not([network="main"]) .show-mainnet {
     }
 }
 
+@keyframes fade-out {
+    to { opacity: 0; }
+}
+
 header .logo {
     text-align: left;
 }
@@ -409,8 +413,6 @@ header #warning-testnet {
 }
 
 .miner-warning {
-    transition: opacity 1s;
-    opacity: 0;
     font-size: 26px;
     padding: 1vh 0;
     display: none;
@@ -421,18 +423,17 @@ header #warning-testnet {
     pointer-events: all;
 }
 
+.miner-warning.show {
+    display: block;
+    animation: fade-in 1s;
+}
+
 #miningSection:not(.synced) #warning-miner-stopped,
 .disconnected #progressContainer,
 .need-to-select-pool #progressContainer,
-.need-to-select-pool .miner-warning:not(#warning-select-pool):not(#warning-update),
 .need-to-select-pool #bottomInfo,
-.update-available .miner-warning:not(#warning-update) {
+.miner-warning.show ~ .miner-warning /* warnings are ordered by importance. Only show the most important warning */ {
     display: none !important;
-}
-
-.need-to-select-pool #warning-select-pool {
-    display: block;
-    opacity: 1;
 }
 
 .facts {

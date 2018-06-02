@@ -2,9 +2,6 @@ class UpdateChecker {
     constructor(miner) {
         this._miner = miner;
         this._miningSection = document.querySelector('#miningSection');
-        this._updateWarning = document.querySelector('#warning-update');
-        this._reloadButton = document.querySelector('#warning-update-reload');
-        this._reloadButton.addEventListener('click', () => window.location.reload());
         this._currentVersion = null;
         this._checkVersion();
         this._updateTimer = window.setInterval(() => this._checkVersion(), 60 * 60 * 1000); // check every hour
@@ -37,10 +34,7 @@ class UpdateChecker {
                 return;
             }
             if (version.code > this._currentVersion.code) {
-                this._updateWarning.style.display = 'block';
-                this._miningSection.classList.add('update-available');
-                this._updateWarning.offsetWidth; // style update
-                this._updateWarning.style.opacity = 1;
+                this._miner.ui.updateAvailable();
                 if (version.minRequiredVersion > this._currentVersion.code) {
                     this._miner.stopMining();
                 }
