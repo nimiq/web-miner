@@ -29,7 +29,7 @@ class FactsUI {
     }
 
     set blockHeight(height) {
-        this._blockHeight.textContent = height;
+        this._blockHeight.textContent = Utils.formatValue(height, 0);
     }
 
     set myHashrate(hashrate) {
@@ -89,7 +89,7 @@ class FactsUI {
     }
 
     set myBalance(balance) {
-        this._myBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
+        this._myBalance.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(balance));
     }
 
     set accountNeedsUpgrade(accountNeedsUpgrade) {
@@ -103,7 +103,7 @@ class FactsUI {
 
     set poolBalance(balance) {
         if (!MiningPoolsUi.isPoolMinerEnabled) this._poolBalance.textContent = 'Off';
-        else this._poolBalance.textContent = Nimiq.Policy.satoshisToCoins(balance).toFixed(2);
+        else this._poolBalance.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(balance));
     }
 
     set address(address) {

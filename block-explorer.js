@@ -199,7 +199,7 @@ class BlockEntry {
 
 	set block(block) {
 		this._block = block;
-		this._blockNumberEl.textContent = '#'+block.height;
+		this._blockNumberEl.textContent = '#'+Utils.formatValue(block.height, 0);
 		let hasTransactions = !!block.transactionCount;
 		this._transactionCountEl.textContent = block.transactionCount+' transactions'
 			+ (hasTransactions? ' (' : '');
@@ -207,8 +207,8 @@ class BlockEntry {
 			let totalAmount = block.transactions.reduce(function(sum, transaction) {
 				return sum + transaction.value + transaction.fee;
 			}, 0);
-			totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
-			this._totalAmountEl.textContent = totalAmount;
+			totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount);
+			this._totalAmountEl.textContent = Utils.formatValue(totalAmount);
 			this._totalAmountEl.style.display = 'inline';
 			this._closingParenthesis.style.display = 'inline';
 		} else {
@@ -216,7 +216,7 @@ class BlockEntry {
 			this._closingParenthesis.style.display = 'none';
 		}
 		this._minerAddressEl.textContent = 'mined by '+block.minerAddr.toUserFriendlyAddress().toUpperCase();
-		this._sizeEl.textContent = block.serializedSize + ' Bytes';
+		this._sizeEl.textContent = Utils.formatValue(block.serializedSize, 0) + ' Bytes';
         this._updateTimeString();
 		if (this._visible) {
 			this._startTimer();
@@ -248,22 +248,22 @@ class BlockDetailUi extends Overlay {
 	}
 
 	set block(block) {
-		this._blockNumberEl.textContent = '#' + block.height;
+		this._blockNumberEl.textContent = '#' + Utils.formatValue(block.height, 0);
 		const hash = block.hash();
 		this._blockHashEl.textContent = hash.toHex();
 		this._transactionCountEl.textContent = block.transactionCount;
 		let totalAmount = block.transactions.reduce(function(sum, transaction) {
 			return sum + transaction.value + transaction.fee;
 		}, 0);
-		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount).toFixed(2);
-		this._totalAmountEl.textContent = totalAmount;
+		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount);
+		this._totalAmountEl.textContent = Utils.formatValue(totalAmount);
 		this._blockRewardEl.textContent = Nimiq.Policy.satoshisToCoins(Nimiq.Policy.blockRewardAt(block.height)).toFixed(2);
 		this._difficultyEl.textContent = block.difficulty.toFixed(2);
 		let date = new Date(block.timestamp * 1000);
 		this._timestampEl.textContent = this._padNumber(date.getMonth()+1, 2) + '/'
 			+ this._padNumber(date.getDate(), 2) + '/' + date.getFullYear().toString().substr(2, 2)
 			+ ' ' + this._padNumber(date.getHours(), 2)+ ':' + this._padNumber(date.getMinutes(), 2);
-		this._sizeEl.textContent = block.serializedSize + ' Bytes';
+		this._sizeEl.textContent = Utils.formatValue(block.serializedSize, 0) + ' Bytes';
 		this._nonceEl.textContent = block.nonce;
 		this._bitsEl.textContent = block.nBits.toString(16);
 		this._minerAddressEl.textContent = block.minerAddr.toUserFriendlyAddress();
@@ -303,7 +303,7 @@ class BlockDetailUi extends Overlay {
 				value.classList.add('is-currency');
 				sender.textContent=transaction.sender.toUserFriendlyAddress().toUpperCase();
 				recipient.textContent = transaction.recipient.toUserFriendlyAddress().toUpperCase();
-				value.textContent = Nimiq.Policy.satoshisToCoins(transaction.value).toFixed(2);
+				value.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(transaction.value));
 				entry.appendChild(sender);
 				entry.appendChild(recipient);
 				entry.appendChild(value);
