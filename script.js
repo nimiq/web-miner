@@ -234,10 +234,11 @@ class App {
     }
 }
 App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com'
-    : window.location.origin.indexOf('nimiq-testnet.com')!==-1? 'https://keyguard.nimiq-testnet.com'
-        : `${location.origin}/libraries/keyguard/src`;
+    : window.location.origin.indexOf('localhost')!==-1? `${location.origin}/libraries/keyguard/src`
+        : 'https://keyguard.nimiq-testnet.com';
 
 App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
+    : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
     : 'https://cdn.nimiq-testnet.com/nimiq.js';
 
 App.NANO_CLIENT = window.innerWidth <= 640; // use nano on mobile
