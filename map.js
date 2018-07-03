@@ -279,7 +279,7 @@ class MapUI {
     fadeIn() {
         this._mapElem.style.opacity = 1;
         this._polledPeers.addAll(Nimiq.GenesisConfig.SEED_PEERS
-            .concat(this.$.network._addresses.query(Nimiq.Protocol.WS | Nimiq.Protocol.RTC,
+            .concat(this.$.network._addresses.query(Nimiq.Protocol.WSS | Nimiq.Protocol.WS | Nimiq.Protocol.RTC,
                 Nimiq.Services.NANO | Nimiq.Services.LIGHT | Nimiq.Services.FULL))
             .filter(peerAddress => !!this._getPeerHost(peerAddress)));
         this._polledPeersToDisplay = this._polledPeers.values();
@@ -307,7 +307,7 @@ class MapUI {
 
     _getPeerHost(peer) {
         const peerAddress = peer.peerAddress || peer;
-        if (peerAddress.protocol === Nimiq.Protocol.WS) {
+        if (peerAddress.protocol === Nimiq.Protocol.WS || peerAddress.protocol === Nimiq.Protocol.WSS) {
             return peerAddress.host;
         } else if (peerAddress.netAddress && !peerAddress.netAddress.isPrivate()) {
             return peerAddress.netAddress.toString();

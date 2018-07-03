@@ -118,7 +118,7 @@ class App {
     async _resetDatabase() {
         console.log('Resetting the database.');
         return new Promise((resolve, reject) => {
-            const request = indexedDB.deleteDatabase(`${App.NETWORK}-light-consensus`);
+            const request = indexedDB.deleteDatabase(`${App.NETWORK}-${App.NANO_CLIENT? 'nano' : 'light'}-consensus}`);
             request.onerror = () => reject(App.ERROR_DATABASE_ACCESS);
             request.onsuccess = resolve;
         });
