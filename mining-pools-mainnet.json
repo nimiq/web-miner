@@ -18,15 +18,6 @@
     "supportsNano": true
   },
   {
-    "name": "Porky Pool",
-    "host": "pool.porkypool.com",
-    "port": "8444",
-    "description": "Porky Pool is built for scale, stability and free bacon.",
-    "fees": "0.8%",
-    "payouts": "Automatic payouts every hour",
-    "supportsNano": true
-  },
-  {
     "name": "Beeppool",
     "host": "beeppool.org/ws",
     "port": "443",
@@ -37,7 +28,7 @@
   },
   {
     "name": "nimiqchain.info",
-    "host": "pool.nimiqchain.info",
+    "host": "asia.nimiqchain.info",
     "port": "8444",
     "description": "Join the nimiqchain.info mining pool and get shares of the mined block rewards.",
     "fees": "1%",
@@ -48,8 +39,8 @@
     "name": "SushiPool",
     "host": "eu.sushipool.com",
     "port": "443",
-    "description": "Mine as One and Enjoy the 🍣. 0% Fee for the First Month!",
-    "fees": "0%",
+    "description": "Mine as One and Enjoy the 🍣.",
+    "fees": "1%",
     "payouts": "Automatic payouts every 3 hours",
     "supportsNano": true
   },
