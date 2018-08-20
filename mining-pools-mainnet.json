@@ -27,15 +27,6 @@
     "supportsNano": false
   },
   {
-    "name": "nimiqchain.info",
-    "host": "asia.nimiqchain.info",
-    "port": "8444",
-    "description": "Join the nimiqchain.info mining pool and get shares of the mined block rewards.",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 6 hours",
-    "supportsNano": true
-  },
-  {
     "name": "SushiPool",
     "host": "eu.sushipool.com",
     "port": "443",
@@ -45,21 +36,21 @@
     "supportsNano": true
   },
   {
-    "name": "NimiqPool.com",
-    "host": "node.nimiqpool.com",
-    "port": "8444",
-    "description": "Mine as part of the NimiqPool and get shares of the mined block rewards according to your hash rate.",
-    "fees": "1%",
-    "payouts": "Secure and Automatic payouts every 3 hours",
-    "supportsNano": true
-  },
-  {
     "name": "PhilPool",
     "host": "node.philpool.com",
     "port": "8444",
     "description": "Enjoy low fees and mine with the philpool community, receive payouts hourly based on blockfinds and your hashrate.",
     "fees": "0.5%",
     "payouts": "Automatic payout every 1 hour",
+    "supportsNano": true
+  },
+  {
+    "name": "Nimbus Pool",
+    "host": "pool.nimbus.fun",
+    "port": "8443",
+    "description": "nimbus.fun - Nimiq Mining Pool",
+    "fees": "1%",
+    "payouts": "Automatic payouts every hour",
     "supportsNano": true
   }
 ]
