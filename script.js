@@ -95,7 +95,7 @@ class App {
 
     async _createAccount() {
         // needs to be called by a user interaction to open keyguard popup window
-        await this._keyGuardClient.createWallet();
+        await this._keyGuardClient.createWallet('My First Nimiq Account');
         const minerAccount = await this.getMinerAccount();
         if (!minerAccount) return; // User cancelled account creation. Keep the prompt open.
         this.$accountPromptUi.style.display = 'none';
