@@ -181,6 +181,50 @@ body:not([network="main"]) .show-mainnet {
     to { opacity: 0; }
 }
 
+header > * {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+}
+
+header .header-warning {
+    background: rgb(255, 196, 0);
+    color: #3b3b3b;
+    text-align: center;
+    font-size: 15px;
+    font-weight: normal;
+    display: none;
+}
+
+header .header-warning.shown {
+    display: flex;
+}
+
+header .header-warning.shown + .header-warning.shown {
+    border-top: 1px solid #3b3b3b;
+}
+
+header .header-warning > :first-child {
+    flex-grow: 1;
+}
+
+header .header-warning .warning-close {
+    padding: 0 8px;
+    cursor: pointer;
+    position: relative;
+    left: 8px;
+    font-weight: bold;
+}
+
+header .header-warning a {
+    font-size: inherit;
+    color: inherit;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 header .logo {
     text-align: left;
 }
@@ -1135,8 +1179,9 @@ body[overlay="mining-pools"] #mining-pools {
     #bottomInfo a {
         padding: 1px;
     }
-    header {
-        padding: 16px;
+    header > * {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     #map svg {

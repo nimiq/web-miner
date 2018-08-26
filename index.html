@@ -2140,20 +2140,31 @@
         </div>
     </div>
     <header id="header">
-        <div class="logo">
-            <a id="header-link" href="https://nimiq.com">
-                <svg width="34" height="30" viewBox="0 0 499 440" xmlns="http://www.w3.org/2000/svg"><path d="M389.33 20.73C382.65 9.28 366.48 0 353.24 0h-208c-13.26 0-29.4 9.28-36.09 20.73L5.33 198.87c-6.68 11.45-6.68 30.02 0 41.47l103.82 178.14c6.68 11.45 22.85 20.74 36.09 20.74h208c13.26 0 29.4-9.28 36.09-20.74l103.82-178.14c6.68-11.45 6.68-30.01 0-41.47L389.33 20.73zM272.6 347.45v41.1h-38.74v-39.53c-23.53-2.82-51.45-13.02-70.28-30.12l25.57-39.06c20.4 15.06 37.96 22.9 57.1 22.9 22.43 0 32.31-9.1 32.31-27.29 0-40.63-105.4-39.84-105.4-111.06 0-38.74 23.2-65.57 60.7-73.1V50.51h38.74v40c25.57 3.6 43.92 16.16 59.45 32.47l-29.49 33.26c-14.43-13.02-26.66-19.77-43.45-19.77-19.13 0-29.49 7.53-29.49 25.26 0 37.49 105.41 34.35 105.41 109.96-.15 37.8-21.33 67.13-62.43 75.76z" fill="#FFC107" fill-rule="evenodd"/></svg>
-            </a>
-            <span class="uppercase">Nimiq Miner</span>
+        <div id="warning-private-mode" class="header-warning">
+            <div>
+                You are using Private Browsing Mode. Your accounts will not be saved when this window is closed. Please make sure to <a href="https://safe.nimiq.com" target="nimiq-safe">create a backup / upgrade</a>!
+            </div>
+            <div class="warning-close" onclick="this.parentNode.remove();">
+                X
+            </div>
         </div>
-        <span id="warning-testnet" class="message uppercase show-testnet">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="20" style="position: relative; top: 2px;">
-                <path fill="none" d="M0 0h24v24H0z"></path>
-                <path fill="#e2a62f" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
-            </svg>
-            Testnet
-        </span>
-        <span id="download-container" style="width: 165.44px;"><a class="message" href="https://nimiq.com/#downloads" target="_blank">Mine Faster</a></span>
+
+        <div>
+            <div class="logo">
+                <a id="header-link" href="https://nimiq.com">
+                    <svg width="34" height="30" viewBox="0 0 499 440" xmlns="http://www.w3.org/2000/svg"><path d="M389.33 20.73C382.65 9.28 366.48 0 353.24 0h-208c-13.26 0-29.4 9.28-36.09 20.73L5.33 198.87c-6.68 11.45-6.68 30.02 0 41.47l103.82 178.14c6.68 11.45 22.85 20.74 36.09 20.74h208c13.26 0 29.4-9.28 36.09-20.74l103.82-178.14c6.68-11.45 6.68-30.01 0-41.47L389.33 20.73zM272.6 347.45v41.1h-38.74v-39.53c-23.53-2.82-51.45-13.02-70.28-30.12l25.57-39.06c20.4 15.06 37.96 22.9 57.1 22.9 22.43 0 32.31-9.1 32.31-27.29 0-40.63-105.4-39.84-105.4-111.06 0-38.74 23.2-65.57 60.7-73.1V50.51h38.74v40c25.57 3.6 43.92 16.16 59.45 32.47l-29.49 33.26c-14.43-13.02-26.66-19.77-43.45-19.77-19.13 0-29.49 7.53-29.49 25.26 0 37.49 105.41 34.35 105.41 109.96-.15 37.8-21.33 67.13-62.43 75.76z" fill="#FFC107" fill-rule="evenodd"/></svg>
+                </a>
+                <span class="uppercase">Nimiq Miner</span>
+            </div>
+            <span id="warning-testnet" class="message uppercase show-testnet">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="20" style="position: relative; top: 2px;">
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                    <path fill="#e2a62f" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                </svg>
+                Testnet
+            </span>
+            <span id="download-container" style="width: 165.44px;"><a class="message" href="https://nimiq.com/#downloads" target="_blank">Mine Faster</a></span>
+        </div>
     </header>
     <!-- Warnings -->
     <noscript id="warning-no-js" class="landing-warning hide-mobile-landscape">
@@ -2184,9 +2195,6 @@
         <div>Your browser is not up to date. Update to see the full power of the Nimiq ecosystem in action.</div>
         <a class="button continue-anyways-button" href="https://nimiq.com">Continue without updating</a>
     </div>
-    <div id="warning-multiple-tabs" class="landing-warning warning-advice hide-mobile-landscape">
-        The Miner is already running in a different tab.
-    </div>
     <div id="warning-no-localstorage" class="landing-warning hide-mobile-landscape">
         <div>Your browser does not support local storage.</div>
         <div class="warning-advice">If you are in private browsing mode, try to run this page in normal mode.</div>
@@ -2194,9 +2202,23 @@
             <a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue in Private Mode</a>
         </div>
     </div>
+    <div id="warning-unsupported-private-mode" class="landing-warning hide-mobile-landscape">
+        <div>This browser does not support running this page in private browsing mode.</div>
+        <div class="warning-advice">Try to run this page in normal mode.</div>
+        <div class="bottom-center">
+            <a class="secondary-button continue-anyways-button" href="https://nimiq.com">Continue in Private Mode</a>
+        </div>
+    </div>
+    <div id="warning-web-view" class="landing-warning hide-mobile-landscape">
+        <div>You are viewing this page from inside another app.</div>
+        <div class="warning-advice">Please use a real browser to visit miner.nimiq.com.</div>
+    </div>
     <div id="warning-database-access" class="landing-warning hide-mobile-landscape">
         <div>Failed to access the database.</div>
         <div class="warning-advice">Please reload.</div>
+    </div>
+    <div id="warning-multiple-tabs" class="landing-warning warning-advice hide-mobile-landscape">
+        The Miner is already running in another tab.
     </div>
     <div id="warning-mobile-landscape" class="landing-warning warning-advice">
         Please rotate the screen.
