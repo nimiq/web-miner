@@ -311,6 +311,9 @@ header #warning-testnet {
     display: none;
     animation: none !important;
     opacity: 1;
+    position: absolute;
+    top: 75%;
+    width: 100%;
 }
 
 .mobile-landscape .hide-mobile-landscape {

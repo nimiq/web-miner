@@ -218,25 +218,20 @@ class MinerUI {
         new UpdateChecker(miner);
     }
 
-    setState(newState) {
-        let states = ['landing', 'mining'];
-        states.forEach(function(state) {
-            const section = document.querySelector(`#${state}Section`);
-            const style = section.style;
-            if (state === newState) {
-                setTimeout(function() {
-                    // show as soon as the other page is hidden
-                    style.display = 'block';
-                    section.offsetWidth; // enforce style update
-                    style.opacity = 1; // fades for 1s
-                }.bind(this), 1000);
-            } else {
-                style.opacity = 0; // fades for 1s
-                setTimeout(function() {
-                    style.display = 'none';
-                }, 1000);
-            }
-        }, this);
+    showMiner() {
+        const landingSection = document.querySelector('#landingSection');
+        const miningSection = document.querySelector('#miningSection');
+        if (!landingSection) return;
+        landingSection.style.opacity = 0; // fades for 1s
+        setTimeout(() => {
+            // clean up landing section
+            landingSection.remove();
+            document.querySelectorAll('.landing-warning').forEach(warning => warning.remove());
+            // show mining section
+            miningSection.style.display = 'block';
+            miningSection.offsetWidth; // enforce style update
+            miningSection.style.opacity = 1; // fades for 1s
+        }, 1000);
     }
 
     showWarning(warning) {
@@ -392,7 +387,7 @@ class Miner {
         }
 
         this.map.fadeIn();
-        this.ui.setState('mining');
+        this.ui.showMiner();
 
         this._onHeadChanged();
     }
