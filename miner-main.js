@@ -181,15 +181,18 @@ class MinerUI {
         this._miningSection.querySelector('#pool-miner').addEventListener('click', () => this._miningPoolsUi.show());
 
         this._warningUpdateAvailable = this._miningSection.querySelector('#warning-update');
+        this._warningClockMisconfigured = this._miningSection.querySelector('#warning-clock-misconfigured');
         this._warningDisconnected = this._miningSection.querySelector('#warning-disconnected');
         this._warningSelectPool = this._miningSection.querySelector('#warning-select-pool');
         this._warningPoolConnection = this._miningSection.querySelector('#warning-pool-connection');
         this._warningMinerStopped = this._miningSection.querySelector('#warning-miner-stopped');
 
         const reload = () => window.location.reload();
-        [this._warningUpdateAvailable.querySelector('#warning-update-reload'),
-            this._warningDisconnected.querySelector('#warning-disconnected-reload')].forEach(btn =>
-            btn.onclick = reload);
+        [
+            this._warningUpdateAvailable.querySelector('#warning-update-reload'),
+            this._warningClockMisconfigured.querySelector('#warning-clock-reload'),
+            this._warningDisconnected.querySelector('#warning-disconnected-reload'),
+        ].forEach(btn => btn.onclick = reload);
 
         const reconnectBtn = this._warningDisconnected.querySelector('#reconnectBtn');
         reconnectBtn.onclick = () => {
@@ -251,6 +254,10 @@ class MinerUI {
 
     updateAvailable() {
         this.showWarning(this._warningUpdateAvailable);
+    }
+
+    clockMisconfigured() {
+        this.showWarning(this._warningClockMisconfigured);
     }
 
     disconnected() {
@@ -465,6 +472,8 @@ class Miner {
         this.ui.facts.blockReward = Nimiq.Policy.blockRewardAt(this.$.blockchain.height);
         this.ui.reconnected();
 
+        this._checkComputerClock();
+
         if (!this.paused) {
             this.startMining();
         }
@@ -519,6 +528,17 @@ class Miner {
         } else {
             this.ui.disconnected();
         }
+
+        this._checkComputerClock();
+    }
+
+    _checkComputerClock() {
+        // if computer clock deviates too much from network time show a warning. To recover from this state, user has to
+        // reload as the netword time offset does not get recalculated.
+        if (!this.$.consensus.established
+            || Math.abs(this.$.network.time.now() - Date.now()) < Nimiq.Block.TIMESTAMP_DRIFT_MAX * 1000) return;
+        this.ui.clockMisconfigured();
+        this.stopMining();
     }
 
     _onHeadChanged(_, branching) {
