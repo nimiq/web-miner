@@ -157,6 +157,12 @@
     flex-shrink: 0;
 }
 
+#mining-pool-detail #mining-pool-info-disclaimer {
+    font-size: 16px;
+    color: rgba(3,32,71,0.2);
+    margin-top: 32px;
+}
+
 @media (max-width: 700px) {
     #mining-pools .overlay-column-container {
         flex-direction: column;
@@ -186,7 +192,8 @@
     #mining-pools #mining-pools-list label,
     #mining-pools p,
     #mining-pools .button,
-    #mining-pools #mining-pool-connection-indicator {
+    #mining-pools #mining-pool-connection-indicator,
+    #mining-pools #mining-pool-info-disclaimer {
         font-size: 14px;
     }
 
@@ -208,5 +215,4 @@
         margin-right: 2px;
         margin-bottom: 1px;
     }
-
 }
