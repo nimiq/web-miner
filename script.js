@@ -128,8 +128,10 @@ class App {
         return new Promise((resolve, reject) => {
             Nimiq.init(async () => {
                 try {
-                    document.getElementById('landingSection').classList.remove('warning');
-                    document.getElementById('warning-multiple-tabs').style.display = 'none';
+                    if (document.getElementById('warning-multiple-tabs').style.display === 'block') {
+                        document.getElementById('warning-multiple-tabs').style.display = 'none';
+                        document.getElementById('landingSection').classList.remove('warning');
+                    }
 
                     let genesisInitialized;
                     try {
@@ -156,8 +158,8 @@ class App {
                     reject(e);
                 }
             }, function (error) {
-                document.getElementById('landingSection').classList.add('warning');
                 if (error === Nimiq.ERR_WAIT) {
+                    document.getElementById('landingSection').classList.add('warning');
                     document.getElementById('warning-multiple-tabs').style.display = 'block';
                 } else if (error === Nimiq.ERR_UNSUPPORTED) {
                     reject(App.ERROR_OLD_BROWSER);
