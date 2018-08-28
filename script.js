@@ -239,9 +239,9 @@ App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://k
     : window.location.origin.indexOf('localhost')!==-1? `${location.origin}/libraries/keyguard/src`
         : 'https://keyguard.nimiq-testnet.com';
 
-App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
+App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js?v=1.3.1'
     : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
-    : 'https://cdn.nimiq-testnet.com/nimiq.js';
+    : 'https://cdn.nimiq-testnet.com/nimiq.js?v=1.3.1';
 
 App.NANO_CLIENT = window.innerWidth <= 640; // use nano on mobile
 

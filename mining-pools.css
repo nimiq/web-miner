@@ -92,10 +92,8 @@
     border-radius: 50%;
     display: inline-block;
     margin: 4px 8px 0 8px;
-}
-
-#mining-pool-detail #mining-pool-info-balance {
-    margin: 0 16px;
+    position: relative;
+    font-size: 19px;
 }
 
 #mining-pool-detail #mining-pool-connection-indicator[status="disconnected"] {
@@ -108,6 +106,33 @@
 
 #mining-pool-detail #mining-pool-connection-indicator[status="connected"] {
     background: #4CAF50;
+}
+
+#mining-pool-detail #mining-pool-connection-indicator:hover::before {
+    content: "";
+    border-bottom: 6px solid transparent;
+    border-top: 6px solid transparent;
+    border-right: 8px solid black;
+    display: block;
+    position: absolute;
+    top: -2px;
+    right: -12px;
+}
+#mining-pool-detail #mining-pool-connection-indicator:hover::after {
+    content: attr(status);
+    text-transform: capitalize;
+    color: white;
+    background: black;
+    border-radius: 4px;
+    padding: 4px 8px;
+    position: absolute;
+    top: 4px;
+    left: 20px;
+    transform: translateY(-50%);
+}
+
+#mining-pool-detail #mining-pool-info-balance {
+    margin: 0 16px;
 }
 
 #mining-pool-detail:not([connected]) .show-when-connected {
@@ -150,7 +175,8 @@
 
     #mining-pools #mining-pools-list label,
     #mining-pools p,
-    #mining-pools .button {
+    #mining-pools .button,
+    #mining-pools #mining-pool-connection-indicator {
         font-size: 14px;
     }
 
