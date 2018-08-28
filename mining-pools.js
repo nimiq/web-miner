@@ -153,6 +153,14 @@ class MiningPoolDetailUi {
         this._balance = el.querySelector('#mining-pool-info-balance');
         this._warningPoolConnection = el.querySelector('#mining-pool-info-connection-warning');
 
+        this._infoName = this._el.querySelector('#mining-pool-info-name');
+        this._infoDescription = this._el.querySelector('#mining-pool-info-description');
+        this._infoLinks = this._el.querySelector('#mining-pool-info-links');
+        this._infoFees = this._el.querySelector('#mining-pool-info-fees');
+        this._infoPayouts = this._el.querySelector('#mining-pool-info-payouts');
+        this._infoHost = this._el.querySelector('#mining-pool-info-host');
+        this._infoPort = this._el.querySelector('#mining-pool-info-port');
+
         this._joinButton.addEventListener('click', () => this._joinOrLeave());
         this._miner.$.miner.on('connection-state', () => this._updateConnectionStatus());
         this._miner.$.miner.on('confirmed-balance', () => this._updateBalance());
@@ -165,12 +173,33 @@ class MiningPoolDetailUi {
 
     set miningPool(miningPool) {
         this._miningPoolId = MiningPoolsUi.poolIdFromHostAndPort(miningPool.host, miningPool.port);
-        this._el.querySelector('#mining-pool-info-name').textContent = miningPool.name;
-        this._el.querySelector('#mining-pool-info-host').textContent = miningPool.host;
-        this._el.querySelector('#mining-pool-info-port').textContent = miningPool.port;
-        this._el.querySelector('#mining-pool-info-description').textContent = miningPool.description;
-        this._el.querySelector('#mining-pool-info-fees').textContent = miningPool.fees;
-        this._el.querySelector('#mining-pool-info-payouts').textContent = miningPool.payouts;
+        this._infoName.textContent = miningPool.name;
+        this._infoDescription.textContent = miningPool.description;
+        this._infoFees.textContent = miningPool.fees;
+        this._infoPayouts.textContent = miningPool.payouts;
+        this._infoHost.textContent = miningPool.host;
+        this._infoPort.textContent = miningPool.port;
+
+        this._infoLinks.textContent = ''; // clear
+        if (miningPool.website) {
+            const link = document.createElement('a');
+            link.textContent = 'Website';
+            link.setAttribute('target', '_blank');
+            link.setAttribute('href', miningPool.website);
+            this._infoLinks.appendChild(link);
+        }
+        if (miningPool.community) {
+            if (miningPool.website) {
+                const dash = document.createTextNode(' \u2013 '); // ndash
+                this._infoLinks.appendChild(dash);
+            }
+            const link = document.createElement('a');
+            link.textContent = 'Community';
+            link.setAttribute('target', '_blank');
+            link.setAttribute('href', miningPool.community);
+            this._infoLinks.appendChild(link);
+        }
+
         this._updateConnectionStatus();
         this._updateBalance();
     }
@@ -197,9 +226,10 @@ class MiningPoolDetailUi {
         }
 
         if (this._poolsUi.isPoolMinerEnabled
-            && this._previousConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING
-            && this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
-            this._warningPoolConnection.style.display = 'block';
+                && this._miningPoolId === this._poolsUi.joinedMiningPoolId
+                && this._previousConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING
+                && this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+            this._warningPoolConnection.style.display = 'flex';
         }
         this._previousConnectionState = this._miner.poolConnectionState;
     }

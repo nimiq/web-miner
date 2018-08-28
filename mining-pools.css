@@ -76,6 +76,12 @@
     margin-bottom: 32px;
 }
 
+#mining-pool-detail .overlay-detail-row a {
+    font-size: inherit;
+    color: inherit;
+    text-decoration: underline;
+}
+
 #mining-pool-detail .overlay-detail-label {
     width: 96px;
     flex-shrink: 0;

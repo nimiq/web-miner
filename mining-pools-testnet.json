@@ -4,6 +4,8 @@
     "host": "pool.nimiq-testnet.com",
     "port": "8444",
     "description": "Mine as part of a pool of several miners and get shares of the collective block rewards of the mining pool according to your hash rate.",
+    "website": "https://nimiq-testnet.com",
+    "community": "https://nimiq.community",
     "fees": "1%",
     "payouts": "Automatic payouts every 15 minutes.",
     "supportsNano": true
@@ -13,6 +15,7 @@
     "host": "test-pool.nimiq.watch",
     "port": "8443",
     "description": "Mine as part of the nimiq.watch test mining pool and get shares of the mined block rewards according to your hash rate.",
+    "website": "https://test.nimiq.watch",
     "fees": "1%",
     "payouts": "Automatic payouts every 6 hours",
     "supportsNano": true

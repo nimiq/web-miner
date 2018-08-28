@@ -4,6 +4,8 @@
     "host": "eu.nimpool.io",
     "port": "8444",
     "description": "nimpool.io - Nimiq Pool Mining Done Right. Secure. Distributed. Non-profit.",
+    "website": "https://nimpool.io",
+    "community": "https://discord.gg/cMHemg8",
     "fees": "0.8%",
     "payouts": "Automatic payouts every 3 hours",
     "supportsNano": true
@@ -13,6 +15,7 @@
     "host": "pool.nimiq.watch",
     "port": "8443",
     "description": "Mine as part of the nimiq.watch mining pool and get shares of the mined block rewards according to your hash rate.",
+    "website": "https://nimiq.watch",
     "fees": "1%",
     "payouts": "Automatic payouts every 6 hours",
     "supportsNano": true
@@ -22,6 +25,8 @@
     "host": "beeppool.org/ws",
     "port": "443",
     "description": "⚠ To use this pool a registration is required (https://goo.gl/ZU5oHQ) ⚠ It's hard to find a block on your own, join Beeppool and get rewards for your effort",
+    "website": "https://beeppool.org",
+    "community": "https://discord.gg/QrgNzU5",
     "fees": "<1%",
     "payouts": "Manual payout, 1-2 times a day",
     "supportsNano": false
@@ -31,6 +36,8 @@
     "host": "eu.sushipool.com",
     "port": "443",
     "description": "Mine as One and Enjoy the 🍣.",
+    "website": "https://sushipool.com",
+    "community": "https://discord.gg/JCCExJu",
     "fees": "1%",
     "payouts": "Automatic payouts every 3 hours",
     "supportsNano": true
@@ -40,6 +47,7 @@
     "host": "node.philpool.com",
     "port": "8444",
     "description": "Enjoy low fees and mine with the philpool community, receive payouts hourly based on blockfinds and your hashrate.",
+    "website": "https://philpool.com/",
     "fees": "0.5%",
     "payouts": "Automatic payout every 1 hour",
     "supportsNano": true
@@ -49,6 +57,7 @@
     "host": "pool.nimbus.fun",
     "port": "8443",
     "description": "nimbus.fun - Nimiq Mining Pool",
+    "website": "https://nimbus.fun/",
     "fees": "1%",
     "payouts": "Automatic payouts every hour",
     "supportsNano": true
