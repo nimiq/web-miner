@@ -147,12 +147,20 @@ class MiningPoolDetailUi {
         this._poolsUi = poolsUi;
         this._miner = miner;
         this._miningPoolId = null;
+        this._previousConnectionState = null;
         this._connectionStatus = el.querySelector('#mining-pool-connection-indicator');
         this._joinButton = el.querySelector('#mining-pool-join');
         this._balance = el.querySelector('#mining-pool-info-balance');
+        this._warningPoolConnection = el.querySelector('#mining-pool-info-connection-warning');
+
         this._joinButton.addEventListener('click', () => this._joinOrLeave());
         this._miner.$.miner.on('connection-state', () => this._updateConnectionStatus());
         this._miner.$.miner.on('confirmed-balance', () => this._updateBalance());
+
+        if (App.NANO_CLIENT) {
+            this._warningPoolConnection.querySelector('#mining-pool-info-connection-warning-mining-status').textContent
+                = 'mining disabled';
+        }
     }
 
     set miningPool(miningPool) {
@@ -173,15 +181,27 @@ class MiningPoolDetailUi {
             this._connectionStatus.setAttribute('status', 'disconnected');
             this._el.removeAttribute('connected');
             this._joinButton.textContent = 'Join';
+            if (this._miningPoolId !== this._poolsUi.joinedMiningPoolId
+                || !this._poolsUi.isPoolMinerEnabled) {
+                this._warningPoolConnection.style.display = 'none';
+            }
         } else if (this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this._connectionStatus.setAttribute('status', 'connected');
             this._el.setAttribute('connected', '');
             this._joinButton.textContent = 'Leave';
+            this._warningPoolConnection.style.display = 'none';
         } else {
             this._connectionStatus.setAttribute('status', 'connecting');
             this._el.removeAttribute('connected');
             this._joinButton.textContent = 'Leave';
         }
+
+        if (this._poolsUi.isPoolMinerEnabled
+            && this._previousConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING
+            && this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
+            this._warningPoolConnection.style.display = 'block';
+        }
+        this._previousConnectionState = this._miner.poolConnectionState;
     }
 
     _updateBalance() {
@@ -191,6 +211,7 @@ class MiningPoolDetailUi {
     _joinOrLeave() {
         if (this._miner.poolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CLOSED
             || this._miningPoolId !== this._poolsUi.joinedMiningPoolId) {
+            this._previousConnectionState = null;
             this._poolsUi.joinedMiningPoolId = this._miningPoolId;
             this._poolsUi.isPoolMinerEnabled = true;
             this._miner.connectPoolMiner();

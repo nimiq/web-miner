@@ -147,6 +147,16 @@
     animation: fade-in .3s;
 }
 
+#mining-pool-detail #mining-pool-info-connection-warning {
+    color: #e2a62f;
+    display: none;
+    align-items: center;
+}
+
+#mining-pool-detail #mining-pool-info-connection-warning > svg {
+    flex-shrink: 0;
+}
+
 @media (max-width: 700px) {
     #mining-pools .overlay-column-container {
         flex-direction: column;

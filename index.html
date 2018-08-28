@@ -2158,7 +2158,6 @@
             </div>
             <span id="warning-testnet" class="message uppercase show-testnet">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="20" style="position: relative; top: 2px;">
-                    <path fill="none" d="M0 0h24v24H0z"></path>
                     <path fill="#e2a62f" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
                 </svg>
                 Testnet
@@ -2515,6 +2514,15 @@
                         <p id="mining-pool-info-balance" class="show-when-connected is-currency"></p>
                         <div id="mining-pool-join" class="button">Join</div>
                     </div>
+                    <p id="mining-pool-info-connection-warning" class="overlay-detail-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="20">
+                            <path fill="#e2a62f" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                        </svg>
+                        <span>
+                            Connecting to the mining pool failed,&nbsp;
+                            <span id="mining-pool-info-connection-warning-mining-status">currently solo mining</span>.
+                        </span>
+                    </p>
                     <div class="overlay-detail-row">
                         <p class="overlay-detail-label">Description</p>
                         <p id="mining-pool-info-description"></p>
