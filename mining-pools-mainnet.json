@@ -61,5 +61,16 @@
     "fees": "1%",
     "payouts": "Automatic payouts every hour",
     "supportsNano": true
+  },
+  {
+    "name": "mineNIM",
+    "host": "pool.minenim.org",
+    "port": "8443",
+    "description": "mineNIM.org - Nimiq Mining Pool",
+    "website": "https://minenim.org",
+    "community": "https://discord.gg/nmCzMRc",
+    "fees": "0%",
+    "payouts": "Automatic payouts every 10 minutes",
+    "supportsNano": true
   }
 ]
