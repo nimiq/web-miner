@@ -20,30 +20,6 @@ header {
     font-weight: 600;
 }
 
-header .logo {
-    display: flex;
-    align-items: center;
-    color: white;
-    font-size: 17px;
-}
-
-
-header .logo svg {
-    margin-right: 16px;
-    min-width: 34px;
-}
-
-header .logo .uppercase {
-    font-weight: 700;
-    line-height: 1;
-}
-
-header .logo a {
-    outline: none !important;
-    -webkit-tap-highlight-color: transparent;
-    line-height: 0;
-}
-
 header .message {
     font-size: 20px;
     margin-left: -20px;
@@ -114,10 +90,6 @@ a {
 
     h2 {
         font-size: 20px;
-    }
-
-    header .logo svg {
-        margin-right: 12px;
     }
 
     header .message {

@@ -530,7 +530,7 @@ class Miner {
     _checkComputerClock() {
         // if computer clock deviates too much from network time show a warning. To recover from this state, user has to
         // reload as the netword time offset does not get recalculated.
-        if (this.$.network.peerCount < 2 // ask at least 2 peers for their time
+        if (this.$.network.peerCount < 3 // ask at least 3 peers for their time
             || Math.abs(this.$.network.time.now() - Date.now()) < Nimiq.Block.TIMESTAMP_DRIFT_MAX * 1000) return;
         this.ui.clockMisconfigured();
         this.stopMining();

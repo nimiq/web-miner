@@ -189,6 +189,23 @@ header > * {
     padding: 16px 32px;
 }
 
+header .logo {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 434 64"><defs><radialGradient id="radial-gradient" cx="54.2" cy="63.2" r="72" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="%23ec991c"/><stop offset="1" stop-color="%23e9b213"/></radialGradient></defs><path fill="url(%23radial-gradient)" d="M71.2 29l-15-26A6 6 0 0 0 51 0H21a6 6 0 0 0-5.2 3L.8 29a6 6 0 0 0 0 6l15 26a6 6 0 0 0 5.2 3h30a6 6 0 0 0 5.2-3l15-26a6 6 0 0 0 0-6z"/><path fill="white" d="M126 12.6h4.2V51h-3.4l-23.3-31v31h-4.1V12.5h3.4l23.2 31zM144 51V12.5h4.4V51zM194.9 12.6h3.7V51h-4.1V22.4L182 51h-3.1l-12.6-28.4V51h-4V12.5h3.6l14.6 33.2zM212.4 51V12.5h4.4V51zM260.2 58.5l-3 2.8a29.4 29.4 0 0 1-4.6-4.4 37.5 37.5 0 0 1-4-5.6l-1.9.1a17.7 17.7 0 0 1-9.2-2.3 15.7 15.7 0 0 1-6.1-6.9 24 24 0 0 1-2.1-10.4 24.3 24.3 0 0 1 2-10.5 15.5 15.5 0 0 1 6.1-6.8 19.5 19.5 0 0 1 18.7 0 15.4 15.4 0 0 1 6 6.8 24 24 0 0 1 2.1 10.4 22.9 22.9 0 0 1-2.8 12 15.3 15.3 0 0 1-8.2 6.6 30.1 30.1 0 0 0 7 8.2zm-23-15q3.4 4.2 9.6 4.2t9.5-4.2q3.3-4.1 3.4-11.8T256.3 20q-3.4-4.1-9.6-4.1t-9.5 4.1q-3.4 4.1-3.4 11.7t3.4 11.8zM326.4 12.6h5.6V51h-6.2V27.1L315.6 51H311l-10.3-23.6V51h-6.1V12.5h5.5l13.2 30.1zM339.5 11.4h7.5V18h-7.5zm.4 39.6V23.7h6.7V51zM379.4 34.3V51h-6.8V34.6a7.3 7.3 0 0 0-1.2-4.7 4.7 4.7 0 0 0-3.9-1.5 6.5 6.5 0 0 0-5 2 7.2 7.2 0 0 0-1.8 5.2V51H354V31.4a61.5 61.5 0 0 0-.4-7.7h6.3l.5 4.5a10 10 0 0 1 3.8-3.8 10.9 10.9 0 0 1 5.4-1.4q9.8 0 9.8 11.3zM410.4 37.7h-18.8q.2 4.4 2.2 6.5c1.3 1.4 3.3 2 5.9 2a13.4 13.4 0 0 0 8.3-2.9l2 4.7a15.3 15.3 0 0 1-4.8 2.5 18 18 0 0 1-5.8 1q-6.7 0-10.5-3.8T385 37.3a15.8 15.8 0 0 1 1.7-7.4 12.3 12.3 0 0 1 4.7-5 13 13 0 0 1 6.9-1.9 11.3 11.3 0 0 1 8.8 3.6q3.3 3.7 3.3 10zM394 29.5a7.8 7.8 0 0 0-2.2 4.6h12.7a7.5 7.5 0 0 0-1.9-4.6 5.6 5.6 0 0 0-4.2-1.6 6.2 6.2 0 0 0-4.4 1.6zM433.5 23.5v6.2a9.3 9.3 0 0 0-3.5-.7 6.7 6.7 0 0 0-5.3 2 7.6 7.6 0 0 0-1.8 5.3V51h-6.7V31.4a63.4 63.4 0 0 0-.4-7.7h6.2l.5 4.8a8.1 8.1 0 0 1 3.3-4 9.2 9.2 0 0 1 5-1.4 7.7 7.7 0 0 1 2.7.4z"/></svg>');
+    height: 24px;
+    width: 162.75px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+header .logo a {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 0;
+    height: 24px;
+    width: 32px;
+    display: block;
+}
+
 header .header-warning {
     background: rgb(255, 196, 0);
     color: #3b3b3b;
@@ -223,10 +240,6 @@ header .header-warning a {
     color: inherit;
     text-decoration: underline;
     font-weight: bold;
-}
-
-header .logo {
-    text-align: left;
 }
 
 header #warning-testnet {
