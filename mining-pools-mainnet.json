@@ -72,5 +72,16 @@
     "fees": "0%",
     "payouts": "Automatic payouts every 10 minutes",
     "supportsNano": true
+  },
+  {
+    "name": "Sirius Pool",
+    "host": "us1.siriuspool.net",
+    "port": "8443",
+    "description": "Efficiency mining under your control.. Join us now!",
+    "website": "http://www.siriuspool.net/",
+    "community": "https://discord.gg/9GB8Fzc",
+    "fees": "1%",
+    "payouts": "Payouts every hour for balances greater than 10Nim!",
+    "supportsNano": true
   }
 ]
