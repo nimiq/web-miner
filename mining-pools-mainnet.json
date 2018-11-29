@@ -75,8 +75,8 @@
   },
   {
     "name": "Sirius Pool",
-    "host": "us1.siriuspool.net",
-    "port": "8443",
+    "host": "siriuspool.net",
+    "port": "3000",
     "description": "Efficiency mining under your control.. Join us now!",
     "website": "http://www.siriuspool.net/",
     "community": "https://discord.gg/9GB8Fzc",
