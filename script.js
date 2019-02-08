@@ -245,7 +245,7 @@ App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.
     : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
     : 'https://cdn.nimiq-testnet.com/nimiq.js?v=1.3.1';
 
-App.NANO_CLIENT = window.innerWidth <= 640; // use nano on mobile
+App.NANO_CLIENT = true; // FIXME currently using nano on desktop and mobile. At some point switch back to mobile only
 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : 'test';
