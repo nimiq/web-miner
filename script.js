@@ -179,11 +179,12 @@ class App {
     }
 
     async _initDependencies() {
-        await this._loadScript(App.NIMIQ_PATH);
-        _paq.push(['trackEvent', 'Loading', 'success']);
         try {
             this.$ = (await Promise.all([
-                this._initNimiqInstance(),
+                this._loadScript(App.NIMIQ_PATH).then(() => {
+                    _paq.push(['trackEvent', 'Loading', 'success']);
+                    return this._initNimiqInstance();
+                }),
                 this._loadScript('geoip.js'),
                 this._loadScript('map.js'),
                 this._loadScript('miner-settings.js'),
@@ -241,9 +242,9 @@ App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://k
     : window.location.origin.indexOf('localhost')!==-1? `${location.origin}/libraries/keyguard/src`
         : 'https://keyguard.nimiq-testnet.com';
 
-App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js?v=1.3.1'
+App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
     : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
-    : 'https://cdn.nimiq-testnet.com/nimiq.js?v=1.3.1';
+    : 'https://cdn.nimiq-testnet.com/nimiq.js';
 
 App.NANO_CLIENT = true; // FIXME currently using nano on desktop and mobile. At some point switch back to mobile only
 
