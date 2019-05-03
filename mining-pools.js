@@ -235,7 +235,7 @@ class MiningPoolDetailUi {
     }
 
     _updateBalance() {
-        this._balance.textContent = Nimiq.Policy.satoshisToCoins(this._miner.poolBalance).toFixed(2);
+        this._balance.textContent = Nimiq.Policy.lunasToCoins(this._miner.poolBalance).toFixed(2);
     }
 
     _joinOrLeave() {

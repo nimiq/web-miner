@@ -207,7 +207,7 @@ class BlockEntry {
 			let totalAmount = block.transactions.reduce(function(sum, transaction) {
 				return sum + transaction.value + transaction.fee;
 			}, 0);
-			totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount);
+			totalAmount = Nimiq.Policy.lunasToCoins(totalAmount);
 			this._totalAmountEl.textContent = Utils.formatValue(totalAmount);
 			this._totalAmountEl.style.display = 'inline';
 			this._closingParenthesis.style.display = 'inline';
@@ -255,9 +255,9 @@ class BlockDetailUi extends Overlay {
 		let totalAmount = block.transactions.reduce(function(sum, transaction) {
 			return sum + transaction.value + transaction.fee;
 		}, 0);
-		totalAmount = Nimiq.Policy.satoshisToCoins(totalAmount);
+		totalAmount = Nimiq.Policy.lunasToCoins(totalAmount);
 		this._totalAmountEl.textContent = Utils.formatValue(totalAmount);
-		this._blockRewardEl.textContent = Nimiq.Policy.satoshisToCoins(Nimiq.Policy.blockRewardAt(block.height)).toFixed(2);
+		this._blockRewardEl.textContent = Nimiq.Policy.lunasToCoins(Nimiq.Policy.blockRewardAt(block.height)).toFixed(2);
 		this._difficultyEl.textContent = block.difficulty.toFixed(2);
 		let date = new Date(block.timestamp * 1000);
 		this._timestampEl.textContent = this._padNumber(date.getMonth()+1, 2) + '/'
@@ -303,7 +303,7 @@ class BlockDetailUi extends Overlay {
 				value.classList.add('is-currency');
 				sender.textContent=transaction.sender.toUserFriendlyAddress().toUpperCase();
 				recipient.textContent = transaction.recipient.toUserFriendlyAddress().toUpperCase();
-				value.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(transaction.value));
+				value.textContent = Utils.formatValue(Nimiq.Policy.lunasToCoins(transaction.value));
 				entry.appendChild(sender);
 				entry.appendChild(recipient);
 				entry.appendChild(value);

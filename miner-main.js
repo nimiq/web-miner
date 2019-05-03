@@ -38,14 +38,14 @@ class FactsUI {
         this._setHashrate(hashrate, 'global');
     }
 
-    set averageBlockReward(satoshis) {
-        if (!satoshis) {
+    set averageBlockReward(lunas) {
+        if (!lunas) {
             this._averageBlockReward.textContent = '0 NIM';
             return;
         }
-        const nims = Nimiq.Policy.satoshisToCoins(satoshis);
+        const nims = Nimiq.Policy.lunasToCoins(lunas);
         if (nims < 0.01) {
-            this._averageBlockReward.textContent = satoshis.toFixed(2) + ' Satoshi';
+            this._averageBlockReward.textContent = lunas.toFixed(2) + ' Luna';
         } else {
             this._averageBlockReward.textContent = nims.toFixed(2) + ' NIM';
         }
@@ -76,7 +76,7 @@ class FactsUI {
     }
 
     set myBalance(balance) {
-        this._myBalance.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(balance));
+        this._myBalance.textContent = Utils.formatValue(Nimiq.Policy.lunasToCoins(balance));
     }
 
     set accountNeedsUpgrade(accountNeedsUpgrade) {
@@ -90,7 +90,7 @@ class FactsUI {
 
     set poolBalance(balance) {
         if (!MiningPoolsUi.isPoolMinerEnabled || balance === 'Off') this._poolBalance.textContent = 'Off';
-        else this._poolBalance.textContent = Utils.formatValue(Nimiq.Policy.satoshisToCoins(balance));
+        else this._poolBalance.textContent = Utils.formatValue(Nimiq.Policy.lunasToCoins(balance));
     }
 
     set address(address) {
@@ -119,8 +119,8 @@ class FactsUI {
         this._consensusProgress.setAttribute('state', state);
     }
 
-    set blockReward(satoshis) {
-        this._blockReward.textContent = Math.floor(Nimiq.Policy.satoshisToCoins(satoshis));
+    set blockReward(lunas) {
+        this._blockReward.textContent = Math.floor(Nimiq.Policy.lunasToCoins(lunas));
     }
 
     _setHashrate(hashrate, type) {
