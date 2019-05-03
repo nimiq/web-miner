@@ -561,7 +561,18 @@ class Miner {
         if (state === Nimiq.BasePoolMiner.ConnectionState.CONNECTED) {
             this.ui.facts.poolBalance = this.poolBalance;
             this.ui.poolMinerCanConnect();
-            if (!this.paused) this.startMining();
+
+            // If consensus established, wait a moment for pool to process head information before mining start. If no
+            // consensus established, disconnect such that when we reconnect to the pool on consensus, it can verify the
+            // head. Also run disconnect in setTimeout to run it after the connect event finishes.
+            const waitTime = this.$.consensus.established ? 150 : 0;
+            setTimeout(() => {
+                if (!this.$.consensus.established) {
+                    this.disconnectPoolMiner(false);
+                } else if (!this.paused) {
+                    this.startMining();
+                }
+            }, waitTime);
         } else if (state === Nimiq.BasePoolMiner.ConnectionState.CLOSED) {
             if (App.NANO_CLIENT) this.stopMining(false); // nano can't mine without pool
             if (this._previousPoolConnectionState === Nimiq.BasePoolMiner.ConnectionState.CONNECTING) {
