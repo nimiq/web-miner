@@ -1,6 +1,5 @@
 class FactsUI {
     constructor() {
-        this._address = null;
         this._peers = document.getElementById('factPeers');
         this._blockHeight = document.getElementById('factBlockHeight');
         this._myHashrate = document.getElementById('factMyHashrate');
@@ -9,7 +8,6 @@ class FactsUI {
         this._globalHashrateUnit = document.getElementById('factGlobalHashrateUnit');
         this._myBalance = document.getElementById('factBalance');
         this._myBalanceContainer = document.getElementById('factBalanceContainer');
-        this._myBalanceContainerInner = document.getElementById('factBalanceContainerInner');
         this._poolBalance = document.getElementById('factPoolMinerBalance');
         this._expectedHashTime = document.getElementById('factExpectedHashTime');
         this._averageBlockReward = document.getElementById('factAverageBlockReward');
@@ -17,9 +15,6 @@ class FactsUI {
         this._blockProcessingState = document.getElementById('factBlockProcessingState');
         this._consensusProgress = document.getElementById('progress');
         this._miningSection = document.getElementById('miningSection');
-
-        this._myBalanceContainer.addEventListener('click',
-            () => this._myBalanceContainerInner.classList.remove('call-to-action'));
     }
 
     set peers(peers) {
@@ -79,23 +74,16 @@ class FactsUI {
         this._myBalance.textContent = Utils.formatValue(Nimiq.Policy.lunasToCoins(balance));
     }
 
-    set accountNeedsUpgrade(accountNeedsUpgrade) {
-        if (accountNeedsUpgrade) {
-            this._myBalanceContainerInner.classList.add('call-to-action');
-        } else {
-            this._myBalanceContainerInner.classList.remove('call-to-action');
-        }
-        this._updateSafeLink(accountNeedsUpgrade);
-    }
-
     set poolBalance(balance) {
         if (!MiningPoolsUi.isPoolMinerEnabled || balance === 'Off') this._poolBalance.textContent = 'Off';
         else this._poolBalance.textContent = Utils.formatValue(Nimiq.Policy.lunasToCoins(balance));
     }
 
     set address(address) {
-        this._address = address;
-        this._updateSafeLink();
+        const safeUrl = window.location.origin.indexOf('nimiq.com') !== -1? 'https://safe.nimiq.com/'
+            : window.location.origin.indexOf('nimiq-testnet.com') !== -1? 'https://safe.nimiq-testnet.com/'
+                : `${location.origin.replace('miner', 'safe')}/apps/safe/src/`;
+        this._myBalanceContainer.href = `${safeUrl}#/_account/${address.toUserFriendlyAddress().replace(/ /g, '-')}_`;
     }
 
     set synced(isSynced) {
@@ -145,18 +133,6 @@ class FactsUI {
         }
         hashrateEl.textContent = hashrate.toFixed(2);
         unitEl.textContent = unit;
-    }
-
-    _updateSafeLink(accountNeedsUpgrade = false) {
-        const safeUrl = window.location.origin.indexOf('nimiq.com') !== -1? 'https://safe.nimiq.com/'
-            : window.location.origin.indexOf('nimiq-testnet.com') !== -1? 'https://safe.nimiq-testnet.com/'
-                : `${location.origin.replace('miner', 'safe')}/apps/safe/src/`;
-        if (accountNeedsUpgrade) {
-            this._myBalanceContainer.href = `${safeUrl}#/_please-upgrade_`;
-        } else {
-            this._myBalanceContainer.href =
-                `${safeUrl}#/_account/${this._address.toUserFriendlyAddress().replace(/ /g, '-')}_`;
-        }
     }
 }
 
@@ -614,9 +590,6 @@ class Miner {
         }
         account = account || Nimiq.BasicAccount.INITIAL;
         this.ui.facts.myBalance = account.balance;
-        const minerAccount = await App.instance.getMinerAccount();
-        // show the user that he should backup his account
-        this.ui.facts.accountNeedsUpgrade = account.balance > 0 && minerAccount.type === 'low';
     }
 }
 

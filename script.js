@@ -1,46 +1,3 @@
-class MinerPolicy {
-    constructor() {
-        this.name = this.constructor.name;
-    }
-
-    equals(otherPolicy) {
-        return otherPolicy && this.name === otherPolicy.name;
-    }
-
-    serialize() {
-        const serialized = {};
-
-        for (const prop in this)
-            if (!(this[prop] instanceof Function)) serialized[prop] = this[prop];
-
-        return serialized;
-    }
-
-    allows(method, args, state) {
-        switch (method) {
-            case 'list':
-            case 'createWallet':
-            case 'getMinerAccount':
-                return true;
-            default:
-                throw new Error(`Unhandled method: ${method}`);
-        }
-    }
-
-    needsUi(method, args, state) {
-        switch (method) {
-            case 'list':
-            case 'getMinerAccount':
-                return false;
-            case 'createWallet':
-                return true;
-            default:
-                throw new Error(`Unhandled method: ${method}`);
-        }
-    }
-}
-
-
 class Utils {
     static formatValue(value, decimals=2) {
         const roundingFactor = Math.pow(10, decimals);
@@ -56,49 +13,41 @@ class Utils {
 
 class App {
     constructor() {
-        document.body.setAttribute('network', App.NETWORK);
-        this.$accountPromptUi = document.querySelector('#create-account-prompt');
-        this.$createAccountButton = document.querySelector('#createAccountButton');
-        this.$createAccountButton.addEventListener('click', () => this._createAccount());
-        this.$connectButton = document.querySelector('#connectBtn');
+        this._dependenciesPromise = this._initDependencies();
+        this._address = localStorage.getItem(App.KEY_STORED_ADDRESS);
 
+        document.body.setAttribute('network', App.NETWORK);
         if (App.NETWORK === 'test') {
             document.querySelector('#header-link').href = 'https://nimiq-testnet.com';
         }
 
-        return this._launch();
-    }
+        // note that the whole landing section gets removed once not needed anymore. Therefore we don't keep any
+        // references to the elements here for proper garbage collection
+        const chooseAddressButton = document.querySelector('#chooseAddressButton');
+        const connectButton = document.querySelector('#connectBtn');
+        chooseAddressButton.addEventListener('click', () => this._chooseAddress());
+        connectButton.addEventListener('click', () => this._connectMiner());
 
-    async getMinerAccount() {
-        return this._keyGuardClient.getMinerAccount();
-    }
-
-    async _launch() {
-        this._keyGuardClient = await KeyguardClient.create(App.SECURE_ORIGIN,
-            new MinerPolicy(), () => {});
-        const minerAccount = await this.getMinerAccount();
-        this._dependenciesPromise = this._initDependencies();
-        if (minerAccount) {
-            this._showConnectButton();
-            await this._awaitUserConnect();
-            await this._connectMiner();
+        if (this._address) {
+            connectButton.style.display = 'inline-block';
         } else {
-            this._showAccountCreationPrompt();
+            document.querySelector('#choose-address-prompt').style.display = 'block';
         }
-        App.instance = this;
-        return this;
     }
 
-    _showAccountCreationPrompt() {
-        this.$accountPromptUi.style.display = 'block';
-    }
-
-    async _createAccount() {
-        // needs to be called by a user interaction to open keyguard popup window
-        await this._keyGuardClient.createWallet('New Account');
-        const minerAccount = await this.getMinerAccount();
-        if (!minerAccount) return; // User cancelled account creation. Keep the prompt open.
-        this.$accountPromptUi.style.display = 'none';
+    async _chooseAddress() {
+        // needs to be called by a user interaction to open account manager popup window
+        try {
+            this._accountsClient = this._accountsClient || new AccountsClient();
+            this._address = (await this._accountsClient.chooseAddress({ appName: 'Nimiq Miner' })).address;
+            localStorage.setItem(App.KEY_STORED_ADDRESS, this._address);
+            _paq.push(['trackEvent', 'Address', 'chosen']);
+        } catch (e) {
+            const message =  e.message || e;
+            if (/closed/i.test(message) || /canceled/i.test(message)) return;
+            _paq.push(['trackEvent', 'Address', 'Account Manager Error', message]);
+            throw e;
+        }
         await this._connectMiner();
     }
 
@@ -208,11 +157,15 @@ class App {
     }
 
     async _connectMiner() {
-        const $loadingSpinner = document.querySelector('#initialLoadingSpinner');
-        $loadingSpinner.style.display = 'block';
+        // if dependencies have not loaded yet display the spinner
+        const spinnerTimeout = setTimeout(() => {
+            document.querySelector('#choose-address-prompt').style.display = 'none';
+            document.querySelector('#connectBtn').style.display = 'none';
+            document.querySelector('#initialLoadingSpinner').style.display = 'block';
+        }, 50);
         await this._dependenciesPromise;
-        $loadingSpinner.parentElement.removeChild($loadingSpinner);
-        const address = Nimiq.Address.fromUserFriendlyAddress((await this.getMinerAccount()).address);
+        clearTimeout(spinnerTimeout);
+        const address = Nimiq.Address.fromUserFriendlyAddress(this._address);
         const deviceId = Nimiq.BasePoolMiner.generateDeviceId(this.$.network.config);
         if (App.NANO_CLIENT) {
             this.$.miner = new Nimiq.NanoPoolMiner(this.$.blockchain, this.$.network.time, address, deviceId);
@@ -221,27 +174,9 @@ class App {
                 this.$.network.time, address, deviceId);
         }
         this._miner = new Miner(this.$);
-        this._miner.connect();
-    }
-
-    _showConnectButton() {
-        this.$connectButton.style.display = 'inline-block';
-    }
-
-    _awaitUserConnect() {
-        return new Promise(resolve => {
-            this.$connectButton.addEventListener('click', () => {
-                this.$connectButton.parentElement.removeChild(this.$connectButton);
-                this.$connectButton = null;
-                resolve();
-            });
-        });
+        this._miner.connect(); // Note that this will also clean up the landing section
     }
 }
-App.SECURE_ORIGIN = window.location.origin.indexOf('nimiq.com')!==-1? 'https://keyguard.nimiq.com'
-    : window.location.origin.indexOf('localhost')!==-1? `${location.origin}/libraries/keyguard/src`
-        : 'https://keyguard.nimiq-testnet.com';
-
 App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
     : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
     : 'https://cdn.nimiq-testnet.com/nimiq.js';
@@ -251,8 +186,10 @@ App.NANO_CLIENT = true; // FIXME currently using nano on desktop and mobile. At 
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : 'test';
 
+App.KEY_STORED_ADDRESS = 'miner-stored-address';
+
 App.ERROR_OLD_BROWSER = 'old browser';
 App.ERROR_UNKNOWN_INITIALIZATION_ERROR = 'unknown initialization error';
 App.ERROR_DATABASE_ACCESS = 'error database reset failed';
 
-new App().then(app => window.app = app);
+window.app = new App();
