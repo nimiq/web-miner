@@ -23,13 +23,12 @@ class App {
 
         // note that the whole landing section gets removed once not needed anymore. Therefore we don't keep any
         // references to the elements here for proper garbage collection
-        const chooseAddressButton = document.querySelector('#chooseAddressButton');
-        const connectButton = document.querySelector('#connectBtn');
-        chooseAddressButton.addEventListener('click', () => this._chooseAddress());
-        connectButton.addEventListener('click', () => this._connectMiner());
+        document.querySelector('#chooseAddressButton').addEventListener('click', () => this._chooseAddress());
+        document.querySelector('#changeMiningAddressButton ').addEventListener('click', () => this._chooseAddress());
+        document.querySelector('#connectBtn').addEventListener('click', () => this._connectMiner());
 
         if (this._address) {
-            connectButton.style.display = 'inline-block';
+            document.querySelector('#connect-prompt').style.display = 'block';
         } else {
             document.querySelector('#choose-address-prompt').style.display = 'block';
         }
@@ -160,7 +159,7 @@ class App {
         // if dependencies have not loaded yet display the spinner
         const spinnerTimeout = setTimeout(() => {
             document.querySelector('#choose-address-prompt').style.display = 'none';
-            document.querySelector('#connectBtn').style.display = 'none';
+            document.querySelector('#connect-prompt').style.display = 'none';
             document.querySelector('#initialLoadingSpinner').style.display = 'block';
         }, 50);
         await this._dependenciesPromise;

@@ -445,7 +445,8 @@ header #warning-testnet {
     display: none !important;
 }
 
-#choose-address-prompt {
+#choose-address-prompt,
+#connect-prompt {
     display: none;
     animation: .7s fade-in .75s both;
 }
@@ -455,9 +456,12 @@ header #warning-testnet {
     margin-top: 16px;
 }
 
-#connectBtn {
-    display: none;
-    animation: .7s fade-in .75s both;
+#changeMiningAddressButton {
+    opacity: .5;
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 #miningSection {
