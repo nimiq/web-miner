@@ -35,16 +35,16 @@ class App {
     }
 
     async _chooseAddress() {
-        // needs to be called by a user interaction to open account manager popup window
+        // needs to be called by a user interaction to open Nimiq hub popup window
         try {
-            this._accountsClient = this._accountsClient || new AccountsClient();
-            this._address = (await this._accountsClient.chooseAddress({ appName: 'Nimiq Miner' })).address;
+            this._hubApi = this._hubApi || new HubApi();
+            this._address = (await this._hubApi.chooseAddress({ appName: 'Nimiq Miner' })).address;
             localStorage.setItem(App.KEY_STORED_ADDRESS, this._address);
             _paq.push(['trackEvent', 'Address', 'chosen']);
         } catch (e) {
             const message =  e.message || e;
             if (/closed/i.test(message) || /canceled/i.test(message)) return;
-            _paq.push(['trackEvent', 'Address', 'Account Manager Error', message]);
+            _paq.push(['trackEvent', 'Address', 'Nimiq Hub Error', message]);
             throw e;
         }
         await this._connectMiner();
