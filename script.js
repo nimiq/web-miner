@@ -176,9 +176,9 @@ class App {
         this._miner.connect(); // Note that this will also clean up the landing section
     }
 }
-App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/nimiq.js'
-    : window.location.origin.indexOf('localhost')!==-1? '/dist/nimiq.js'
-    : 'https://cdn.nimiq-testnet.com/nimiq.js';
+App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.nimiq.com/v1.4.3/nimiq.js'
+    : window.location.origin.indexOf('localhost')!==-1? 'https://cdn.nimiq-testnet.com/v1.4.3/nimiq.js'
+    : 'https://cdn.nimiq-testnet.com/v1.4.3/nimiq.js';
 
 App.NANO_CLIENT = true; // FIXME currently using nano on desktop and mobile. At some point switch back to mobile only
 
