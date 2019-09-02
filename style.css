@@ -1,7 +1,9 @@
 html,
 body {
-    background-color: #042146;
-    background: linear-gradient(30deg, #3023AE, #9C58CB);
+    /*background-color: #042146;*/
+    /*background: linear-gradient(30deg, #3023AE, #9C58CB);*/
+    background-color: #1F2348; /* nimiq-blue */
+    background: radial-gradient(ellipse at bottom right, #260133, #1F2348); /* nimiq-blue-bg */
     overflow: hidden;
     color: rgba(255, 255, 255, 0.88);
     text-align: center;
