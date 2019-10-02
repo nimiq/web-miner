@@ -47,7 +47,7 @@
     "host": "pool.nimbus.fun",
     "port": "8443",
     "description": "nimbus.fun - Nimiq Mining Pool",
-    "website": "https://nimbus.fun/",
+    "website": "https://nimbus.fun",
     "fees": "1%",
     "payouts": "Automatic payouts every hour",
     "supportsNano": true
@@ -57,7 +57,7 @@
     "host": "siriuspool.net",
     "port": "8443",
     "description": "Efficiency mining under your control.. Join us now!",
-    "website": "http://www.siriuspool.net/",
+    "website": "http://www.siriuspool.net",
     "community": "https://discord.gg/9GB8Fzc",
     "fees": "1%",
     "payouts": "Payouts every hour for balances over 10 NIM",
@@ -68,8 +68,8 @@
     "host": "urp.best",
     "port": "2053",
     "description": "Mining pool with active monitoring system alerting about offline rigs to Telegram bot, minimal ping from anywhere in the world and profitable referral program.",
-    "website": "urp.best",
-    "community": "https://discord.gg/7pZa2TS | https://t.me/URP_Mining",
+    "website": "https://urp.best",
+    "community": "https://discord.gg/7pZa2TS",
     "fees": "0.5%",
     "payouts": "Automatic payouts every 3 hours for balances over 5 NIM",
     "supportsNano": true
