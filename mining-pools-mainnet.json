@@ -43,16 +43,6 @@
     "supportsNano": true
   },
   {
-    "name": "PhilPool",
-    "host": "node.philpool.com",
-    "port": "8444",
-    "description": "Enjoy low fees and mine with the philpool community, receive payouts hourly based on blockfinds and your hashrate.",
-    "website": "https://philpool.com/",
-    "fees": "0.5%",
-    "payouts": "Automatic payout every 1 hour",
-    "supportsNano": true
-  },
-  {
     "name": "Nimbus Pool",
     "host": "pool.nimbus.fun",
     "port": "8443",
@@ -63,17 +53,6 @@
     "supportsNano": true
   },
   {
-    "name": "mineNIM",
-    "host": "pool.minenim.org",
-    "port": "8443",
-    "description": "mineNIM.org - Nimiq Mining Pool",
-    "website": "https://minenim.org",
-    "community": "https://discord.gg/nmCzMRc",
-    "fees": "0%",
-    "payouts": "Automatic payouts every 10 minutes",
-    "supportsNano": true
-  },
-  {
     "name": "Sirius Pool",
     "host": "siriuspool.net",
     "port": "8443",
@@ -81,7 +60,18 @@
     "website": "http://www.siriuspool.net/",
     "community": "https://discord.gg/9GB8Fzc",
     "fees": "1%",
-    "payouts": "Payouts every hour for balances greater than 10Nim!",
+    "payouts": "Payouts every hour for balances over 10 NIM",
+    "supportsNano": true
+  },
+  {
+    "name": "URP_Mining",
+    "host": "urp.best",
+    "port": "2053",
+    "description": "Mining pool with active monitoring system alerting about offline rigs to Telegram bot, minimal ping from anywhere in the world and profitable referral program.",
+    "website": "urp.best",
+    "community": "https://discord.gg/7pZa2TS | https://t.me/URP_Mining",
+    "fees": "0.5%",
+    "payouts": "Automatic payouts every 3 hours for balances over 5 NIM",
     "supportsNano": true
   }
 ]
