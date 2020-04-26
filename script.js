@@ -16,6 +16,9 @@ class App {
         this._dependenciesPromise = this._initDependencies();
         this._address = localStorage.getItem(App.KEY_STORED_ADDRESS);
 
+        const year = new Date().getFullYear();
+        document.querySelectorAll('.copyright-year').forEach((el) => el.textContent = year);
+
         document.body.setAttribute('network', App.NETWORK);
         if (App.NETWORK === 'test') {
             document.querySelector('#header-link').href = 'https://nimiq-testnet.com';
