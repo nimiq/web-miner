@@ -11,48 +11,6 @@
     "supportsNano": true
   },
   {
-    "name": "nimiq.watch",
-    "host": "pool.nimiq.watch",
-    "port": "8443",
-    "description": "Mine as part of the nimiq.watch mining pool and get shares of the mined block rewards according to your hash rate.",
-    "website": "https://nimiq.watch",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 6 hours",
-    "supportsNano": true
-  },
-  {
-    "name": "Beeppool",
-    "host": "beeppool.org/ws",
-    "port": "443",
-    "description": "⚠ To use this pool a registration is required (https://goo.gl/ZU5oHQ) ⚠ It's hard to find a block on your own, join Beeppool and get rewards for your effort",
-    "website": "https://beeppool.org",
-    "community": "https://discord.gg/QrgNzU5",
-    "fees": "<1%",
-    "payouts": "Manual payout, 1-2 times a day",
-    "supportsNano": false
-  },
-  {
-    "name": "SushiPool",
-    "host": "eu.sushipool.com",
-    "port": "443",
-    "description": "Mine as One and Enjoy the 🍣.",
-    "website": "https://sushipool.com",
-    "community": "https://discord.gg/JCCExJu",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 3 hours",
-    "supportsNano": true
-  },
-  {
-    "name": "Nimbus Pool",
-    "host": "pool.nimbus.fun",
-    "port": "8443",
-    "description": "nimbus.fun - Nimiq Mining Pool",
-    "website": "https://nimbus.fun",
-    "fees": "1%",
-    "payouts": "Automatic payouts every hour",
-    "supportsNano": true
-  },
-  {
     "name": "Sirius Pool",
     "host": "siriuspool.net",
     "port": "8443",
@@ -64,14 +22,24 @@
     "supportsNano": true
   },
   {
-    "name": "URP_Mining",
-    "host": "urp.best",
-    "port": "2053",
-    "description": "Mining pool with active monitoring system alerting about offline rigs to Telegram bot, minimal ping from anywhere in the world and profitable referral program.",
-    "website": "https://urp.best",
-    "community": "https://discord.gg/7pZa2TS",
-    "fees": "0.5%",
-    "payouts": "Automatic payouts every 3 hours for balances over 5 NIM",
+    "name": "Nimiq Balkan Pool",
+    "host": "pool.balkanminingpool.com",
+    "port": "8444",
+    "description": "Balkan Mining Pool is a Nimiq Pool founded in March 2020 by a group of friends in order to support and share knowledge about Nimiq throughout Balkan countries.",
+    "website": "https://balkanminingpool.com",
+    "community": "http://t.me/NimiqBalkan",
+    "fees": "1%",
+    "payouts": "Automatic payouts every 2 hours for balances over 10 NIM",
+    "supportsNano": true
+  },
+  {
+    "name": "BlankPool",
+    "host": "mine.blank.drawpad.org",
+    "port": "8444",
+    "description": "BlankPool is a pool ran by Chugwig that uses an adaptive pool fee.",
+    "website": "https://blank.drawpad.org",
+    "fees": "See website for current fee.",
+    "payouts": "Automatic payouts every 2 hours",
     "supportsNano": true
   }
 ]
