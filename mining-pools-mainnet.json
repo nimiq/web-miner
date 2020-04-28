@@ -11,6 +11,16 @@
     "supportsNano": true
   },
   {
+    "name": "nimiq.watch",
+    "host": "pool.nimiq.watch",
+    "port": "8443",
+    "description": "Mine as part of the nimiq.watch mining pool and get shares of the mined block rewards according to your hash rate.",
+    "website": "https://nimiq.watch",
+    "fees": "1%",
+    "payouts": "Automatic payout once a day at 8am UTC",
+    "supportsNano": true
+  },
+  {
     "name": "Sirius Pool",
     "host": "siriuspool.net",
     "port": "8443",
@@ -18,7 +28,7 @@
     "website": "http://www.siriuspool.net",
     "community": "https://discord.gg/9GB8Fzc",
     "fees": "1%",
-    "payouts": "Payouts every hour for balances over 10 NIM",
+    "payouts": "Automatic payouts every hour for balances over 10 NIM",
     "supportsNano": true
   },
   {
