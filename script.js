@@ -77,7 +77,7 @@ class App {
 
     async _initNimiqInstance(tryDatabaseReset = true) {
         return new Promise((resolve, reject) => {
-            Nimiq.init(async () => {
+            Nimiq.load().then(async () => {
                 try {
                     if (document.getElementById('warning-multiple-tabs').style.display === 'block') {
                         document.getElementById('warning-multiple-tabs').style.display = 'none';

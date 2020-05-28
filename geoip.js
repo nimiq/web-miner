@@ -48,6 +48,8 @@ class GeoIP {
         xmlhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var response = JSON.parse(this.responseText);
+                if (response.country === 'N/A') response.country = undefined;
+                if (response.city === 'N/A') response.city = undefined;
                 GeoIP._cache(host, response);
                 callback(response);
             }
