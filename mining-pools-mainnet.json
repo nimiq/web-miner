@@ -32,17 +32,6 @@
     "supportsNano": true
   },
   {
-    "name": "Nimiq Balkan Pool",
-    "host": "pool.balkanminingpool.com",
-    "port": "8444",
-    "description": "Balkan Mining Pool is a Nimiq Pool founded in March 2020 by a group of friends in order to support and share knowledge about Nimiq throughout Balkan countries.",
-    "website": "https://balkanminingpool.com",
-    "community": "http://t.me/NimiqBalkan",
-    "fees": "1%",
-    "payouts": "Automatic payouts every 2 hours for balances over 10 NIM",
-    "supportsNano": true
-  },
-  {
     "name": "BlankPool",
     "host": "mine.blank.drawpad.org",
     "port": "8444",
