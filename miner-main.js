@@ -80,10 +80,10 @@ class FactsUI {
     }
 
     set address(address) {
-        const safeUrl = window.location.origin.indexOf('nimiq.com') !== -1? 'https://safe.nimiq.com/'
-            : window.location.origin.indexOf('nimiq-testnet.com') !== -1? 'https://safe.nimiq-testnet.com/'
-                : `${location.origin.replace('miner', 'safe')}/apps/safe/src/`;
-        this._myBalanceContainer.href = `${safeUrl}#/_account/${address.toUserFriendlyAddress().replace(/ /g, '-')}_`;
+        const walletUrl = window.location.origin.indexOf('nimiq.com') !== -1? 'https://wallet.nimiq.com/'
+            : window.location.origin.indexOf('nimiq-testnet.com') !== -1? 'https://wallet.nimiq-testnet.com/'
+                : `${location.origin.replace('miner', 'wallet')}`;
+        this._myBalanceContainer.href = walletUrl;
     }
 
     set synced(isSynced) {
