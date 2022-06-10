@@ -1,16 +1,5 @@
 [
   {
-    "name": "nimpool.io",
-    "host": "eu.nimpool.io",
-    "port": "8444",
-    "description": "nimpool.io - Nimiq Pool Mining Done Right. Secure. Distributed. Non-profit.",
-    "website": "https://nimpool.io",
-    "community": "https://discord.gg/cMHemg8",
-    "fees": "0.8%",
-    "payouts": "Automatic payouts every 3 hours",
-    "supportsNano": true
-  },
-  {
     "name": "nimiq.watch",
     "host": "pool.nimiq.watch",
     "port": "8443",
@@ -18,27 +7,6 @@
     "website": "https://nimiq.watch",
     "fees": "1%",
     "payouts": "Automatic payout once a day at 8am UTC",
-    "supportsNano": true
-  },
-  {
-    "name": "BlankPool",
-    "host": "mine.blank.drawpad.org",
-    "port": "8444",
-    "description": "BlankPool is a pool ran by Chugwig that uses an adaptive pool fee.",
-    "website": "https://blank.drawpad.org",
-    "fees": "See website for current fee.",
-    "payouts": "Automatic payouts every 2 hours",
-    "supportsNano": true
-  },
-  {
-    "name": "AceMining",
-    "host": "pool.acemining.co",
-    "port": "8443",
-    "description": "AceMining is a pool ran by community member Maestro that distributes rewards on a pay-per-last-N-shares (PPLNS) basis and provides optimized mining clients for CPUs and GPUs for download on their website.",
-    "website": "https://acemining.co/",
-    "community": "https://discord.gg/AkawCjP",
-    "fees": "0.5%",
-    "payouts": "Automatic payouts every hour for balances of at least 1 NIM",
     "supportsNano": true
   }
 ]
