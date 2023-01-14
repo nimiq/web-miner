@@ -8,5 +8,16 @@
     "fees": "1%",
     "payouts": "Automatic payout once a day at 8am UTC",
     "supportsNano": true
+  },
+  {
+    "name": "AceMining",
+    "host": "pool.acemining.co",
+    "port": "8443",
+    "description": "AceMining is a pool ran by community member Maestro that distributes rewards on a pay-per-last-N-shares (PPLNS) basis and provides optimized mining clients for CPUs and GPUs for download on their website.",
+    "website": "https://acemining.co/",
+    "community": "https://discord.gg/AkawCjP",
+    "fees": "1%",
+    "payouts": "Automatic payouts 24 hours for balances of at least 10 NIM",
+    "supportsNano": true
   }
 ]
