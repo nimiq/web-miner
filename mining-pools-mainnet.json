@@ -16,7 +16,7 @@
     "description": "AceMining is a pool ran by community member Maestro that distributes rewards on a pay-per-last-N-shares (PPLNS) basis and provides optimized mining clients for CPUs and GPUs for download on their website.",
     "website": "https://acemining.co/",
     "community": "https://discord.gg/AkawCjP",
-    "fees": "0.4%",
+    "fees": "0.5%",
     "payouts": "Automatic payouts 1 hour for balances of at least 10 NIM",
     "supportsNano": true
   }
