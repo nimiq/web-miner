@@ -183,10 +183,10 @@ App.NIMIQ_PATH = window.location.origin.indexOf('nimiq.com')!==-1? 'https://cdn.
     : window.location.origin.indexOf('localhost')!==-1? 'https://cdn.nimiq-testnet.com/v1.4.3/nimiq.js'
     : 'https://cdn.nimiq-testnet.com/v1.4.3/nimiq.js';
 
-App.NANO_CLIENT = true; // FIXME currently using nano on desktop and mobile. At some point switch back to mobile only
-
 App.NETWORK = window.location.origin.indexOf('nimiq.com')!==-1? 'main'
     : 'test';
+
+App.NANO_CLIENT = App.NETWORK === 'main'; // FIXME currently using nano on desktop and mobile. At some point switch back to mobile only
 
 App.KEY_STORED_ADDRESS = 'miner-stored-address';
 
