@@ -3,10 +3,10 @@
     "name": "nimiq.watch",
     "host": "pool.nimiq.watch",
     "port": "8443",
-    "description": "Mine as part of the nimiq.watch mining pool and get shares of the mined block rewards according to your hash rate.",
-    "website": "https://nimiq.watch",
-    "fees": "1%",
-    "payouts": "Automatic payout once a day at 8am UTC",
+    "description": "Mine as part of the NIMIQ.WATCH mining pool and get shares of the mined block rewards according to your hash rate.",
+    "website": "https://pool.nimiq.watch",
+    "fees": "0.7%",
+    "payouts": "Automatic payout every 2 hours for balances of at least 10 NIM",
     "supportsNano": true
   },
   {
